@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -29,7 +30,12 @@ import com.bumptech.glide.Glide;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainCategoryActivity extends AppCompatActivity {
 
@@ -39,7 +45,8 @@ public class MainCategoryActivity extends AppCompatActivity {
     private ArrayList<Dictionary> mArrayList;
     private CustomAdapter mAdapter;
     private int count = -1;
-    private TextView emptyView;
+    private ArrayList<String>userGroup;
+    private String TAG_NAME = "group", TAG_JSON="webnautes", User;
 
 
     private DrawerLayout drawerLayout;
@@ -66,12 +73,56 @@ public class MainCategoryActivity extends AppCompatActivity {
 
         mArrayList = new ArrayList<>();
 
+
         //mAdapter = new CustomAdapter( mArrayList);
         mAdapter = new CustomAdapter(this, mArrayList);
 
 
-
         mRecyclerView.setAdapter(mAdapter);
+
+        Intent intent = getIntent();
+        strID = intent.getStringExtra("ID");    //사용자 이름
+        profilePath = intent.getStringExtra("profileUri");  //사용자 프로필 경로를 받아온다.
+        userID = intent.getStringExtra("userID");
+        userPass = intent.getStringExtra("userPass");
+        userEmail = intent.getStringExtra("userEmail");
+
+        /**
+         * 서버에 Group Data가 있는지 확인하고 가져오는 메소드
+         */
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray group = jsonObject.getJSONArray(TAG_JSON);
+
+                    Log.e("user2: ", String.valueOf(group.length()));
+
+                    /**
+                     * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
+                     */
+                    for(int i=0; i<group.length(); i++){
+                        System.out.println("들어옴222222222222");
+                        JSONObject item = group.getJSONObject(i);
+
+                        String group1 = item.getString("group");
+                        Log.e("유저 그룹: ", group1);
+
+                        Dictionary dict = new Dictionary(group1);
+                        dict.setUser(strID);
+                        mArrayList.add(dict); //마지막 줄에 삽입됨 1
+                        mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        MainCategoryGroupRequest MainCategoryGroupRequest = new MainCategoryGroupRequest(strID, responseListener);
+        RequestQueue queue = Volley.newRequestQueue(MainCategoryActivity.this);
+        queue.add(MainCategoryGroupRequest);
+
 
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), mRecyclerView, new ClickListener() {
             @Override
@@ -135,7 +186,6 @@ public class MainCategoryActivity extends AppCompatActivity {
                         mArrayList.add(dict); //마지막 줄에 삽입됨 1
 
 
-
                         // 6. 어댑터에서 RecyclerView에 반영하도록 합니다.
 
 //                        mAdapter.notifyItemInserted(0); //첫번째 줄에 삽입됨 2
@@ -155,14 +205,8 @@ public class MainCategoryActivity extends AppCompatActivity {
                 });
                 dialog.show();
             }
-        });
 
-        Intent intent = getIntent();
-        strID = intent.getStringExtra("ID");    //사용자 이름
-        profilePath = intent.getStringExtra("profileUri");  //사용자 프로필 경로를 받아온다.
-        userID = intent.getStringExtra("userID");
-        userPass = intent.getStringExtra("userPass");
-        userEmail = intent.getStringExtra("userEmail");
+        });
 
 
         profile1 = (ImageView) findViewById(R.id.profileImageView1);
@@ -216,7 +260,7 @@ public class MainCategoryActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "로그아웃되었습니다.", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "로그아웃되었습니다.", Toast.LENGTH_SHORT).show();
 
                 UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
                     @Override

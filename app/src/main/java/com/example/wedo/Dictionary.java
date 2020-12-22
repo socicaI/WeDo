@@ -9,7 +9,7 @@ public class Dictionary {
 
     private String user;
 
-    private int count = 0;
+//    private int count = 0;
 
     public String getId() {
         return id;
@@ -18,20 +18,6 @@ public class Dictionary {
     public void setId(String id) {
         this.id = id;
     }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public int countNum(){
-        this.count += 1;
-        return  count;
-    }
-
 
     public String getUser() {
         return user;
@@ -45,5 +31,18 @@ public class Dictionary {
     public Dictionary(String id) {
         this.id = id;
     }
+
+//    public int getCount() {
+//        return count;
+//    }
+//
+//    public void setCount(int count) {
+//        this.count = count;
+//    }
+
+//    public int countNum(){
+//        this.count += 1;
+//        return  count;
+//    }
 }
 

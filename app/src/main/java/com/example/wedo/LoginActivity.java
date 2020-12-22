@@ -198,7 +198,7 @@ public class LoginActivity extends AppCompatActivity {
                                             String profileUri = jsonResponse.getString("profilePath");
 
                                             if (success4) {
-                                                Toast.makeText(getApplicationContext(), "로그인되었습니다.", Toast.LENGTH_SHORT).show();
+//                                                Toast.makeText(getApplicationContext(), "환영합니다.", Toast.LENGTH_SHORT).show();
                                                 Intent intent = new Intent(LoginActivity.this, MainCategoryActivity.class);
                                                 intent.putExtra("userID", userID);
                                                 intent.putExtra("userPass", userPass);

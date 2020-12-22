@@ -34,7 +34,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
     private ArrayList<Dictionary> mList;
     private Context mContext;
-    int Count;
+//    int Count;
 
     @NonNull
     @Override
