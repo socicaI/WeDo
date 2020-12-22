@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".RegisterActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginLeft="250dp"
+        app:srcCompat="@drawable/wedo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="비밀번호 찾기"
+        android:textColor="#3498DB"
+        android:layout_marginTop="-20dp"
+        android:textSize="50dp"
+        android:textStyle="bold" />
+
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/looking_for_email_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:inputType="textPersonName"
+            android:ems="13"
+            android:hint="이메일을 입력해주세요."
+            android:padding="15dp" />
+    </FrameLayout>
+
+    <EditText
+        android:id="@+id/looking_for_id_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/border"
+        android:inputType="textPersonName"
+        android:ems="13"
+        android:hint="아이디를 입력해주세요."
+        android:padding="15dp" />
+
+    <Button
+        android:id="@+id/looking_for_pass_button"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="#3498DB"
+        android:padding="15dp"
+        android:text="비밀번호 찾기"
+        android:textStyle="bold" />
+</LinearLayout>

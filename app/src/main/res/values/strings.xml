@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">WeDo</string>
+    <string name="kakao_app_key">7c3bbd9b1a853d8be9f8e117debc6134</string>
+
+    <string name="request_permission">사진을 찍으려면 권한이 필요합니다.</string>
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+</resources>

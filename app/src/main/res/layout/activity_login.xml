@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".LoginActivity">
+
+    <!--android:ems는 View의 너비를 지정해줌
+      (단, android:layout_width의 값이 "wrap_content"여야 적용이 됨.) -->
+
+    <ImageView
+        android:id="@+id/title_name"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        app:srcCompat="@drawable/wedo_title" />
+
+    <EditText
+        android:id="@+id/login_id_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/border"
+        android:ems="14"
+        android:hint="아이디"
+        android:inputType="textPersonName"
+        android:padding="15dp" />
+
+
+    <EditText
+        android:id="@+id/login_password_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/border"
+        android:ems="14"
+        android:hint="비밀번호"
+        android:inputType="textPassword"
+        android:padding="15dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="29dp"
+        android:orientation="horizontal">
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/SignIn_Button"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp" />
+
+
+        <ImageView
+            android:id="@+id/kakao_login_button"
+            android:layout_width="140dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/kakao_login_large_narrow"
+            android:text="카카오 로그인" />
+
+        <com.kakao.usermgmt.LoginButton
+            android:id="@+id/login_kakao_real"
+            android:layout_width="140dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="25dp"
+            android:visibility="gone"></com.kakao.usermgmt.LoginButton>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="300dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:backgroundTint="#3498DB"
+        android:text="로그인"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="3dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/looking_for_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="  아이디  /"
+            android:textColor="#3498DB"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/looking_for_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:text="  비밀번호 잊어버렸습니까"
+            android:textColor="#3498DB"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/membership_registration"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="8dp"
+            android:text="회원가입"
+            android:textColor="#3498DB"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

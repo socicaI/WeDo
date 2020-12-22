@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "813754786568",
+    "project_id": "wedo-b253f",
+    "storage_bucket": "wedo-b253f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813754786568:android:112e792bb7ea21189ec2bd",
+        "android_client_info": {
+          "package_name": "com.example.wedo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "813754786568-3j3kgrehev89opu8at1bpuqduut29567.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.wedo",
+            "certificate_hash": "16fe7e2b8d561f5e9c910179488ecb5497e6af05"
+          }
+        },
+        {
+          "client_id": "813754786568-oerjkdk8sbjnqhp2smjap5ibv07iuuqt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQP7TVoU82cNTDs_NCwrM-WFCwDDhvZlE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "813754786568-oerjkdk8sbjnqhp2smjap5ibv07iuuqt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
