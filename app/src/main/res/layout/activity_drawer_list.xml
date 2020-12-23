@@ -2,39 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer"
-    android:layout_width="245dp"
-    android:layout_height="370dp"
+    android:layout_width="170dp"
+    android:layout_height="125dp"
     android:layout_gravity="end"
     android:layout_marginLeft="170dp"
-    android:layout_marginTop="82dp"
+    android:layout_marginTop="63dp"
     android:background="#E8EEF3"
     android:orientation="vertical">
-
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        app:cardCornerRadius="30dp">
-
-        <ImageView
-            android:id="@+id/profileImageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/image_profile_user" />
-    </androidx.cardview.widget.CardView>
 
     <Button
         android:id="@+id/nickBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:backgroundTint="#3498DB"
-        android:text="사용자 이름 변경"
+        android:text="채팅"
         android:textStyle="bold" />
 
     <Button
@@ -42,9 +26,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:backgroundTint="#B51E1E"
-        android:text="로그아웃"
+        android:text="그룹삭제"
         android:textStyle="bold" />
+
+
 </LinearLayout>

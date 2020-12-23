@@ -46,7 +46,7 @@ public class MainCategoryActivity extends AppCompatActivity {
     private CustomAdapter mAdapter;
     private int count = -1;
     private ArrayList<String>userGroup;
-    private String TAG_NAME = "group", TAG_JSON="webnautes", User;
+    private String TAG_NAME = "group", TAG_JSON="webnautes";
 
 
     private DrawerLayout drawerLayout;
@@ -124,6 +124,9 @@ public class MainCategoryActivity extends AppCompatActivity {
         queue.add(MainCategoryGroupRequest);
 
 
+        /**
+         * RecyclerView 아이템을 눌렀을 때 해당 화면으로 넘어간다.
+         */
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), mRecyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {

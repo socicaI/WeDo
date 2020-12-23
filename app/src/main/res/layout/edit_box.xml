@@ -13,7 +13,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/border"
-        android:hint="추가하실 목록명을 입력하세요."
+        android:hint="추가하실 그룹명을 입력하세요."
         android:inputType="textPersonName" />
 
     <LinearLayout
