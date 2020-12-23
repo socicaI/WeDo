@@ -10,12 +10,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.xml.transform.Result;
 
@@ -33,7 +38,7 @@ public class ResultActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        id = extras.getString("id");
+        id = extras.getString("id");    //그룹명
         nick = extras.getString("nick");
         profilePath = extras.getString("profilePath");  //프로필
         userEmail = extras.getString("userEmail");
@@ -53,6 +58,62 @@ public class ResultActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 drawerLayout.openDrawer(drawerView);
+            }
+        });
+
+        Button updateGroup = (Button) findViewById(R.id.updateGroup);
+        updateGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+                View view = LayoutInflater.from(ResultActivity.this)
+                        .inflate(R.layout.edit_box, null, false);
+                builder.setView(view);
+                final Button ButtonSubmit = (Button) view.findViewById(R.id.button_dialog_submit);
+                final EditText editTextID = (EditText) view.findViewById(R.id.mesgase);
+
+                editTextID.setHint(textView.getText().toString());
+                ButtonSubmit.setText("편집하기");
+
+                final AlertDialog dialog = builder.create();
+                ButtonSubmit.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        String strID = editTextID.getText().toString();
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject jsonResponse = new JSONObject(response);
+                                    boolean success = jsonResponse.getBoolean("success");
+                                    if (success) {
+                                        Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                                            @Override
+                                            public void onResponse(String response) {
+                                            }
+                                        };
+                                        //서버로 volley를 이용해서 요청을 함
+
+                                        UserGroupUpdate UserGroupUpdate = new UserGroupUpdate(str_user, str_group, strID, responseListener);
+
+                                        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                        queue.add(UserGroupUpdate);
+                                        textView.setText(strID);
+
+                                        dialog.dismiss();
+                                    } else {
+                                        Toast.makeText(ResultActivity.this, "그룹명이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                        ValidateGroup ValidateGroup = new ValidateGroup(str_user, strID, responseListener);
+                        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                        queue.add(ValidateGroup);
+                    }
+                });
+                dialog.show();
             }
         });
 

@@ -82,10 +82,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {  // 3. 메뉴 추가
 
 
-            MenuItem Edit = menu.add(Menu.NONE, 1001, 1, "편집");
-            MenuItem Delete = menu.add(Menu.NONE, 1002, 2, "삭제");
-            Edit.setOnMenuItemClickListener(onEditMenu);
-            Delete.setOnMenuItemClickListener(onEditMenu);
+//            MenuItem Edit = menu.add(Menu.NONE, 1001, 1, "편집");
+//            MenuItem Delete = menu.add(Menu.NONE, 1002, 2, "삭제");
+//            Edit.setOnMenuItemClickListener(onEditMenu);
+//            Delete.setOnMenuItemClickListener(onEditMenu);
 
         }
 
@@ -93,7 +93,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-
 
                 switch (item.getItemId()) {
                     case 1001:

@@ -151,15 +151,12 @@ public class MainCategoryActivity extends AppCompatActivity {
             }
         }));
 
-
         ImageButton buttonInsert = (ImageButton) findViewById(R.id.button_main_insert);
         buttonInsert.setOnClickListener(new View.OnClickListener() {
-
 
             // 1. 화면 아래쪽에 있는 데이터 추가 버튼을 클릭하면
             @Override
             public void onClick(View v) {
-
 
                 // 2. 레이아웃 파일 edit_box.xml 을 불러와서 화면에 다이얼로그를 보여줍니다.
 
@@ -168,7 +165,6 @@ public class MainCategoryActivity extends AppCompatActivity {
                 View view = LayoutInflater.from(MainCategoryActivity.this)
                         .inflate(R.layout.edit_box, null, false);
                 builder.setView(view);
-
 
                 final Button ButtonSubmit = (Button) view.findViewById(R.id.button_dialog_submit);
                 final EditText editTextID = (EditText) view.findViewById(R.id.mesgase);
@@ -186,30 +182,48 @@ public class MainCategoryActivity extends AppCompatActivity {
 
                         // 4. 사용자가 입력한 내용을 가져와서
                         String strID2 = editTextID.getText().toString();
-                        // 5. ArrayList에 추가하고
 
-                        Dictionary dict = new Dictionary(strID2);
-//                        mArrayList.add(0, dict); //첫번째 줄에 삽입됨 1
-                        dict.setUser(strID);
-
-                        mArrayList.add(dict); //마지막 줄에 삽입됨 1
-
-
-                        // 6. 어댑터에서 RecyclerView에 반영하도록 합니다.
-
-//                        mAdapter.notifyItemInserted(0); //첫번째 줄에 삽입됨 2
-                        mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
-                        dialog.dismiss();
-
-                        Response.Listener<String> responseListener6 = new Response.Listener<String>() {//volley
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
+                                try {
+                                    JSONObject jsonResponse = new JSONObject(response);
+                                    boolean success = jsonResponse.getBoolean("success");
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainCategoryActivity.this);
+                                    if (success) {
+                                        Dictionary dict = new Dictionary(strID2);
+//                        mArrayList.add(0, dict); //첫번째 줄에 삽입됨 1
+                                        dict.setUser(strID);
+
+                                        mArrayList.add(dict); //마지막 줄에 삽입됨 1
+
+
+                                        // 6. 어댑터에서 RecyclerView에 반영하도록 합니다.
+
+//                        mAdapter.notifyItemInserted(0); //첫번째 줄에 삽입됨 2
+                                        mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
+                                        dialog.dismiss();
+
+                                        Response.Listener<String> responseListener6 = new Response.Listener<String>() {//volley
+                                            @Override
+                                            public void onResponse(String response) {
+                                            }
+                                        };
+                                        //서버로 volley를 이용해서 요청을 함
+                                        UserGroupAdd UserGroup = new UserGroupAdd(strID, strID2, responseListener6);
+                                        RequestQueue queue = Volley.newRequestQueue(MainCategoryActivity.this);
+                                        queue.add(UserGroup);
+                                    } else {
+                                        Toast.makeText(MainCategoryActivity.this, "그룹명이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         };
-                        //서버로 volley를 이용해서 요청을 함
-                        UserGroupAdd UserGroup = new UserGroupAdd(strID, strID2, responseListener6);
+                        ValidateGroup ValidateGroup = new ValidateGroup(strID, strID2, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(MainCategoryActivity.this);
-                        queue.add(UserGroup);
+                        queue.add(ValidateGroup);
                     }
                 });
                 dialog.show();
