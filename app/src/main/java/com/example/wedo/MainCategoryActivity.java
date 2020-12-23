@@ -136,8 +136,14 @@ public class MainCategoryActivity extends AppCompatActivity {
                 Intent intent = new Intent(getBaseContext(), ResultActivity.class);
 
                 intent.putExtra("id", dict.getId());
+                intent.putExtra("nick", dict.getUser());
+                intent.putExtra("profilePath",profilePath);
+                intent.putExtra("userEmail", userEmail);
+                intent.putExtra("userID", userID);
+                intent.putExtra("userPass", userPass);
 
                 startActivity(intent);
+                finish();
             }
 
             @Override
@@ -251,10 +257,10 @@ public class MainCategoryActivity extends AppCompatActivity {
                  */
                 Intent intent = new Intent(MainCategoryActivity.this, NickChangeActivity.class);
                 intent.putExtra("nick", strID);
-                intent.putExtra("userID", userID);
-                intent.putExtra("userPass", userPass);
                 intent.putExtra("profileUri", profilePath);
                 intent.putExtra("userEmail", userEmail);
+                intent.putExtra("userID", userID);
+                intent.putExtra("userPass", userPass);
                 startActivity(intent);
             }
         });
