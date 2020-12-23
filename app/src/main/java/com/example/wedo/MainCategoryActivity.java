@@ -45,7 +45,6 @@ public class MainCategoryActivity extends AppCompatActivity {
     private ArrayList<Dictionary> mArrayList;
     private CustomAdapter mAdapter;
     private int count = -1;
-    private ArrayList<String>userGroup;
     private String TAG_NAME = "group", TAG_JSON="webnautes";
 
 
