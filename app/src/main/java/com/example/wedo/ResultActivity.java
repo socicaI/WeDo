@@ -25,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -58,6 +59,23 @@ public class ResultActivity extends AppCompatActivity {
         userEmail = extras.getString("userEmail");
         userID = extras.getString("userID");
         userPass = extras.getString("userPass");
+
+        /**
+         * RecyclerView 부분
+         */
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
+        TextView emptyRecycler = (TextView) findViewById(R.id.emptyRecycler);
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+
+        mDictionaryList = new ArrayList<>();
+
+
+        //mAdapter = new CustomAdapter( mArrayList);
+        mAdapterList = new CustomAdapterList(this, mDictionaryList);
+
+
+        mRecyclerView.setAdapter(mAdapterList);
 
         TextView textView = (TextView) findViewById(R.id.id);
         str_group = id;
@@ -101,6 +119,8 @@ public class ResultActivity extends AppCompatActivity {
                         dict.setUser(str_user);
                         mDictionaryList.add(dict); //마지막 줄에 삽입됨 1
                         mAdapterList.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
+                        emptyRecycler.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -110,6 +130,15 @@ public class ResultActivity extends AppCompatActivity {
         ResultActivityListRequest ResultActivityListRequest = new ResultActivityListRequest(str_user, str_group, responseListener);
         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
         queue.add(ResultActivityListRequest);
+
+        Log.e("어레이에 값 들어있나", String.valueOf(mDictionaryList.size()));
+        if(mDictionaryList.size()==0){
+            emptyRecycler.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            emptyRecycler.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
 
         Button updateGroup = (Button) findViewById(R.id.updateGroup);
         updateGroup.setOnClickListener(new View.OnClickListener() {
@@ -210,22 +239,6 @@ public class ResultActivity extends AppCompatActivity {
             }
         });
 
-        /**
-         * RecyclerView 부분
-         */
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
-        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLinearLayoutManager);
-
-        mDictionaryList = new ArrayList<>();
-
-
-        //mAdapter = new CustomAdapter( mArrayList);
-        mAdapterList = new CustomAdapterList(this, mDictionaryList);
-
-
-        mRecyclerView.setAdapter(mAdapterList);
-
         ImageButton buttonInsert = (ImageButton) findViewById(R.id.button_main_insert);
         buttonInsert.setOnClickListener(new View.OnClickListener() {
 
@@ -259,47 +272,53 @@ public class ResultActivity extends AppCompatActivity {
                         // 4. 사용자가 입력한 내용을 가져와서
                         strID3 = editTextID.getText().toString();
 
-                        Response.Listener<String> responseListener = new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONObject jsonResponse = new JSONObject(response);
-                                    boolean success = jsonResponse.getBoolean("success");
-                                    if (success) {
-                                        Log.e("마! 들어왔나!!", "성공했나");
-                                        DictionaryList dict = new DictionaryList(strID3);
+                        if(strID3.equals("")){
+                            Toast.makeText(ResultActivity.this, "목록명을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    try {
+                                        JSONObject jsonResponse = new JSONObject(response);
+                                        boolean success = jsonResponse.getBoolean("success");
+                                        if (success) {
+                                            emptyRecycler.setVisibility(View.GONE);
+                                            mRecyclerView.setVisibility(View.VISIBLE);
+                                            Log.e("마! 들어왔나!!", "성공했나");
+                                            DictionaryList dict = new DictionaryList(strID3);
 //                        mArrayList.add(0, dict); //첫번째 줄에 삽입됨 1
-                                        dict.setUser(str_user);
+                                            dict.setUser(str_user);
 
-                                        mDictionaryList.add(dict); //마지막 줄에 삽입됨 1
+                                            mDictionaryList.add(dict); //마지막 줄에 삽입됨 1
 
 
-                                        // 6. 어댑터에서 RecyclerView에 반영하도록 합니다.
+                                            // 6. 어댑터에서 RecyclerView에 반영하도록 합니다.
 
 //                        mAdapter.notifyItemInserted(0); //첫번째 줄에 삽입됨 2
-                                        mAdapterList.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
-                                        dialog.dismiss();
+                                            mAdapterList.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
+                                            dialog.dismiss();
 
-                                        Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
-                                            @Override
-                                            public void onResponse(String response) {
-                                            }
-                                        };
-                                        //서버로 volley를 이용해서 요청을 함
-                                        UserListAdd UserListAdd = new UserListAdd(str_user, str_group, strID3, responseListener);
-                                        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                                        queue.add(UserListAdd);
-                                    } else {
-                                        Toast.makeText(ResultActivity.this, "목록명이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                            Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                                                @Override
+                                                public void onResponse(String response) {
+                                                }
+                                            };
+                                            //서버로 volley를 이용해서 요청을 함
+                                            UserListAdd UserListAdd = new UserListAdd(str_user, str_group, strID3, responseListener);
+                                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                            queue.add(UserListAdd);
+                                        } else {
+                                            Toast.makeText(ResultActivity.this, "목록명이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
                                 }
-                            }
-                        };
-                        ValidateList ValidateList = new ValidateList(str_user, str_group, strID3, responseListener);
-                        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                        queue.add(ValidateList);
+                            };
+                            ValidateList ValidateList = new ValidateList(str_user, str_group, strID3, responseListener);
+                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                            queue.add(ValidateList);
+                        }
                     }
                 });
                 dialog.show();
