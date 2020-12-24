@@ -148,7 +148,6 @@ public class ResultActivity extends AppCompatActivity {
                                         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                         queue.add(UserGroupUpdate);
                                         textView.setText(strID);
-
                                         dialog.dismiss();
                                     } else {
                                         Toast.makeText(ResultActivity.this, "그룹명이 존재합니다.", Toast.LENGTH_SHORT).show();
