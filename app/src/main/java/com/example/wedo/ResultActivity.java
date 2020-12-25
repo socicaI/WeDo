@@ -257,8 +257,8 @@ public class ResultActivity extends AppCompatActivity {
                 final Button ButtonSubmit = (Button) view.findViewById(R.id.button_dialog_submit);
                 final EditText editTextID = (EditText) view.findViewById(R.id.mesgase);
 
-                ButtonSubmit.setText("목록 추가");
-                editTextID.setHint("추가하실 목록명을 입력하세요.");
+                ButtonSubmit.setText("카테고리 추가");
+                editTextID.setHint("추가하실 카테고리를 입력하세요.");
 
                 final AlertDialog dialog = builder.create();
 
@@ -273,7 +273,7 @@ public class ResultActivity extends AppCompatActivity {
                         strID3 = editTextID.getText().toString();
 
                         if(strID3.equals("")){
-                            Toast.makeText(ResultActivity.this, "목록명을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ResultActivity.this, "카테고리를 입력해주세요.", Toast.LENGTH_SHORT).show();
                         } else {
                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                 @Override
@@ -308,7 +308,7 @@ public class ResultActivity extends AppCompatActivity {
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                             queue.add(UserListAdd);
                                         } else {
-                                            Toast.makeText(ResultActivity.this, "목록명이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(ResultActivity.this, "카테고리가 존재합니다.", Toast.LENGTH_SHORT).show();
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
