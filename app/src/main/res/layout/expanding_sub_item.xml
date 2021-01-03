@@ -31,7 +31,7 @@
         android:fontFamily="@font/muli"
         android:layout_marginTop="7dp"
         android:layout_marginLeft="35dp"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="normal" />
 
@@ -42,5 +42,5 @@
         android:layout_marginTop="-6dp"
         android:layout_marginLeft="230dp"
         android:padding="16dp"
-        android:src="@drawable/ic_delete"/>
+        android:src="@drawable/ic_remove"/>
 </FrameLayout>

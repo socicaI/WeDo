@@ -81,7 +81,7 @@
                 android:id="@+id/expanding_list_main"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorBackground"
+                android:background="@color/ic_launcher_background_wedo"
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="60dp"></com.diegodobelo.expandingview.ExpandingList>
 

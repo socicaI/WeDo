@@ -265,8 +265,8 @@ public class ResultActivity extends AppCompatActivity {
                 Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
                 final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
 
-                ButtonSubmit.setText("목록 추가");
-                editTextID.setHint("추가하실 목록명을 입력해주세요.");
+                ButtonSubmit.setText("목차 추가");
+                editTextID.setHint("추가하실 목차를 입력해주세요.");
 
                 final AlertDialog dialog = builder.create();
 
@@ -276,7 +276,7 @@ public class ResultActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         String title = editTextID.getText().toString();
                         if (title.equals("")) {
-                            Toast.makeText(ResultActivity.this, "목록명를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ResultActivity.this, "목차를 입력해주세요.", Toast.LENGTH_SHORT).show();
                         } else {
                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                 @Override
@@ -297,7 +297,7 @@ public class ResultActivity extends AppCompatActivity {
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                             queue.add(UserListAdd);
                                         } else {
-                                            Toast.makeText(ResultActivity.this, "목록명이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(ResultActivity.this, "동일한 목차가 존재합니다.", Toast.LENGTH_SHORT).show();
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -362,7 +362,7 @@ public class ResultActivity extends AppCompatActivity {
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                             queue.add(UserScheduleAdd);
                                         } else {
-                                            Toast.makeText(ResultActivity.this, "일정명이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(ResultActivity.this, "동일한 할 일이 존재합니다.", Toast.LENGTH_SHORT).show();
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -414,6 +414,11 @@ public class ResultActivity extends AppCompatActivity {
                     dialog1.show();
                 }
             });
+
+            /**
+             * 목록 수정 부분
+             */
+
         }
     }
 
@@ -477,8 +482,8 @@ public class ResultActivity extends AppCompatActivity {
         Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
         final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
 
-        editTextID.setHint("추가하실 일정을 입력하세요.");
-        ButtonSubmit.setText("일정 추가");
+        editTextID.setHint("할 일을 추가해주세요.");
+        ButtonSubmit.setText("할 일 추가");
 
         final AlertDialog dialog = builder.create();
 
@@ -489,7 +494,7 @@ public class ResultActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String title = editTextID.getText().toString();
                 if (title.equals("")) {
-                    Toast.makeText(ResultActivity.this, "일정명을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ResultActivity.this, "할 일을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
                     positive.itemCreated(editTextID.getText().toString());
                     dialog.dismiss();
