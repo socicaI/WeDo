@@ -1,12 +1,12 @@
 package com.example.wedo;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,20 +24,18 @@ import com.android.volley.toolbox.Volley;
 import com.diegodobelo.expandingview.ExpandingItem;
 import com.diegodobelo.expandingview.ExpandingList;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-
-import javax.xml.transform.Result;
 
 public class ResultActivity extends AppCompatActivity {
     /**
      * ExpandingListView
      */
     private ExpandingList mExpandingList;
+    boolean schedule = false;
+    String tta;
 
     /**
      * RecyclerView 부분
@@ -45,7 +43,7 @@ public class ResultActivity extends AppCompatActivity {
     private ArrayList<DictionaryList> mDictionaryList;
     private CustomAdapterList mAdapterList;
     private int count = -1;
-    private String TAG_JSON="userlist";
+    private String TAG_JSON = "userlist";
 
     private DrawerLayout drawerLayout;
     private View drawerView;
@@ -255,7 +253,7 @@ public class ResultActivity extends AppCompatActivity {
     /**
      * ExpandablelistView에 대한 Data
      */
-    private void createTitle(){
+    private void createTitle() {
         ImageButton addButton = (ImageButton) findViewById(R.id.button_main_insert);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -280,9 +278,9 @@ public class ResultActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         String title = editTextID.getText().toString();
-                        if(title.equals("")){
+                        if (title.equals("")) {
                             Toast.makeText(ResultActivity.this, "목록명를 입력해주세요.", Toast.LENGTH_SHORT).show();
-                        } else{
+                        } else {
                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
@@ -323,6 +321,7 @@ public class ResultActivity extends AppCompatActivity {
          * 서버에서 데이터를 불러서 여기에 삽입한다.
          */
     }
+
     private void addItem(String title, final String[] subItems, final int colorRes, int iconRes) {
         //Let's create an item with R.layout.expanding_layout
         final ExpandingItem item = mExpandingList.createNewItem(R.layout.expanding_layout);
@@ -333,6 +332,7 @@ public class ResultActivity extends AppCompatActivity {
             item.setIndicatorIconRes(iconRes);
             //It is possible to get any view inside the inflated layout. Let's set the text in the item
             ((TextView) item.findViewById(R.id.title)).setText(title);
+            tta = title;
 
             //We can create items in batch.
             item.createSubItems(subItems.length);
@@ -348,10 +348,38 @@ public class ResultActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     showInsertDialog(new OnItemCreated() {
                         @Override
-                        public void itemCreated(final String title) {
-                            final View newSubItem = item.createSubItem();
-                            configureSubItem(item, newSubItem, title);
-                            Toast.makeText(ResultActivity.this, title, Toast.LENGTH_SHORT).show();
+                        public String itemCreated(final String title) {
+
+                            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    try {
+                                        JSONObject jsonResponse = new JSONObject(response);
+                                        boolean success = jsonResponse.getBoolean("success");
+                                        Log.e("success", String.valueOf(success));
+                                        if (success) {
+                                            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                                @Override
+                                                public void onResponse(String response) {
+                                                    final View newSubItem = item.createSubItem();
+                                                    configureSubItem(item, newSubItem, title);
+                                                }
+                                            };
+                                            UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(str_user, str_group, tta, title, responseListener);
+                                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                            queue.add(UserScheduleAdd);
+                                        } else {
+                                            Toast.makeText(ResultActivity.this, "일정명이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            };
+                            ValidateSchedule ValidateSchedule = new ValidateSchedule(str_user, str_group, tta, title, responseListener);
+                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                            queue.add(ValidateSchedule);
+                            return title;
                         }
                     });
                 }
@@ -360,7 +388,37 @@ public class ResultActivity extends AppCompatActivity {
             item.findViewById(R.id.remove_item).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mExpandingList.removeItem(item);
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(ResultActivity.this);
+                    View view1 = LayoutInflater.from(ResultActivity.this)
+                            .inflate(R.layout.edit_box2, null, false);
+                    builder1.setView(view1);
+                    final Button ButtonSubmit1 = (Button) view1.findViewById(R.id.button_remove_submit);
+                    final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
+
+                    final AlertDialog dialog1 = builder1.create();
+                    ButtonSubmit1.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                                @Override
+                                public void onResponse(String response) {
+                                    mExpandingList.removeItem(item);
+                                    dialog1.dismiss();
+                                }
+                            };
+                            //서버로 volley를 이용해서 요청을 함
+                            String a = title;
+                            UserListRemove UserListRemove = new UserListRemove(str_user, str_group, a, responseListener);
+                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                            queue.add(UserListRemove);
+                        }
+                    });
+                    ButtonSubmit2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog1.dismiss();
+                        }
+                    });
+                    dialog1.show();
                 }
             });
         }
@@ -371,7 +429,38 @@ public class ResultActivity extends AppCompatActivity {
         view.findViewById(R.id.remove_sub_item).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                item.removeSubItem(view);
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(ResultActivity.this);
+                View view1 = LayoutInflater.from(ResultActivity.this)
+                        .inflate(R.layout.edit_box2, null, false);
+                builder1.setView(view1);
+                final Button ButtonSubmit1 = (Button) view1.findViewById(R.id.button_remove_submit);
+                final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
+
+                final AlertDialog dialog1 = builder1.create();
+                ButtonSubmit1.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                            @Override
+                            public void onResponse(String response) {
+                                item.removeSubItem(view);
+                                dialog1.dismiss();
+                            }
+                        };
+                        //서버로 volley를 이용해서 요청을 함
+                        String list = tta;
+                        String schedule = subTitle;
+                        UserScheduleRemove UserScheduleRemove = new UserScheduleRemove(str_user, str_group, list, schedule, responseListener);
+                        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                        queue.add(UserScheduleRemove);
+                    }
+                });
+                ButtonSubmit2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog1.dismiss();
+                    }
+                });
+                dialog1.show();
             }
         });
         view.setOnClickListener(new View.OnClickListener() {
@@ -406,14 +495,20 @@ public class ResultActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 positive.itemCreated(editTextID.getText().toString());
-                dialog.dismiss();
+                String title = editTextID.getText().toString();
+                if (title.equals("")) {
+                    Toast.makeText(ResultActivity.this, "일정명을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                } else {
+                    dialog.dismiss();
+
+                }
             }
         });
         dialog.show();
     }
 
     interface OnItemCreated {
-        void itemCreated(String title);
+        String itemCreated(String title);
     }
 
     @Override
