@@ -1,12 +1,10 @@
 package com.example.wedo;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -83,7 +81,6 @@ public class ResultActivity extends AppCompatActivity {
 //
 //        //mAdapter = new CustomAdapter( mArrayList);
 //        mAdapterList = new CustomAdapterList(this, mDictionaryList);
-
 
 //        mRecyclerView.setAdapter(mAdapterList);
 
@@ -316,10 +313,6 @@ public class ResultActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
-
-        /**
-         * 서버에서 데이터를 불러서 여기에 삽입한다.
-         */
     }
 
     private void addItem(String title, final String[] subItems, final int colorRes, int iconRes) {
@@ -494,11 +487,11 @@ public class ResultActivity extends AppCompatActivity {
         ButtonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                positive.itemCreated(editTextID.getText().toString());
                 String title = editTextID.getText().toString();
                 if (title.equals("")) {
                     Toast.makeText(ResultActivity.this, "일정명을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
+                    positive.itemCreated(editTextID.getText().toString());
                     dialog.dismiss();
 
                 }
