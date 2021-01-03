@@ -21,6 +21,8 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.diegodobelo.expandingview.ExpandingItem;
+import com.diegodobelo.expandingview.ExpandingList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +34,10 @@ import java.util.ArrayList;
 import javax.xml.transform.Result;
 
 public class ResultActivity extends AppCompatActivity {
+    /**
+     * ExpandingListView
+     */
+    private ExpandingList mExpandingList;
 
     /**
      * RecyclerView 부분
@@ -61,21 +67,27 @@ public class ResultActivity extends AppCompatActivity {
         userPass = extras.getString("userPass");
 
         /**
-         * RecyclerView 부분
+         * ExpandingList
          */
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
-        TextView emptyRecycler = (TextView) findViewById(R.id.emptyRecycler);
-        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mExpandingList = findViewById(R.id.expanding_list_main);
+        createTitle();
 
-        mDictionaryList = new ArrayList<>();
+//        /**
+//         * RecyclerView 부분
+//         */
+//        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
+//        TextView emptyRecycler = (TextView) findViewById(R.id.emptyRecycler);
+//        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
+//        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+//
+//        mDictionaryList = new ArrayList<>();
+//
+//
+//        //mAdapter = new CustomAdapter( mArrayList);
+//        mAdapterList = new CustomAdapterList(this, mDictionaryList);
 
 
-        //mAdapter = new CustomAdapter( mArrayList);
-        mAdapterList = new CustomAdapterList(this, mDictionaryList);
-
-
-        mRecyclerView.setAdapter(mAdapterList);
+//        mRecyclerView.setAdapter(mAdapterList);
 
         TextView textView = (TextView) findViewById(R.id.id);
         str_group = id;
@@ -96,49 +108,49 @@ public class ResultActivity extends AppCompatActivity {
         /**
          * 서버에 list Data가 있는지 확인하고 가져오는 메소드
          */
-        Response.Listener<String> responseListener = new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    JSONArray list = jsonObject.getJSONArray(TAG_JSON);
+//        Response.Listener<String> responseListener = new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                try {
+//                    JSONObject jsonObject = new JSONObject(response);
+//                    JSONArray list = jsonObject.getJSONArray(TAG_JSON);
+//
+//                    Log.e("user333: ", String.valueOf(list.length()));
+//
+//                    /**
+//                     * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
+//                     */
+//                    for(int i=0; i<list.length(); i++){
+//                        System.out.println("들어옴222222222222");
+//                        JSONObject item = list.getJSONObject(i);
+//
+//                        String group1 = item.getString("list");
+//                        Log.e("유저그룹333: ", group1);
+//
+//                        DictionaryList dict = new DictionaryList(group1);
+//                        dict.setUser(str_user);
+//                        mDictionaryList.add(dict); //마지막 줄에 삽입됨 1
+//                        mAdapterList.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
+//                        emptyRecycler.setVisibility(View.GONE);
+//                        mRecyclerView.setVisibility(View.VISIBLE);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//        ResultActivityListRequest ResultActivityListRequest = new ResultActivityListRequest(str_user, str_group, responseListener);
+//        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+//        queue.add(ResultActivityListRequest);
 
-                    Log.e("user333: ", String.valueOf(list.length()));
-
-                    /**
-                     * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
-                     */
-                    for(int i=0; i<list.length(); i++){
-                        System.out.println("들어옴222222222222");
-                        JSONObject item = list.getJSONObject(i);
-
-                        String group1 = item.getString("list");
-                        Log.e("유저그룹333: ", group1);
-
-                        DictionaryList dict = new DictionaryList(group1);
-                        dict.setUser(str_user);
-                        mDictionaryList.add(dict); //마지막 줄에 삽입됨 1
-                        mAdapterList.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
-                        emptyRecycler.setVisibility(View.GONE);
-                        mRecyclerView.setVisibility(View.VISIBLE);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        ResultActivityListRequest ResultActivityListRequest = new ResultActivityListRequest(str_user, str_group, responseListener);
-        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-        queue.add(ResultActivityListRequest);
-
-        Log.e("어레이에 값 들어있나", String.valueOf(mDictionaryList.size()));
-        if(mDictionaryList.size()==0){
-            emptyRecycler.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
-        } else {
-            emptyRecycler.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
-        }
+//        Log.e("어레이에 값 들어있나", String.valueOf(mDictionaryList.size()));
+//        if(mDictionaryList.size()==0){
+//            emptyRecycler.setVisibility(View.VISIBLE);
+//            mRecyclerView.setVisibility(View.GONE);
+//        } else {
+//            emptyRecycler.setVisibility(View.GONE);
+//            mRecyclerView.setVisibility(View.VISIBLE);
+//        }
 
         Button updateGroup = (Button) findViewById(R.id.updateGroup);
         updateGroup.setOnClickListener(new View.OnClickListener() {
@@ -238,43 +250,39 @@ public class ResultActivity extends AppCompatActivity {
                 dialog1.show();
             }
         });
+    }
 
-        ImageButton buttonInsert = (ImageButton) findViewById(R.id.button_main_insert);
-        buttonInsert.setOnClickListener(new View.OnClickListener() {
-
-            // 1. 화면 아래쪽에 있는 데이터 추가 버튼을 클릭하면
+    /**
+     * ExpandablelistView에 대한 Data
+     */
+    private void createTitle(){
+        ImageButton addButton = (ImageButton) findViewById(R.id.button_main_insert);
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
-                // 2. 레이아웃 파일 edit_box.xml 을 불러와서 화면에 다이얼로그를 보여줍니다.
+            public void onClick(View view) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
 
-                View view = LayoutInflater.from(ResultActivity.this)
+                View title_view = LayoutInflater.from(ResultActivity.this)
                         .inflate(R.layout.edit_box, null, false);
-                builder.setView(view);
+                builder.setView(title_view);
 
-                final Button ButtonSubmit = (Button) view.findViewById(R.id.button_dialog_submit);
-                final EditText editTextID = (EditText) view.findViewById(R.id.mesgase);
+                Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
+                final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
 
-                ButtonSubmit.setText("카테고리 추가");
-                editTextID.setHint("추가하실 카테고리를 입력하세요.");
+                ButtonSubmit.setText("목록 추가");
+                editTextID.setHint("추가하실 목록명을 입력해주세요.");
 
                 final AlertDialog dialog = builder.create();
 
-
                 // 3. 다이얼로그에 있는 삽입 버튼을 클릭하면
-
                 ButtonSubmit.setOnClickListener(new View.OnClickListener() {
-
-                    public void onClick(View v) {
-
-                        // 4. 사용자가 입력한 내용을 가져와서
-                        strID3 = editTextID.getText().toString();
-
-                        if(strID3.equals("")){
-                            Toast.makeText(ResultActivity.this, "카테고리를 입력해주세요.", Toast.LENGTH_SHORT).show();
-                        } else {
+                    @Override
+                    public void onClick(View view) {
+                        String title = editTextID.getText().toString();
+                        if(title.equals("")){
+                            Toast.makeText(ResultActivity.this, "목록명를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                        } else{
                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
@@ -282,40 +290,26 @@ public class ResultActivity extends AppCompatActivity {
                                         JSONObject jsonResponse = new JSONObject(response);
                                         boolean success = jsonResponse.getBoolean("success");
                                         if (success) {
-                                            emptyRecycler.setVisibility(View.GONE);
-                                            mRecyclerView.setVisibility(View.VISIBLE);
-                                            Log.e("마! 들어왔나!!", "성공했나");
-                                            DictionaryList dict = new DictionaryList(strID3);
-//                        mArrayList.add(0, dict); //첫번째 줄에 삽입됨 1
-                                            dict.setUser(str_user);
-
-                                            mDictionaryList.add(dict); //마지막 줄에 삽입됨 1
-
-
-                                            // 6. 어댑터에서 RecyclerView에 반영하도록 합니다.
-
-//                        mAdapter.notifyItemInserted(0); //첫번째 줄에 삽입됨 2
-                                            mAdapterList.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
+                                            addItem(title, new String[]{}, R.color.blue, R.drawable.wedo_btn);
                                             dialog.dismiss();
-
                                             Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
                                                 @Override
                                                 public void onResponse(String response) {
                                                 }
                                             };
                                             //서버로 volley를 이용해서 요청을 함
-                                            UserListAdd UserListAdd = new UserListAdd(str_user, str_group, strID3, responseListener);
+                                            UserListAdd UserListAdd = new UserListAdd(str_user, str_group, title, responseListener);
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                             queue.add(UserListAdd);
                                         } else {
-                                            Toast.makeText(ResultActivity.this, "카테고리가 존재합니다.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(ResultActivity.this, "목록명이 존재합니다.", Toast.LENGTH_SHORT).show();
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
                                 }
                             };
-                            ValidateList ValidateList = new ValidateList(str_user, str_group, strID3, responseListener);
+                            ValidateList ValidateList = new ValidateList(str_user, str_group, title, responseListener);
                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                             queue.add(ValidateList);
                         }
@@ -323,10 +317,103 @@ public class ResultActivity extends AppCompatActivity {
                 });
                 dialog.show();
             }
-
         });
 
+        /**
+         * 서버에서 데이터를 불러서 여기에 삽입한다.
+         */
+    }
+    private void addItem(String title, final String[] subItems, final int colorRes, int iconRes) {
+        //Let's create an item with R.layout.expanding_layout
+        final ExpandingItem item = mExpandingList.createNewItem(R.layout.expanding_layout);
 
+        //If item creation is successful, let's configure it
+        if (item != null) {
+            item.setIndicatorColorRes(colorRes);
+            item.setIndicatorIconRes(iconRes);
+            //It is possible to get any view inside the inflated layout. Let's set the text in the item
+            ((TextView) item.findViewById(R.id.title)).setText(title);
+
+            //We can create items in batch.
+            item.createSubItems(subItems.length);
+            for (int i = 0; i < item.getSubItemsCount(); i++) {
+                //Let's get the created sub item by its index
+                final View view = item.getSubItemView(i);
+
+                //Let's set some values in
+                configureSubItem(item, view, subItems[i]);
+            }
+            item.findViewById(R.id.add_more_sub_items).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showInsertDialog(new OnItemCreated() {
+                        @Override
+                        public void itemCreated(final String title) {
+                            final View newSubItem = item.createSubItem();
+                            configureSubItem(item, newSubItem, title);
+                            Toast.makeText(ResultActivity.this, title, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+
+            item.findViewById(R.id.remove_item).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mExpandingList.removeItem(item);
+                }
+            });
+        }
+    }
+
+    private void configureSubItem(final ExpandingItem item, final View view, final String subTitle) {
+        ((TextView) view.findViewById(R.id.sub_title)).setText(subTitle);
+        view.findViewById(R.id.remove_sub_item).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                item.removeSubItem(view);
+            }
+        });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                String sub=subTitle;
+//                Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
+//                intent.putExtra("key",sub);
+//                startActivity(intent);
+            }
+        });
+    }
+
+    private void showInsertDialog(final OnItemCreated positive) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+
+        View title_view = LayoutInflater.from(ResultActivity.this)
+                .inflate(R.layout.edit_box, null, false);
+        builder.setView(title_view);
+
+        Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
+        final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
+
+        editTextID.setHint("추가하실 일정을 입력하세요.");
+        ButtonSubmit.setText("일정 추가");
+
+        final AlertDialog dialog = builder.create();
+
+
+        // 3. 다이얼로그에 있는 삽입 버튼을 클릭하면
+        ButtonSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                positive.itemCreated(editTextID.getText().toString());
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    interface OnItemCreated {
+        void itemCreated(String title);
     }
 
     @Override

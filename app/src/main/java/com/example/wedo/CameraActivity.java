@@ -27,6 +27,9 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.wedo.Camera2BasicFragment;
+import com.example.wedo.R;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

@@ -55,61 +55,7 @@ public class CustomAdapterList extends RecyclerView.Adapter<CustomAdapterList.Cu
 //                Log.e("뭐가 문제일까...","nick: "+resultActivity.strID3+"group: "+resultActivity.userID);
             }
         });
-//        id_listitem.setImeOptions(EditorInfo.IME_ACTION_DONE);
-//        id_listitem.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-//            @Override
-//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                if (actionId == EditorInfo.IME_ACTION_DONE || event.getKeyCode() == KeyEvent.KEYCODE_ENTER){
-//                    if(id_listitem.getText().toString().equals("")){
-//                        Toast.makeText(mContext, "목록명을 입력해주세요.", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        String changeList = id_listitem.getText().toString();
-//                        id_listitem.setFocusable(false);
-//                        id_listitem.setFocusableInTouchMode(false);
-//                        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-//                        imm.hideSoftInputFromWindow(id_listitem.getWindowToken(), 0);   //키보드 내리기
-//                        Response.Listener<String> responseListener = new Response.Listener<String>() {
-//                            @Override
-//                            public void onResponse(String response) {
-//                                try {
-//                                    JSONObject jsonResponse = new JSONObject(response);
-//                                    boolean success = jsonResponse.getBoolean("success");
-//                                    if (success) {
-//                                        /**
-//                                         * 수정되는 부분
-//                                         */
-//                                        Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
-//                                            @Override
-//                                            public void onResponse(String response) {
-//                                                id_listitem.setFocusable(false);
-//                                                id_listitem.setFocusableInTouchMode(false);
-//                                                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-//                                                imm.hideSoftInputFromWindow(id_listitem.getWindowToken(), 0);   //키보드 내리기
-//                                            }
-//                                        };
-//                                        //서버로 volley를 이용해서 요청을 함
-//                                        UserListUpdate UserListUpdate = new UserListUpdate(resultActivity.nick, resultActivity.userID, resultActivity.strID3, changeList, responseListener);
-//                                        RequestQueue queue = Volley.newRequestQueue(mContext);
-//                                        queue.add(UserListUpdate);
-//                                    } else {
-//                                        Toast.makeText(mContext, "목록명이 존재합니다.", Toast.LENGTH_SHORT).show();
-//                                    }
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        };
-//                        ValidateList ValidateList = new ValidateList(resultActivity.str_user, resultActivity.str_group, changeList, responseListener);
-//                        RequestQueue queue = Volley.newRequestQueue(mContext);
-//                        queue.add(ValidateList);
-//                    }
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-//
+
         CustomAdapterList.CustomViewHolder viewHolder = new CustomAdapterList.CustomViewHolder(view);
 
         return viewHolder;
@@ -147,12 +93,6 @@ public class CustomAdapterList extends RecyclerView.Adapter<CustomAdapterList.Cu
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {  // 3. 메뉴 추가
-
-
-//            MenuItem Edit = menu.add(Menu.NONE, 1001, 1, "편집");
-//            MenuItem Delete = menu.add(Menu.NONE, 1002, 2, "삭제");
-//            Edit.setOnMenuItemClickListener(onEditMenu);
-//            Delete.setOnMenuItemClickListener(onEditMenu);
 
         }
 
