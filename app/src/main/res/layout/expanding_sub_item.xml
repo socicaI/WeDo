@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="-7dp"
-        android:buttonTint="@color/blue"/>
+        android:buttonTint="#E58600"/>
 
     <TextView
         android:id="@+id/sub_title"
@@ -42,5 +42,5 @@
         android:layout_marginTop="-6dp"
         android:layout_marginLeft="230dp"
         android:padding="16dp"
-        android:src="@drawable/ic_remove"/>
+        android:src="@drawable/ic_sub_remove"/>
 </FrameLayout>
