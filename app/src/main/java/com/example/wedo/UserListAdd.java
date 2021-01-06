@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class UserListAdd extends StringRequest {
     //서버 url 설정(php파일 연동)
-    final static private String URL = "http://azureindex00.dothome.co.kr/userListAdd.php";
+    final static private String URL = "http://13.209.99.25/userListAdd.php";
     private Map<String, String> map;
 
     public UserListAdd(String nick, String usergroup, String userList, Response.Listener<String> listener) {

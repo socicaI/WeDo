@@ -22,6 +22,7 @@ import com.android.volley.toolbox.Volley;
 import com.diegodobelo.expandingview.ExpandingItem;
 import com.diegodobelo.expandingview.ExpandingList;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,8 +33,12 @@ public class ResultActivity extends AppCompatActivity {
      * ExpandingListView
      */
     private ExpandingList mExpandingList;
-    boolean schedule = false;
     String tta;
+    ArrayList<String> scheduleReal = new ArrayList<>();
+    boolean ff = false;
+    int[] ia = {0};
+    String schedule1;
+    int ii=0;
 
     /**
      * RecyclerView 부분
@@ -42,6 +47,7 @@ public class ResultActivity extends AppCompatActivity {
     private CustomAdapterList mAdapterList;
     private int count = -1;
     private String TAG_JSON = "userlist";
+    private String tagSchedule = "userSchedule";
 
     private DrawerLayout drawerLayout;
     private View drawerView;
@@ -68,22 +74,6 @@ public class ResultActivity extends AppCompatActivity {
         mExpandingList = findViewById(R.id.expanding_list_main);
         createTitle();
 
-//        /**
-//         * RecyclerView 부분
-//         */
-//        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
-//        TextView emptyRecycler = (TextView) findViewById(R.id.emptyRecycler);
-//        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
-//        mRecyclerView.setLayoutManager(mLinearLayoutManager);
-//
-//        mDictionaryList = new ArrayList<>();
-//
-//
-//        //mAdapter = new CustomAdapter( mArrayList);
-//        mAdapterList = new CustomAdapterList(this, mDictionaryList);
-
-//        mRecyclerView.setAdapter(mAdapterList);
-
         TextView textView = (TextView) findViewById(R.id.id);
         str_group = id;
         str_user = nick;
@@ -99,53 +89,6 @@ public class ResultActivity extends AppCompatActivity {
                 drawerLayout.openDrawer(drawerView);
             }
         });
-
-        /**
-         * 서버에 list Data가 있는지 확인하고 가져오는 메소드
-         */
-//        Response.Listener<String> responseListener = new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                try {
-//                    JSONObject jsonObject = new JSONObject(response);
-//                    JSONArray list = jsonObject.getJSONArray(TAG_JSON);
-//
-//                    Log.e("user333: ", String.valueOf(list.length()));
-//
-//                    /**
-//                     * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
-//                     */
-//                    for(int i=0; i<list.length(); i++){
-//                        System.out.println("들어옴222222222222");
-//                        JSONObject item = list.getJSONObject(i);
-//
-//                        String group1 = item.getString("list");
-//                        Log.e("유저그룹333: ", group1);
-//
-//                        DictionaryList dict = new DictionaryList(group1);
-//                        dict.setUser(str_user);
-//                        mDictionaryList.add(dict); //마지막 줄에 삽입됨 1
-//                        mAdapterList.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
-//                        emptyRecycler.setVisibility(View.GONE);
-//                        mRecyclerView.setVisibility(View.VISIBLE);
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-//        ResultActivityListRequest ResultActivityListRequest = new ResultActivityListRequest(str_user, str_group, responseListener);
-//        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-//        queue.add(ResultActivityListRequest);
-
-//        Log.e("어레이에 값 들어있나", String.valueOf(mDictionaryList.size()));
-//        if(mDictionaryList.size()==0){
-//            emptyRecycler.setVisibility(View.VISIBLE);
-//            mRecyclerView.setVisibility(View.GONE);
-//        } else {
-//            emptyRecycler.setVisibility(View.GONE);
-//            mRecyclerView.setVisibility(View.VISIBLE);
-//        }
 
         Button updateGroup = (Button) findViewById(R.id.updateGroup);
         updateGroup.setOnClickListener(new View.OnClickListener() {
@@ -230,7 +173,6 @@ public class ResultActivity extends AppCompatActivity {
                             }
                         };
                         //서버로 volley를 이용해서 요청을 함
-
                         UserGroupRemove UserGroupRemove = new UserGroupRemove(str_user, str_group, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                         queue.add(UserGroupRemove);
@@ -245,6 +187,90 @@ public class ResultActivity extends AppCompatActivity {
                 dialog1.show();
             }
         });
+
+
+        /**
+         * 서버에 list Data가 있는지 확인하고 가져오는 메소드
+         */
+        ArrayList<String> scheduleDemo = new ArrayList<>();
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray list = jsonObject.getJSONArray(TAG_JSON);
+                    /**
+                     * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
+                     */
+                    for (int o = 0; o < list.length(); o++) {
+                        final JSONObject[] item = {list.getJSONObject(o)};
+
+                        String group1 = item[0].getString("list");
+                        System.out.println("스케쥴11 : " + group1);
+                        scheduleDemo.add(group1);
+                        schedule1 = scheduleDemo.get(o);
+                        System.out.println("야!!!!!!!!!!!!: " + schedule1);
+
+                        /**
+                         * group1과 관련된 schedule 데이터 가져오는 부분
+                         */
+//                        Response.Listener<String> responseListener1 = new Response.Listener<String>() {
+//                            @Override
+//                            public void onResponse(String response1) {
+//                                try {
+//                                    JSONObject jsonObject = new JSONObject(response1);
+//                                    JSONArray schedule = jsonObject.getJSONArray("userSchedule");
+//                                    System.out.println("스케줄 길이: " + schedule.length());
+//
+//
+//                                    String scheduleArray[] = new String[schedule.length()];
+//
+//                                    /**
+//                                     * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
+//                                     */
+//
+//                                    for (int i = 0; i < schedule.length(); i++) {
+//                                        JSONObject item = schedule.getJSONObject(i);
+//                                        String Array = item.getString("schedule");
+//                                        scheduleArray[i] = Array;
+//                                        System.out.println("왐마!!!: "+scheduleArray[i]);
+//                                    }
+//
+//                                    /**
+//                                     * group1과 관련된 schedule 데이터 가져오는 부분
+//                                     **/
+//                                    addItem(scheduleDemo.get(ia[0]), scheduleArray, R.color.blue, R.drawable.wedo_btn);
+//                                    ia[0]++;
+//                                } catch (JSONException e) {
+//                                    ff = true;
+//                                    e.printStackTrace();
+//                                }
+//                                if (ff) {
+//                                    System.out.println("그룹완 : " + scheduleDemo.get(ia[0]));
+//                                    addItem(scheduleDemo.get(ia[0]), new String[]{}, R.color.blue, R.drawable.wedo_btn);
+//                                    ia[0]++;
+//                                }
+//                                ff = false;
+//                            }
+//                        };
+//
+//                        System.out.println("ㅇ!!!!!!!!!!: " + str_user);
+//                        System.out.println("ㅇ!!!!!!!!!!: " + str_group);
+//                        System.out.println("ㅇ!!!!!!!!!!: " + scheduleDemo.get(ii));
+//
+//                        ResultActivitySchedultRequest ResultActivitySchedultRequest = new ResultActivitySchedultRequest(str_user, str_group, scheduleDemo.get(ii), responseListener1);
+//                        ii++;
+//                        RequestQueue queue1 = Volley.newRequestQueue(ResultActivity.this);
+//                        queue1.add(ResultActivitySchedultRequest);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        ResultActivityListRequest ResultActivityListRequest = new ResultActivityListRequest(str_user, str_group, responseListener);
+        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+        queue.add(ResultActivityListRequest);
     }
 
     /**
@@ -316,6 +342,10 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void addItem(String title, final String[] subItems, final int colorRes, int iconRes) {
+        /**
+         * tta 추가되면 위의 있는 리스트뷰 최하위에 있는 애만 체크
+         */
+        tta = title;
         //Let's create an item with R.layout.expanding_layout
         final ExpandingItem item = mExpandingList.createNewItem(R.layout.expanding_layout);
 
@@ -325,7 +355,6 @@ public class ResultActivity extends AppCompatActivity {
             item.setIndicatorIconRes(iconRes);
             //It is possible to get any view inside the inflated layout. Let's set the text in the item
             ((TextView) item.findViewById(R.id.title)).setText(title);
-            tta = title;
 
             //We can create items in batch.
             item.createSubItems(subItems.length);
@@ -341,7 +370,7 @@ public class ResultActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     showInsertDialog(new OnItemCreated() {
                         @Override
-                        public String itemCreated(final String title) {
+                        public String itemCreated(final String title1) {
 
                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                 @Override
@@ -355,10 +384,11 @@ public class ResultActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onResponse(String response) {
                                                     final View newSubItem = item.createSubItem();
-                                                    configureSubItem(item, newSubItem, title);
+                                                    configureSubItem(item, newSubItem, title1);
                                                 }
                                             };
-                                            UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(str_user, str_group, tta, title, responseListener);
+                                            UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(str_user, str_group, title, title1, responseListener);
+                                            Log.e("갑자기 왜이래;;;", title);
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                             queue.add(UserScheduleAdd);
                                         } else {
@@ -369,7 +399,8 @@ public class ResultActivity extends AppCompatActivity {
                                     }
                                 }
                             };
-                            ValidateSchedule ValidateSchedule = new ValidateSchedule(str_user, str_group, tta, title, responseListener);
+                            ValidateSchedule ValidateSchedule = new ValidateSchedule(str_user, str_group, title, title1, responseListener);
+                            Log.e("갑자기 왜이래;;;", title);
                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                             queue.add(ValidateSchedule);
                             return title;
@@ -385,6 +416,7 @@ public class ResultActivity extends AppCompatActivity {
                     View view1 = LayoutInflater.from(ResultActivity.this)
                             .inflate(R.layout.edit_box2, null, false);
                     builder1.setView(view1);
+
                     final Button ButtonSubmit1 = (Button) view1.findViewById(R.id.button_remove_submit);
                     final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
 
@@ -444,9 +476,12 @@ public class ResultActivity extends AppCompatActivity {
                                 dialog1.dismiss();
                             }
                         };
-                        //서버로 volley를 이용해서 요청을 함
+                        /**
+                         * sub 삭제
+                         */
                         String list = tta;
                         String schedule = subTitle;
+                        Log.e("삭제삭제삭제", list);
                         UserScheduleRemove UserScheduleRemove = new UserScheduleRemove(str_user, str_group, list, schedule, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                         queue.add(UserScheduleRemove);
@@ -459,15 +494,6 @@ public class ResultActivity extends AppCompatActivity {
                     }
                 });
                 dialog1.show();
-            }
-        });
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                String sub=subTitle;
-//                Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
-//                intent.putExtra("key",sub);
-//                startActivity(intent);
             }
         });
     }

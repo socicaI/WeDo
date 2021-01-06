@@ -46,7 +46,6 @@ public class MainCategoryActivity extends AppCompatActivity {
     private int count = -1;
     private String TAG_NAME = "group", TAG_JSON = "webnautes";
 
-
     private DrawerLayout drawerLayout;
     private View drawerView;
     private ImageView profile1, profile2;
@@ -90,6 +89,7 @@ public class MainCategoryActivity extends AppCompatActivity {
          * 서버에 Group Data가 있는지 확인하고 가져오는 메소드
          */
         Response.Listener<String> responseListener = new Response.Listener<String>() {
+
             @Override
             public void onResponse(String response) {
                 try {
@@ -102,7 +102,6 @@ public class MainCategoryActivity extends AppCompatActivity {
                      * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
                      */
                     for (int i = 0; i < group.length(); i++) {
-                        System.out.println("들어옴222222222222");
                         JSONObject item = group.getJSONObject(i);
 
                         String group1 = item.getString("group");

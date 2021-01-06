@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class GmailUserInfo extends StringRequest {
     //서버 url 설정(php파일 연동)
-    final static  private String URL="http://azureindex00.dothome.co.kr/gmailUserInfo.php";
+    final static  private String URL="http://13.209.99.25/gmailUserInfo.php";
     private Map<String,String> map;
 
     public GmailUserInfo(String userID,Response.Listener<String>listener){
