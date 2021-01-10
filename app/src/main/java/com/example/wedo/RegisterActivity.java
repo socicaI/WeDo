@@ -54,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
     //아이디 중복 여부에 대한 다이얼로그
     private AlertDialog dialog;
     //id_validate=아이디이 중복인지 아닌지 판별하기 위한 boolean / pass_validate=비밀번호가 일치한지 판결하기 위한 boolean / emailValidate=email을 양식에 맞게 입력했는지 판별해주는 boolean / emailCheck=email을 재전송하는 건지 판별해주는 boolean / nickValidate=닉네임이 중복인지 판별해주는 boolean
-    private boolean id_validate = false, pass_validate = false, emailValidate = false, emailCheck = false, nickValidate = false,  profile=false;
+    private boolean id_validate = false, pass_validate = false, emailValidate = false, emailCheck = false, nickValidate = false, profile = false;
     String inputEmail; //이메일 입력란에 입력한 값을 String 형식으로 변환.
     String num, num2, userID, nick; //num=이메일 인증번호, num2=이메일 인증번호 확인, userID=아이디, nick=앱에서 사용자가 사용할 이름(닉네임)
 
@@ -237,8 +237,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                                                    result = result - 100000;
                                                                                }
                                                                                num = String.valueOf(result);
-
-                                                                               Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                                                               Response.Listener<String> responseListener1 = new Response.Listener<String>() {
                                                                                    @Override
                                                                                    public void onResponse(String response) {
                                                                                        if (emailValidateButton.getText().toString().equals("인증")) {
@@ -252,9 +251,13 @@ public class RegisterActivity extends AppCompatActivity {
                                                                                        }
                                                                                    }
                                                                                };
-                                                                               EmailRequest EmailRequest = new EmailRequest(inputEmail, num, sendEmail, responseListener);
-                                                                               RequestQueue queue = Volley.newRequestQueue(RegisterActivity.this);
-                                                                               queue.add(EmailRequest);
+                                                                               EmailRequest EmailRequest = new EmailRequest(inputEmail, num, sendEmail, responseListener1);
+                                                                               System.out.println("123"+inputEmail);
+                                                                               System.out.println("123"+num);
+                                                                               System.out.println("123"+sendEmail);
+
+                                                                               RequestQueue queue1 = Volley.newRequestQueue(RegisterActivity.this);
+                                                                               queue1.add(EmailRequest);
                                                                            } else {
                                                                                dialog = builder.setMessage("이미 가입된 이메일입니다.")
                                                                                        .setNegativeButton("확인", null)
@@ -268,6 +271,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                                    }
                                                                };
                                                                Validate_emailRequest Validate_emailRequest = new Validate_emailRequest(inputEmail, responseListener);
+                                                               System.out.println("이리오너라~~111: " + inputEmail);
                                                                RequestQueue queue = Volley.newRequestQueue(RegisterActivity.this);
                                                                queue.add(Validate_emailRequest);
                                                            } else { //이메일 양식에 맞지 않게 텍스트를 입력했을 경우 다이얼로그 출력.
@@ -399,7 +403,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                if (profile){
+                if (profile) {
                     if (id_validate) {
                         if (nickValidate) {
                             if (pass_validate) {
@@ -421,7 +425,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                     FirebaseStorage storage = FirebaseStorage.getInstance();
 
                                                     StorageReference storageRef = storage.getReference();
-                                                    final StorageReference mountainImagesRef = storageRef.child("images/"+nick+"/profile.jpg"); //파일 경로 images/사용자 ID/
+                                                    final StorageReference mountainImagesRef = storageRef.child("images/" + nick + "/profile.jpg"); //파일 경로 images/사용자 ID/
                                                     try {
                                                         InputStream stream = new FileInputStream(new File(profilePath));
                                                         UploadTask uploadTask = mountainImagesRef.putStream(stream);
@@ -488,7 +492,7 @@ public class RegisterActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(getApplicationContext(), "아이디를 확인해주세요.", Toast.LENGTH_SHORT).show();
                     }
-                }else {
+                } else {
                     Toast.makeText(getApplicationContext(), "프로필 사진을 찍어주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
