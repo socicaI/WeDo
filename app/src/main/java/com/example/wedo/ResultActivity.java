@@ -28,6 +28,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class ResultActivity extends AppCompatActivity {
     /**
@@ -250,6 +252,7 @@ public class ResultActivity extends AppCompatActivity {
                                             if(listSchedule==null || listScheduleDemo.equals(scheduleDemo.get(l))){
                                                 listSchedule=scheduleDemo.get(l);
                                                 aa.add(schedule.get(l));
+                                                Collections.sort(aa);
                                             }
                                         }
                                         listSchedule=null;
