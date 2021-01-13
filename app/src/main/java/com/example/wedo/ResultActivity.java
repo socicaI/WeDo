@@ -6,6 +6,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,13 +33,11 @@ public class ResultActivity extends AppCompatActivity {
     /**
      * ExpandingListView
      */
+    ArrayList<String> scheduleDemo = new ArrayList<>();
     private ExpandingList mExpandingList;
     String tta;
-    ArrayList<String> scheduleReal = new ArrayList<>();
-    boolean ff = false;
-    int[] ia = {0};
     String schedule1;
-    int ii=0;
+
 
     /**
      * RecyclerView 부분
@@ -187,12 +186,16 @@ public class ResultActivity extends AppCompatActivity {
                 dialog1.show();
             }
         });
-
-
         /**
-         * 서버에 list Data가 있는지 확인하고 가져오는 메소드
+         * 서버에 저장되어 있는 목록/일정 데이터를 불러오는 부분
          */
-        ArrayList<String> scheduleDemo = new ArrayList<>();
+        load();
+    }
+
+    /**
+     * 서버에 저장되어 있는 목록/일정 데이터를 불러오게 해주는 클래스
+     */
+    private void load() {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -202,67 +205,78 @@ public class ResultActivity extends AppCompatActivity {
                     /**
                      * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
                      */
-                    for (int o = 0; o < list.length(); o++) {
-                        final JSONObject[] item = {list.getJSONObject(o)};
+                    for (int i = 0; i < list.length(); i++) {
+                        final JSONObject[] item = {list.getJSONObject(i)};
 
                         String group1 = item[0].getString("list");
-                        System.out.println("스케쥴11 : " + group1);
-                        scheduleDemo.add(group1);
-                        schedule1 = scheduleDemo.get(o);
-                        System.out.println("야!!!!!!!!!!!!: " + schedule1);
+                        System.out.println("목록: " + group1);
 
-                        /**
-                         * group1과 관련된 schedule 데이터 가져오는 부분
-                         */
-//                        Response.Listener<String> responseListener1 = new Response.Listener<String>() {
-//                            @Override
-//                            public void onResponse(String response1) {
-//                                try {
-//                                    JSONObject jsonObject = new JSONObject(response1);
-//                                    JSONArray schedule = jsonObject.getJSONArray("userSchedule");
-//                                    System.out.println("스케줄 길이: " + schedule.length());
-//
-//
-//                                    String scheduleArray[] = new String[schedule.length()];
-//
-//                                    /**
-//                                     * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
-//                                     */
-//
-//                                    for (int i = 0; i < schedule.length(); i++) {
-//                                        JSONObject item = schedule.getJSONObject(i);
-//                                        String Array = item.getString("schedule");
-//                                        scheduleArray[i] = Array;
-//                                        System.out.println("왐마!!!: "+scheduleArray[i]);
-//                                    }
-//
-//                                    /**
-//                                     * group1과 관련된 schedule 데이터 가져오는 부분
-//                                     **/
-//                                    addItem(scheduleDemo.get(ia[0]), scheduleArray, R.color.blue, R.drawable.wedo_btn);
-//                                    ia[0]++;
-//                                } catch (JSONException e) {
-//                                    ff = true;
-//                                    e.printStackTrace();
-//                                }
-//                                if (ff) {
-//                                    System.out.println("그룹완 : " + scheduleDemo.get(ia[0]));
-//                                    addItem(scheduleDemo.get(ia[0]), new String[]{}, R.color.blue, R.drawable.wedo_btn);
-//                                    ia[0]++;
-//                                }
-//                                ff = false;
-//                            }
-//                        };
-//
-//                        System.out.println("ㅇ!!!!!!!!!!: " + str_user);
-//                        System.out.println("ㅇ!!!!!!!!!!: " + str_group);
-//                        System.out.println("ㅇ!!!!!!!!!!: " + scheduleDemo.get(ii));
-//
-//                        ResultActivitySchedultRequest ResultActivitySchedultRequest = new ResultActivitySchedultRequest(str_user, str_group, scheduleDemo.get(ii), responseListener1);
-//                        ii++;
-//                        RequestQueue queue1 = Volley.newRequestQueue(ResultActivity.this);
-//                        queue1.add(ResultActivitySchedultRequest);
+                        scheduleDemo.add(group1);
+                        schedule1 = scheduleDemo.get(i);
                     }
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                JSONArray list = jsonObject.getJSONArray(TAG_JSON);
+                                /**
+                                 * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
+                                 */
+                                ArrayList<String> schedule = new ArrayList<>();
+                                for (int i = 0; i < scheduleDemo.size(); i++) {
+                                    final JSONObject[] item = {list.getJSONObject(i)};
+                                    String group1 = item[0].getString(scheduleDemo.get(i));
+                                    schedule.add(group1);
+                                }
+                                System.out.println("123:   " + scheduleDemo.size());
+                                System.out.println("123:   " + schedule.size());
+                                /**
+                                 * null값을 포함한 목록 데이터만큼 반복문으로 돌린다.
+                                 */
+                                ArrayList<String> aa = new ArrayList<>();
+                                String listScheduleDemo = null;
+                                String listScheduleBottom = null;
+                                String listSchedule = null;
+                                for (int i = 0; i < scheduleDemo.size(); i++) {   //총 6번이 돈다...
+                                    if (listScheduleDemo == null || !listScheduleDemo.equals(scheduleDemo.get(i))) {
+                                        listScheduleDemo = scheduleDemo.get(i);
+                                        System.out.println("값1: " + listScheduleDemo);
+                                        /**
+                                         * 목록에 해당하는 할 일을 생성하는 구간
+                                         */
+                                        aa.clear();
+                                        for (int l = i; l < schedule.size(); l++) {
+                                            if(listSchedule==null || listScheduleDemo.equals(scheduleDemo.get(l))){
+                                                listSchedule=scheduleDemo.get(l);
+                                                aa.add(schedule.get(l));
+                                            }
+                                        }
+                                        listSchedule=null;
+
+                                        /**
+                                         * 데이터를 삽입하는 구간
+                                         */
+                                        String[] a = new String[aa.size()];
+                                        for (int k = 0; k < aa.size(); k++) {
+                                            a[k] = aa.get(k);
+                                        }
+                                        if (aa.get(0).equals("null")) {
+                                            addItem(listScheduleDemo, new String[]{}, R.color.blue, R.drawable.wedo_btn);
+                                        } else {
+                                            addItem(listScheduleDemo, a, R.color.blue, R.drawable.wedo_btn);
+                                        }
+                                    }
+                                    listScheduleBottom = scheduleDemo.get(i);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    ResultActivitySchedultRequest ResultActivitySchedultRequest = new ResultActivitySchedultRequest(str_user, str_group, responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                    queue.add(ResultActivitySchedultRequest);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -358,6 +372,7 @@ public class ResultActivity extends AppCompatActivity {
 
             //We can create items in batch.
             item.createSubItems(subItems.length);
+
             for (int i = 0; i < item.getSubItemsCount(); i++) {
                 //Let's get the created sub item by its index
                 final View view = item.getSubItemView(i);
@@ -365,6 +380,21 @@ public class ResultActivity extends AppCompatActivity {
                 //Let's set some values in
                 configureSubItem(item, view, subItems[i]);
             }
+
+
+//            item.findViewById(R.id.a).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    ImageView imageView = (ImageView) item.findViewById(R.id.updown_item);
+//                    if(imageView.equals(R.drawable.ic_down)){
+//                        imageView.setImageResource(R.drawable.ic_up_down);
+//
+//                    }else {
+//                        imageView.setImageResource(R.drawable.ic_down);
+//                    }
+//                }
+//            });
+
             item.findViewById(R.id.add_more_sub_items).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -388,7 +418,6 @@ public class ResultActivity extends AppCompatActivity {
                                                 }
                                             };
                                             UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(str_user, str_group, title, title1, responseListener);
-                                            Log.e("갑자기 왜이래;;;", title);
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                             queue.add(UserScheduleAdd);
                                         } else {
@@ -400,7 +429,6 @@ public class ResultActivity extends AppCompatActivity {
                                 }
                             };
                             ValidateSchedule ValidateSchedule = new ValidateSchedule(str_user, str_group, title, title1, responseListener);
-                            Log.e("갑자기 왜이래;;;", title);
                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                             queue.add(ValidateSchedule);
                             return title;
@@ -481,7 +509,6 @@ public class ResultActivity extends AppCompatActivity {
                          */
                         String list = tta;
                         String schedule = subTitle;
-                        Log.e("삭제삭제삭제", list);
                         UserScheduleRemove UserScheduleRemove = new UserScheduleRemove(str_user, str_group, list, schedule, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                         queue.add(UserScheduleRemove);
@@ -547,4 +574,14 @@ public class ResultActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    public void MatrixTime(int delayTime) {
+        long saveTime = System.currentTimeMillis();
+        long currTime = 0;
+        while (currTime - saveTime < delayTime) {
+            currTime = System.currentTimeMillis();
+        }
+    }
+
+
 }
