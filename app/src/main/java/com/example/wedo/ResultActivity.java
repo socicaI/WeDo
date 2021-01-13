@@ -359,10 +359,6 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void addItem(String title, final String[] subItems, final int colorRes, int iconRes) {
-        /**
-         * tta 추가되면 위의 있는 리스트뷰 최하위에 있는 애만 체크
-         */
-        tta = title;
         //Let's create an item with R.layout.expanding_layout
         final ExpandingItem item = mExpandingList.createNewItem(R.layout.expanding_layout);
 
@@ -372,6 +368,7 @@ public class ResultActivity extends AppCompatActivity {
             item.setIndicatorIconRes(iconRes);
             //It is possible to get any view inside the inflated layout. Let's set the text in the item
             ((TextView) item.findViewById(R.id.title)).setText(title);
+            tta=title;
 
             //We can create items in batch.
             item.createSubItems(subItems.length);
@@ -381,7 +378,7 @@ public class ResultActivity extends AppCompatActivity {
                 final View view = item.getSubItemView(i);
 
                 //Let's set some values in
-                configureSubItem(item, view, subItems[i]);
+                configureSubItem(item, view, subItems[i], title);
             }
 
 
@@ -417,7 +414,7 @@ public class ResultActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onResponse(String response) {
                                                     final View newSubItem = item.createSubItem();
-                                                    configureSubItem(item, newSubItem, title1);
+                                                    configureSubItem(item, newSubItem, title1, title);
                                                 }
                                             };
                                             UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(str_user, str_group, title, title1, responseListener);
@@ -485,8 +482,9 @@ public class ResultActivity extends AppCompatActivity {
         }
     }
 
-    private void configureSubItem(final ExpandingItem item, final View view, final String subTitle) {
+    private void configureSubItem(final ExpandingItem item, final View view, final String subTitle, final String title) {
         ((TextView) view.findViewById(R.id.sub_title)).setText(subTitle);
+        ((TextView) item.findViewById(R.id.title)).setText(title);
         view.findViewById(R.id.remove_sub_item).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -510,9 +508,15 @@ public class ResultActivity extends AppCompatActivity {
                         /**
                          * sub 삭제
                          */
-                        String list = tta;
+                        String list = item.toString();
                         String schedule = subTitle;
-                        UserScheduleRemove UserScheduleRemove = new UserScheduleRemove(str_user, str_group, list, schedule, responseListener);
+
+                        System.out.println("삭제: "+str_user);
+                        System.out.println("삭제: "+str_group);
+                        System.out.println("삭제: "+title);
+                        System.out.println("삭제: "+schedule);
+
+                        UserScheduleRemove UserScheduleRemove = new UserScheduleRemove(str_user, str_group, title, schedule, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                         queue.add(UserScheduleRemove);
                     }
