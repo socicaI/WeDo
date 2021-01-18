@@ -464,7 +464,6 @@ public class ResultActivity extends AppCompatActivity {
                             Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
                                 @Override
                                 public void onResponse(String response) {
-
                                     mExpandingList.removeItem(item);
                                     dialog1.dismiss();
                                 }
