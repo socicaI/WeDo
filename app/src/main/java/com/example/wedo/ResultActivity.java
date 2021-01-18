@@ -4,7 +4,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -13,6 +19,7 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,6 +32,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.diegodobelo.expandingview.ExpandingItem;
 import com.diegodobelo.expandingview.ExpandingList;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,13 +62,38 @@ public class ResultActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private View drawerView;
+
+    private int subItemLength;
+
+
     public String id, nick, profilePath, userEmail, userID, userPass;
     public String str_group, str_user, str_profile, strID3;
+
+    private Context mContext;
+
+    int x = -1;
+
+    int o;
+    private Activity mActivity;
+
+    ProgressDialog progressDialog;
+
+    // Task Model ArrayList
+    private ArrayList<TaskModel> tasks;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
+
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("ProgressDialog running...");
+        progressDialog.setCancelable(true);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
+
+
+        mActivity = ResultActivity.this;
 
         Bundle extras = getIntent().getExtras();
 
@@ -70,6 +103,7 @@ public class ResultActivity extends AppCompatActivity {
         userEmail = extras.getString("userEmail");
         userID = extras.getString("userID");
         userPass = extras.getString("userPass");
+        tasks = new ArrayList<>();
 
         /**
          * ExpandingList
@@ -141,6 +175,7 @@ public class ResultActivity extends AppCompatActivity {
                         ValidateGroup ValidateGroup = new ValidateGroup(str_user, strID, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                         queue.add(ValidateGroup);
+
                     }
                 });
                 dialog.show();
@@ -194,8 +229,10 @@ public class ResultActivity extends AppCompatActivity {
          */
         load();
 
+        progressDialog.dismiss();
 
-        }
+
+    }
 
     /**
      * 서버에 저장되어 있는 목록/일정 데이터를 불러오게 해주는 클래스
@@ -206,91 +243,54 @@ public class ResultActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    JSONArray list = jsonObject.getJSONArray(TAG_JSON);
+                    System.out.println("리스폰스 확인 : " + response);
+                    JSONArray list = jsonObject.getJSONArray("Schedule_List");
                     /**
                      * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
                      */
+
                     for (int i = 0; i < list.length(); i++) {
-                        final JSONObject[] item = {list.getJSONObject(i)};
+                        String tempTaskName = list.getJSONObject(i).getString("userlist");
+                        TaskModel tempTaskModel = new TaskModel();
 
-                        String group1 = item[0].getString("list");
-                        System.out.println("목록: " + group1);
+                        if (i > 0) {
+                            if (tasks.get(tasks.size() - 1).getTitle().equals(tempTaskName)) {
+                                tasks.get(tasks.size() - 1).addSubTitle(list.getJSONObject(i).getString("userSchedule"));
+                            } else {
+                                tempTaskModel.setTitle(tempTaskName);
 
-                        scheduleDemo.add(group1);
-                        schedule1 = scheduleDemo.get(i);
-                    }
-                    Response.Listener<String> responseListener = new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                JSONArray list = jsonObject.getJSONArray(TAG_JSON);
-                                /**
-                                 * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
-                                 */
-                                ArrayList<String> schedule = new ArrayList<>();
-                                for (int i = 0; i < scheduleDemo.size(); i++) {
-                                    final JSONObject[] item = {list.getJSONObject(i)};
-                                    String group1 = item[0].getString(scheduleDemo.get(i));
-                                    schedule.add(group1);
+                                if (!list.getJSONObject(i).getString("userSchedule").equals("null")) {
+                                    tempTaskModel.addSubTitle(list.getJSONObject(i).getString("userSchedule"));
                                 }
-                                System.out.println("123:   " + scheduleDemo.size());
-                                System.out.println("123:   " + schedule.size());
-                                /**
-                                 * null값을 포함한 목록 데이터만큼 반복문으로 돌린다.
-                                 */
-                                ArrayList<String> aa = new ArrayList<>();
-                                String listScheduleDemo = null;
-                                String listScheduleBottom = null;
-                                String listSchedule = null;
-                                for (int i = 0; i < scheduleDemo.size(); i++) {   //총 6번이 돈다...
-                                    if (listScheduleDemo == null || !listScheduleDemo.equals(scheduleDemo.get(i))) {
-                                        listScheduleDemo = scheduleDemo.get(i);
-                                        System.out.println("값1: " + listScheduleDemo);
-                                        /**
-                                         * 목록에 해당하는 할 일을 생성하는 구간
-                                         */
-                                        aa.clear();
-                                        for (int l = i; l < schedule.size(); l++) {
-                                            if (listSchedule == null || listScheduleDemo.equals(scheduleDemo.get(l))) {
-                                                listSchedule = scheduleDemo.get(l);
-                                                aa.add(schedule.get(l));
-                                                Collections.sort(aa);
-                                            }
-                                        }
-                                        listSchedule = null;
 
-                                        /**
-                                         * 데이터를 삽입하는 구간
-                                         */
-                                        String[] a = new String[aa.size()];
-                                        for (int k = 0; k < aa.size(); k++) {
-                                            a[k] = aa.get(k);
-                                        }
-                                        if (aa.get(0).equals("null")) {
-                                            addItem(listScheduleDemo, new String[]{}, R.color.blue, R.drawable.wedo_btn);
-                                        } else {
-                                            addItem(listScheduleDemo, a, R.color.blue, R.drawable.wedo_btn);
-                                        }
-                                    }
-                                    listScheduleBottom = scheduleDemo.get(i);
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                tasks.add(tempTaskModel);
                             }
+                        } else {
+                            tempTaskModel.setTitle(tempTaskName);
+
+                            if (!list.getJSONObject(i).getString("userSchedule").equals("null")) {
+                                tempTaskModel.addSubTitle(list.getJSONObject(i).getString("userSchedule"));
+                            }
+
+                            tasks.add(tempTaskModel);
                         }
-                    };
-                    ResultActivitySchedultRequest ResultActivitySchedultRequest = new ResultActivitySchedultRequest(str_user, str_group, responseListener);
-                    RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                    queue.add(ResultActivitySchedultRequest);
+
+                    }
+
+                    for (int i = 0; i < tasks.size(); i++) {
+                        addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.grey, R.drawable.wedo_btn);
+                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
         };
         ResultActivityListRequest ResultActivityListRequest = new ResultActivityListRequest(str_user, str_group, responseListener);
         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
         queue.add(ResultActivityListRequest);
+        progressDialog.show();
 
 
     }
@@ -336,7 +336,6 @@ public class ResultActivity extends AppCompatActivity {
                                             addItem(title, new String[]{}, R.color.blue, R.drawable.wedo_btn);
 
 
-
                                             dialog.dismiss();
                                             Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
                                                 @Override
@@ -368,7 +367,7 @@ public class ResultActivity extends AppCompatActivity {
 
     private void addItem(String title, final String[] subItems, final int colorRes, int iconRes) {
         //Let's create an item with R.layout.expanding_layout
-        final ExpandingItem item = mExpandingList.createNewItem(R.layout.expanding_layout);
+        ExpandingItem item = mExpandingList.createNewItem(R.layout.expanding_layout);
 
         //If item creation is successful, let's configure it
         if (item != null) {
@@ -493,8 +492,56 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void configureSubItem(final ExpandingItem item, final View view, final String subTitle, final String title) {
+//        TextView textView = (TextView)findViewById(R.id.sub_title);
+
         ((TextView) view.findViewById(R.id.sub_title)).setText(subTitle);
         ((TextView) item.findViewById(R.id.title)).setText(title);
+
+        String grey = "#808080";
+        String black = "#000000";
+        String tempColor = "#ff7f00";
+        String green = "#00ac00";
+
+        CheckBox checkBox = view.findViewById(R.id.checkBox);
+
+        x = 0;
+        int o = item.getSubItemsCount();
+
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (checkBox.isChecked()) {
+                    x++;
+                    System.out.println("체크 확인: " + x + "개");
+                    ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(((TextView) view.findViewById(R.id.sub_title)).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
+                    if (x >= 1) {
+                        item.setIndicatorColor((Color.parseColor(tempColor)));
+                    }
+                } else {
+                    x -= 1;
+                    System.out.println("체크 풀림 확인: " + x);
+                    ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(0);
+                    ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(black));
+
+                    if (x >= 1) {
+                        item.setIndicatorColor((Color.parseColor(tempColor)));
+                    }
+                    if (x == o) {
+                        item.setIndicatorColor((Color.parseColor(tempColor)));
+                    }
+                    if (x <= 0) {
+                        item.setIndicatorColor((Color.parseColor(grey)));
+                    }
+                }
+                if (x == o) {
+                    item.setIndicatorColor((Color.parseColor(green)));
+                }
+            }
+        });
+
+
         Toast.makeText(this, title, Toast.LENGTH_SHORT).show();
         view.findViewById(R.id.remove_sub_item).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -514,6 +561,15 @@ public class ResultActivity extends AppCompatActivity {
                             public void onResponse(String response) {
                                 item.removeSubItem(view);
                                 dialog1.dismiss();
+                                Intent intent = new Intent(getApplicationContext(), Splash.class);
+                                intent.putExtra("id", id);
+                                intent.putExtra("nick", nick);
+                                intent.putExtra("profilePath", profilePath);
+                                intent.putExtra("userEmail", userEmail);
+                                intent.putExtra("userID", userID);
+                                intent.putExtra("userPass", userPass);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                startActivity(intent);
                             }
                         };
                         /**
@@ -569,6 +625,15 @@ public class ResultActivity extends AppCompatActivity {
                 } else {
                     positive.itemCreated(editTextID.getText().toString());
                     dialog.dismiss();
+                    Intent intent = new Intent(getApplicationContext(), Splash.class);
+                    intent.putExtra("id", id);
+                    intent.putExtra("nick", nick);
+                    intent.putExtra("profilePath", profilePath);
+                    intent.putExtra("userEmail", userEmail);
+                    intent.putExtra("userID", userID);
+                    intent.putExtra("userPass", userPass);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
 
                 }
             }
@@ -601,5 +666,9 @@ public class ResultActivity extends AppCompatActivity {
         }
     }
 
-
+    public static void restartActivity(Activity activity) {
+        if (Build.VERSION.SDK_INT >= 11) {
+            activity.recreate();
+        }
+    }
 }
