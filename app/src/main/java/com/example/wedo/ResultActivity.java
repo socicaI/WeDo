@@ -10,10 +10,13 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +42,6 @@ public class ResultActivity extends AppCompatActivity {
     private ExpandingList mExpandingList;
     String tta;
     String schedule1;
-
 
     /**
      * RecyclerView 부분
@@ -80,7 +82,6 @@ public class ResultActivity extends AppCompatActivity {
         str_user = nick;
         str_profile = profilePath;   //프로필
         textView.setText(str_group);
-
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerView = (View) findViewById(R.id.drawer);
         ImageView btn_open = (ImageView) findViewById(R.id.btnOpen);
@@ -192,7 +193,9 @@ public class ResultActivity extends AppCompatActivity {
          * 서버에 저장되어 있는 목록/일정 데이터를 불러오는 부분
          */
         load();
-    }
+
+
+        }
 
     /**
      * 서버에 저장되어 있는 목록/일정 데이터를 불러오게 해주는 클래스
@@ -249,13 +252,13 @@ public class ResultActivity extends AppCompatActivity {
                                          */
                                         aa.clear();
                                         for (int l = i; l < schedule.size(); l++) {
-                                            if(listSchedule==null || listScheduleDemo.equals(scheduleDemo.get(l))){
-                                                listSchedule=scheduleDemo.get(l);
+                                            if (listSchedule == null || listScheduleDemo.equals(scheduleDemo.get(l))) {
+                                                listSchedule = scheduleDemo.get(l);
                                                 aa.add(schedule.get(l));
                                                 Collections.sort(aa);
                                             }
                                         }
-                                        listSchedule=null;
+                                        listSchedule = null;
 
                                         /**
                                          * 데이터를 삽입하는 구간
@@ -288,6 +291,8 @@ public class ResultActivity extends AppCompatActivity {
         ResultActivityListRequest ResultActivityListRequest = new ResultActivityListRequest(str_user, str_group, responseListener);
         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
         queue.add(ResultActivityListRequest);
+
+
     }
 
     /**
@@ -329,6 +334,9 @@ public class ResultActivity extends AppCompatActivity {
                                         boolean success = jsonResponse.getBoolean("success");
                                         if (success) {
                                             addItem(title, new String[]{}, R.color.blue, R.drawable.wedo_btn);
+
+
+
                                             dialog.dismiss();
                                             Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
                                                 @Override
@@ -368,10 +376,12 @@ public class ResultActivity extends AppCompatActivity {
             item.setIndicatorIconRes(iconRes);
             //It is possible to get any view inside the inflated layout. Let's set the text in the item
             ((TextView) item.findViewById(R.id.title)).setText(title);
-            tta=title;
+            tta = title;
+
 
             //We can create items in batch.
             item.createSubItems(subItems.length);
+
 
             for (int i = 0; i < item.getSubItemsCount(); i++) {
                 //Let's get the created sub item by its index
@@ -454,6 +464,7 @@ public class ResultActivity extends AppCompatActivity {
                             Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
                                 @Override
                                 public void onResponse(String response) {
+
                                     mExpandingList.removeItem(item);
                                     dialog1.dismiss();
                                 }
@@ -485,6 +496,7 @@ public class ResultActivity extends AppCompatActivity {
     private void configureSubItem(final ExpandingItem item, final View view, final String subTitle, final String title) {
         ((TextView) view.findViewById(R.id.sub_title)).setText(subTitle);
         ((TextView) item.findViewById(R.id.title)).setText(title);
+        Toast.makeText(this, title, Toast.LENGTH_SHORT).show();
         view.findViewById(R.id.remove_sub_item).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -511,10 +523,10 @@ public class ResultActivity extends AppCompatActivity {
                         String list = item.toString();
                         String schedule = subTitle;
 
-                        System.out.println("삭제: "+str_user);
-                        System.out.println("삭제: "+str_group);
-                        System.out.println("삭제: "+title);
-                        System.out.println("삭제: "+schedule);
+                        System.out.println("삭제: " + str_user);
+                        System.out.println("삭제: " + str_group);
+                        System.out.println("삭제: " + title);
+                        System.out.println("삭제: " + schedule);
 
                         UserScheduleRemove UserScheduleRemove = new UserScheduleRemove(str_user, str_group, title, schedule, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
