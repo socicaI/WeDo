@@ -276,8 +276,9 @@ public class ResultActivity extends AppCompatActivity {
                         }
 
                     }
-
+                    System.out.println("할 일: " + tasks.size());
                     for (int i = 0; i < tasks.size(); i++) {
+
                         addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.grey, R.drawable.wedo_btn);
                     }
 
@@ -333,9 +334,7 @@ public class ResultActivity extends AppCompatActivity {
                                         JSONObject jsonResponse = new JSONObject(response);
                                         boolean success = jsonResponse.getBoolean("success");
                                         if (success) {
-                                            addItem(title, new String[]{}, R.color.blue, R.drawable.wedo_btn);
-
-
+                                            addItem(title, new String[]{}, R.color.grey, R.drawable.wedo_btn);
                                             dialog.dismiss();
                                             Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
                                                 @Override
@@ -404,6 +403,77 @@ public class ResultActivity extends AppCompatActivity {
 //                }
 //            });
 
+
+            item.findViewById(R.id.update_item).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+
+                    View title_view = LayoutInflater.from(ResultActivity.this)
+                            .inflate(R.layout.edit_box, null, false);
+                    builder.setView(title_view);
+
+                    Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
+                    final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
+
+                    editTextID.setHint(title);
+                    ButtonSubmit.setText("수정하기");
+
+                    final AlertDialog dialog = builder.create();
+
+
+                    // 3. 다이얼로그에 있는 삽입 버튼을 클릭하면
+                    ButtonSubmit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String title1 = editTextID.getText().toString();
+                            if (title.equals("")) {
+                                Toast.makeText(ResultActivity.this, "목차를 입력하세요.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        try {
+                                            JSONObject jsonResponse = new JSONObject(response);
+                                            boolean success = jsonResponse.getBoolean("success");
+                                            if (success) {
+                                                Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                                                    @Override
+                                                    public void onResponse(String response) {
+                                                        //스플레쉬
+                                                        Intent intent = new Intent(getApplicationContext(), Splash.class);
+                                                        intent.putExtra("id", id);
+                                                        intent.putExtra("nick", nick);
+                                                        intent.putExtra("profilePath", profilePath);
+                                                        intent.putExtra("userEmail", userEmail);
+                                                        intent.putExtra("userID", userID);
+                                                        intent.putExtra("userPass", userPass);
+                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                        startActivity(intent);
+                                                    }
+                                                };
+                                                //서버로 volley를 이용해서 요청을 함
+                                                UserListUpdate UserListUpdate = new UserListUpdate(str_user, str_group, title, title1, responseListener);
+                                                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                                queue.add(UserListUpdate);
+                                            } else {
+                                                Toast.makeText(ResultActivity.this, "동일한 목차가 존재합니다.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                };
+                                ValidateList ValidateList = new ValidateList(str_user, str_group, title1, responseListener);
+                                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                queue.add(ValidateList);
+                            }
+                        }
+                    });
+                    dialog.show();
+                }
+            });
+
             item.findViewById(R.id.add_more_sub_items).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -424,6 +494,18 @@ public class ResultActivity extends AppCompatActivity {
                                                 public void onResponse(String response) {
                                                     final View newSubItem = item.createSubItem();
                                                     configureSubItem(item, newSubItem, title1, title);
+                                                    /**
+                                                     * 삽입
+                                                     */
+                                                    Intent intent = new Intent(getApplicationContext(), Splash.class);
+                                                    intent.putExtra("id", id);
+                                                    intent.putExtra("nick", nick);
+                                                    intent.putExtra("profilePath", profilePath);
+                                                    intent.putExtra("userEmail", userEmail);
+                                                    intent.putExtra("userID", userID);
+                                                    intent.putExtra("userPass", userPass);
+                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                    startActivity(intent);
                                                 }
                                             };
                                             UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(str_user, str_group, title, title1, responseListener);
@@ -543,6 +625,78 @@ public class ResultActivity extends AppCompatActivity {
 
 
         Toast.makeText(this, title, Toast.LENGTH_SHORT).show();
+        view.findViewById(R.id.update_sub_item).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+
+                View title_view = LayoutInflater.from(ResultActivity.this)
+                        .inflate(R.layout.edit_box, null, false);
+                builder.setView(title_view);
+
+                Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
+                final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
+
+                editTextID.setHint(subTitle);
+                ButtonSubmit.setText("할 일 추가");
+
+                final AlertDialog dialog = builder.create();
+                // 3. 다이얼로그에 있는 삽입 버튼을 클릭하면
+                ButtonSubmit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String title1 = editTextID.getText().toString();
+                        if (title.equals("")) {
+                            Toast.makeText(ResultActivity.this, "할 일을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    try {
+                                        JSONObject jsonResponse = new JSONObject(response);
+                                        boolean success = jsonResponse.getBoolean("success");
+                                        Log.e("success", String.valueOf(success));
+                                        if (success) {
+                                            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                                @Override
+                                                public void onResponse(String response) {
+                                                    final View newSubItem = item.createSubItem();
+                                                    configureSubItem(item, newSubItem, title1, title);
+                                                    /**
+                                                     * 삽입
+                                                     */
+                                                    Intent intent = new Intent(getApplicationContext(), Splash.class);
+                                                    intent.putExtra("id", id);
+                                                    intent.putExtra("nick", nick);
+                                                    intent.putExtra("profilePath", profilePath);
+                                                    intent.putExtra("userEmail", userEmail);
+                                                    intent.putExtra("userID", userID);
+                                                    intent.putExtra("userPass", userPass);
+                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                    startActivity(intent);
+                                                }
+                                            };
+                                            UserScheduleUpdate UserScheduleUpdate = new UserScheduleUpdate(str_user, str_group, title, subTitle, title1, responseListener);
+                                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                            queue.add(UserScheduleUpdate);
+                                        } else {
+                                            Toast.makeText(ResultActivity.this, "동일한 할 일이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            };
+                            ValidateSchedule ValidateSchedule = new ValidateSchedule(str_user, str_group, title, title1, responseListener);
+                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                            queue.add(ValidateSchedule);
+                        }
+                    }
+                });
+                dialog.show();
+            }
+        });
+
         view.findViewById(R.id.remove_sub_item).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -625,16 +779,6 @@ public class ResultActivity extends AppCompatActivity {
                 } else {
                     positive.itemCreated(editTextID.getText().toString());
                     dialog.dismiss();
-                    Intent intent = new Intent(getApplicationContext(), Splash.class);
-                    intent.putExtra("id", id);
-                    intent.putExtra("nick", nick);
-                    intent.putExtra("profilePath", profilePath);
-                    intent.putExtra("userEmail", userEmail);
-                    intent.putExtra("userID", userID);
-                    intent.putExtra("userPass", userPass);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
-
                 }
             }
         });
