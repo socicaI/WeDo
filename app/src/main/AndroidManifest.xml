@@ -35,7 +35,7 @@
         <activity
             android:name=".LookingForPass"
             android:screenOrientation="portrait" />
-        <activity android:name=".Splash"
+        <activity android:name=".Loading"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".LookingFor_ID"

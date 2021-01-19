@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-import javax.xml.transform.Result;
-
-public class Splash extends Activity {
+public class Loading extends Activity {
 
     public String id, nick, profilePath, userEmail, userID, userPass;
 
@@ -25,10 +23,10 @@ public class Splash extends Activity {
         userPass = extras.getString("userPass");
 
 
-        setContentView(R.layout.activity_splash);
+        setContentView(R.layout.activity_loading);
 
         Handler hd = new Handler();
-        hd.postDelayed(new splashhandler(), 150); // 1초 후에 hd handler 실행  3000ms = 3초
+        hd.postDelayed(new splashhandler(), 1000); // 1초 후에 hd handler 실행  3000ms = 3초
 
     }
 
@@ -47,7 +45,7 @@ public class Splash extends Activity {
             //로딩이 끝난 후, ChoiceFunction 이동
 
 
-            Splash.this.finish(); // 로딩페이지 Activity stack에서 제거
+            Loading.this.finish(); // 로딩페이지 Activity stack에서 제거
         }
     }
 

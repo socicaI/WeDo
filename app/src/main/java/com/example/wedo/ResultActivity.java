@@ -12,18 +12,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,15 +28,12 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.diegodobelo.expandingview.ExpandingItem;
 import com.diegodobelo.expandingview.ExpandingList;
-import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 
 public class ResultActivity extends AppCompatActivity {
     /**
@@ -376,6 +369,34 @@ public class ResultActivity extends AppCompatActivity {
             ((TextView) item.findViewById(R.id.title)).setText(title);
             tta = title;
 
+            ImageView upImg = (ImageView)item.findViewById(R.id.up2);
+            ImageView downImg = (ImageView)item.findViewById(R.id.down2);
+
+
+            
+            ((TextView) item.findViewById(R.id.title)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(item.isExpanded()){
+                        item.toggleExpanded();
+                        upImg.setVisibility(View.GONE);
+                        downImg.setVisibility(View.VISIBLE);
+
+                    }else {
+                        item.toggleExpanded();
+                        upImg.setVisibility(View.VISIBLE);
+                        downImg.setVisibility(View.GONE);
+                    }
+
+                }
+            });
+
+
+
+
+
+
 
             //We can create items in batch.
             item.createSubItems(subItems.length);
@@ -441,7 +462,7 @@ public class ResultActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onResponse(String response) {
                                                         //스플레쉬
-                                                        Intent intent = new Intent(getApplicationContext(), Splash.class);
+                                                        Intent intent = new Intent(getApplicationContext(), Loading.class);
                                                         intent.putExtra("id", id);
                                                         intent.putExtra("nick", nick);
                                                         intent.putExtra("profilePath", profilePath);
@@ -498,7 +519,7 @@ public class ResultActivity extends AppCompatActivity {
                                                     /**
                                                      * 삽입
                                                      */
-                                                    Intent intent = new Intent(getApplicationContext(), Splash.class);
+                                                    Intent intent = new Intent(getApplicationContext(), Loading.class);
                                                     intent.putExtra("id", id);
                                                     intent.putExtra("nick", nick);
                                                     intent.putExtra("profilePath", profilePath);
@@ -580,6 +601,12 @@ public class ResultActivity extends AppCompatActivity {
 
         ((TextView) view.findViewById(R.id.sub_title)).setText(subTitle);
         ((TextView) item.findViewById(R.id.title)).setText(title);
+//        ImageView upImg = (ImageView)view.findViewById(R.id.up2);
+//        ImageView downImg = (ImageView)view.findViewById(R.id.down2);
+
+
+
+
 
         String grey = "#808080";
         String black = "#000000";
@@ -667,7 +694,7 @@ public class ResultActivity extends AppCompatActivity {
                                                     /**
                                                      * 삽입
                                                      */
-                                                    Intent intent = new Intent(getApplicationContext(), Splash.class);
+                                                    Intent intent = new Intent(getApplicationContext(), Loading.class);
                                                     intent.putExtra("id", id);
                                                     intent.putExtra("nick", nick);
                                                     intent.putExtra("profilePath", profilePath);
@@ -718,7 +745,7 @@ public class ResultActivity extends AppCompatActivity {
                             public void onResponse(String response) {
                                 item.removeSubItem(view);
                                 dialog1.dismiss();
-                                Intent intent = new Intent(getApplicationContext(), Splash.class);
+                                Intent intent = new Intent(getApplicationContext(), Loading.class);
                                 intent.putExtra("id", id);
                                 intent.putExtra("nick", nick);
                                 intent.putExtra("profilePath", profilePath);
