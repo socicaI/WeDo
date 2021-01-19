@@ -369,21 +369,20 @@ public class ResultActivity extends AppCompatActivity {
             ((TextView) item.findViewById(R.id.title)).setText(title);
             tta = title;
 
-            ImageView upImg = (ImageView)item.findViewById(R.id.up2);
-            ImageView downImg = (ImageView)item.findViewById(R.id.down2);
+            ImageView upImg = (ImageView) item.findViewById(R.id.up2);
+            ImageView downImg = (ImageView) item.findViewById(R.id.down2);
 
 
-            
             ((TextView) item.findViewById(R.id.title)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    if(item.isExpanded()){
+                    if (item.isExpanded()) {
                         item.toggleExpanded();
                         upImg.setVisibility(View.GONE);
                         downImg.setVisibility(View.VISIBLE);
 
-                    }else {
+                    } else {
                         item.toggleExpanded();
                         upImg.setVisibility(View.VISIBLE);
                         downImg.setVisibility(View.GONE);
@@ -391,11 +390,6 @@ public class ResultActivity extends AppCompatActivity {
 
                 }
             });
-
-
-
-
-
 
 
             //We can create items in batch.
@@ -605,9 +599,6 @@ public class ResultActivity extends AppCompatActivity {
 //        ImageView downImg = (ImageView)view.findViewById(R.id.down2);
 
 
-
-
-
         String grey = "#808080";
         String black = "#000000";
         String tempColor = "#ff7f00";
@@ -639,9 +630,9 @@ public class ResultActivity extends AppCompatActivity {
                     if (x >= 1) {
                         item.setIndicatorColor((Color.parseColor(tempColor)));
                     }
-                    if (x == o) {
-                        item.setIndicatorColor((Color.parseColor(tempColor)));
-                    }
+//                    if (x == o) {
+//                        item.setIndicatorColor((Color.parseColor(tempColor)));
+//                    }
                     if (x <= 0) {
                         item.setIndicatorColor((Color.parseColor(grey)));
                     }
