@@ -43,6 +43,7 @@ public class Splash extends Activity {
             intent.putExtra("userPass", userPass);
             intent.putExtra("userEmail", userEmail);
             startActivity(intent);
+            finish();
             //로딩이 끝난 후, ChoiceFunction 이동
 
 

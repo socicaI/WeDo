@@ -450,6 +450,7 @@ public class ResultActivity extends AppCompatActivity {
                                                         intent.putExtra("userPass", userPass);
                                                         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                                                         startActivity(intent);
+                                                        finish();
                                                     }
                                                 };
                                                 //서버로 volley를 이용해서 요청을 함
@@ -506,6 +507,7 @@ public class ResultActivity extends AppCompatActivity {
                                                     intent.putExtra("userPass", userPass);
                                                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                                                     startActivity(intent);
+                                                    finish();
                                                 }
                                             };
                                             UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(str_user, str_group, title, title1, responseListener);
@@ -674,6 +676,7 @@ public class ResultActivity extends AppCompatActivity {
                                                     intent.putExtra("userPass", userPass);
                                                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                                                     startActivity(intent);
+                                                    finish();
                                                 }
                                             };
                                             UserScheduleUpdate UserScheduleUpdate = new UserScheduleUpdate(str_user, str_group, title, subTitle, title1, responseListener);
@@ -724,6 +727,7 @@ public class ResultActivity extends AppCompatActivity {
                                 intent.putExtra("userPass", userPass);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                                 startActivity(intent);
+                                finish();
                             }
                         };
                         /**
