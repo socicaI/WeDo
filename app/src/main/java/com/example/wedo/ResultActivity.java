@@ -43,6 +43,12 @@ public class ResultActivity extends AppCompatActivity {
     private ExpandingList mExpandingList;
     String tta;
     String schedule1;
+    boolean check = false;
+
+    String grey = "#808080";
+    String black = "#000000";
+    String tempColor = "#ff7f00";
+    String green = "#00ac00";
 
     /**
      * RecyclerView 부분
@@ -64,9 +70,11 @@ public class ResultActivity extends AppCompatActivity {
 
     private Context mContext;
 
-    int x = -1;
+    int x;
 
     int o;
+
+    int y = 0;
     private Activity mActivity;
 
     ProgressDialog progressDialog;
@@ -505,24 +513,37 @@ public class ResultActivity extends AppCompatActivity {
                                         boolean success = jsonResponse.getBoolean("success");
                                         Log.e("success", String.valueOf(success));
                                         if (success) {
+
                                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                                 @Override
                                                 public void onResponse(String response) {
                                                     final View newSubItem = item.createSubItem();
                                                     configureSubItem(item, newSubItem, title1, title);
+
+                                                    if (x == 0) {
+                                                        System.out.println("x 개수111 : " + x);
+                                                        item.setIndicatorColor((Color.parseColor(grey)));
+//                                                        check = true;
+                                                    } else {
+                                                        System.out.println("x 개수222 : " + x);
+                                                        item.setIndicatorColor((Color.parseColor(tempColor)));
+//                                                        check = true;
+                                                    }
+
+
                                                     /**
                                                      * 삽입
                                                      */
-                                                    Intent intent = new Intent(getApplicationContext(), Loading.class);
-                                                    intent.putExtra("id", id);
-                                                    intent.putExtra("nick", nick);
-                                                    intent.putExtra("profilePath", profilePath);
-                                                    intent.putExtra("userEmail", userEmail);
-                                                    intent.putExtra("userID", userID);
-                                                    intent.putExtra("userPass", userPass);
-                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                                    startActivity(intent);
-                                                    finish();
+//                                                    Intent intent = new Intent(getApplicationContext(), Loading.class);
+//                                                    intent.putExtra("id", id);
+//                                                    intent.putExtra("nick", nick);
+//                                                    intent.putExtra("profilePath", profilePath);
+//                                                    intent.putExtra("userEmail", userEmail);
+//                                                    intent.putExtra("userID", userID);
+//                                                    intent.putExtra("userPass", userPass);
+//                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                                                    startActivity(intent);
+//                                                    finish();
                                                 }
                                             };
                                             UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(str_user, str_group, title, title1, responseListener);
@@ -599,15 +620,17 @@ public class ResultActivity extends AppCompatActivity {
 //        ImageView downImg = (ImageView)view.findViewById(R.id.down2);
 
 
-        String grey = "#808080";
-        String black = "#000000";
-        String tempColor = "#ff7f00";
-        String green = "#00ac00";
-
         CheckBox checkBox = view.findViewById(R.id.checkBox);
+        //만약에 아이템이 추가를 해주지 않으면 0부터 시작
+        //만약에 아이템이 추가가되면 item.getSubItemsCount()부터 x를 시작해주세요.ㅇ
+        if (check == false) {
+            System.out.println("처음: " + check);
+            x = 0;
+        } else {
+            x = item.getSubItemsCount() - 1;
+        }
 
-        x = 0;
-        int o = item.getSubItemsCount();
+        o = item.getSubItemsCount();
 
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -615,7 +638,9 @@ public class ResultActivity extends AppCompatActivity {
 
                 if (checkBox.isChecked()) {
                     x++;
-                    System.out.println("체크 확인: " + x + "개");
+                    check = true;
+                    System.out.println("체크 확인: " + o + "개");
+                    System.out.println("체크 x확인  :  " + x + "개");
                     ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(((TextView) view.findViewById(R.id.sub_title)).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
                     if (x >= 1) {
@@ -623,6 +648,9 @@ public class ResultActivity extends AppCompatActivity {
                     }
                 } else {
                     x -= 1;
+                    if(x==0){
+                        check = false;
+                    }
                     System.out.println("체크 풀림 확인: " + x);
                     ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(0);
                     ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(black));
@@ -630,6 +658,7 @@ public class ResultActivity extends AppCompatActivity {
                     if (x >= 1) {
                         item.setIndicatorColor((Color.parseColor(tempColor)));
                     }
+
 //                    if (x == o) {
 //                        item.setIndicatorColor((Color.parseColor(tempColor)));
 //                    }
