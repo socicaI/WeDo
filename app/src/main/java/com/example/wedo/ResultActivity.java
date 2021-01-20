@@ -18,8 +18,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,12 +45,8 @@ public class ResultActivity extends AppCompatActivity {
     private ExpandingList mExpandingList;
     String tta;
     String schedule1;
-    boolean check = false;
-
-    String grey = "#808080";
-    String black = "#000000";
-    String tempColor = "#ff7f00";
-    String green = "#00ac00";
+    int x;
+    ExpandingItem.OnItemStateChanged mListener;
 
     /**
      * RecyclerView 부분
@@ -70,11 +68,9 @@ public class ResultActivity extends AppCompatActivity {
 
     private Context mContext;
 
-    int x;
+
 
     int o;
-
-    int y = 0;
     private Activity mActivity;
 
     ProgressDialog progressDialog;
@@ -280,7 +276,7 @@ public class ResultActivity extends AppCompatActivity {
                     System.out.println("할 일: " + tasks.size());
                     for (int i = 0; i < tasks.size(); i++) {
 
-                        addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.grey, R.drawable.wedo_btn);
+                        addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.blue, R.drawable.wedo_btn);
                     }
 
                 } catch (JSONException e) {
@@ -377,20 +373,21 @@ public class ResultActivity extends AppCompatActivity {
             ((TextView) item.findViewById(R.id.title)).setText(title);
             tta = title;
 
-            ImageView upImg = (ImageView) item.findViewById(R.id.up2);
-            ImageView downImg = (ImageView) item.findViewById(R.id.down2);
+            ImageView upImg = (ImageView)item.findViewById(R.id.up2);
+            ImageView downImg = (ImageView)item.findViewById(R.id.down2);
+            ;
 
 
             ((TextView) item.findViewById(R.id.title)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    if (item.isExpanded()) {
+                    if(item.isExpanded()){
                         item.toggleExpanded();
                         upImg.setVisibility(View.GONE);
                         downImg.setVisibility(View.VISIBLE);
 
-                    } else {
+                    }else {
                         item.toggleExpanded();
                         upImg.setVisibility(View.VISIBLE);
                         downImg.setVisibility(View.GONE);
@@ -398,6 +395,11 @@ public class ResultActivity extends AppCompatActivity {
 
                 }
             });
+
+
+
+
+
 
 
             //We can create items in batch.
@@ -513,37 +515,24 @@ public class ResultActivity extends AppCompatActivity {
                                         boolean success = jsonResponse.getBoolean("success");
                                         Log.e("success", String.valueOf(success));
                                         if (success) {
-
                                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                                 @Override
                                                 public void onResponse(String response) {
                                                     final View newSubItem = item.createSubItem();
                                                     configureSubItem(item, newSubItem, title1, title);
-
-                                                    if (x == 0) {
-                                                        System.out.println("x 개수111 : " + x);
-                                                        item.setIndicatorColor((Color.parseColor(grey)));
-//                                                        check = true;
-                                                    } else {
-                                                        System.out.println("x 개수222 : " + x);
-                                                        item.setIndicatorColor((Color.parseColor(tempColor)));
-//                                                        check = true;
-                                                    }
-
-
                                                     /**
                                                      * 삽입
                                                      */
-//                                                    Intent intent = new Intent(getApplicationContext(), Loading.class);
-//                                                    intent.putExtra("id", id);
-//                                                    intent.putExtra("nick", nick);
-//                                                    intent.putExtra("profilePath", profilePath);
-//                                                    intent.putExtra("userEmail", userEmail);
-//                                                    intent.putExtra("userID", userID);
-//                                                    intent.putExtra("userPass", userPass);
-//                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                                                    startActivity(intent);
-//                                                    finish();
+                                                    Intent intent = new Intent(getApplicationContext(), Loading.class);
+                                                    intent.putExtra("id", id);
+                                                    intent.putExtra("nick", nick);
+                                                    intent.putExtra("profilePath", profilePath);
+                                                    intent.putExtra("userEmail", userEmail);
+                                                    intent.putExtra("userID", userID);
+                                                    intent.putExtra("userPass", userPass);
+                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                    startActivity(intent);
+                                                    finish();
                                                 }
                                             };
                                             UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(str_user, str_group, title, title1, responseListener);
@@ -611,7 +600,7 @@ public class ResultActivity extends AppCompatActivity {
         }
     }
 
-    private void configureSubItem(final ExpandingItem item, final View view, final String subTitle, final String title) {
+    private void configureSubItem(final ExpandingItem item, final View view, final String subTitle, final String title ) {
 //        TextView textView = (TextView)findViewById(R.id.sub_title);
 
         ((TextView) view.findViewById(R.id.sub_title)).setText(subTitle);
@@ -620,17 +609,17 @@ public class ResultActivity extends AppCompatActivity {
 //        ImageView downImg = (ImageView)view.findViewById(R.id.down2);
 
 
-        CheckBox checkBox = view.findViewById(R.id.checkBox);
-        //만약에 아이템이 추가를 해주지 않으면 0부터 시작
-        //만약에 아이템이 추가가되면 item.getSubItemsCount()부터 x를 시작해주세요.ㅇ
-        if (check == false) {
-            System.out.println("처음: " + check);
-            x = 0;
-        } else {
-            x = item.getSubItemsCount() - 1;
-        }
+        String grey   = "#808080";
+        String black  = "#000000";
+        String orange = "#ff7f00";
+        String blue  = "#89cff0";
+        String white  = "#ffffff";
 
-        o = item.getSubItemsCount();
+        CheckBox checkBox = view.findViewById(R.id.checkBox);
+        FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.frameBackground);
+
+         x = 0;
+        int o = item.getSubItemsCount();
 
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -638,37 +627,35 @@ public class ResultActivity extends AppCompatActivity {
 
                 if (checkBox.isChecked()) {
                     x++;
-                    check = true;
                     System.out.println("체크 확인: " + o + "개");
-                    System.out.println("체크 x확인  :  " + x + "개");
                     ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(((TextView) view.findViewById(R.id.sub_title)).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
-                    if (x >= 1) {
-                        item.setIndicatorColor((Color.parseColor(tempColor)));
-                    }
+                    frameLayout.setBackgroundResource(R.drawable.rounded_background);
+
+//                    if (x >= 1) {
+//                        item.setIndicatorColor((Color.parseColor(orange)));
+//                    }
                 } else {
-                    x -= 1;
-                    if(x==0){
-                        check = false;
-                    }
-                    System.out.println("체크 풀림 확인: " + x);
+//                    x -= 1;
+//                    System.out.println("체크 풀림 확인: " + x);
                     ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(0);
                     ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(black));
+                    frameLayout.setBackgroundColor(Color.parseColor(white));
 
-                    if (x >= 1) {
-                        item.setIndicatorColor((Color.parseColor(tempColor)));
-                    }
 
-//                    if (x == o) {
-//                        item.setIndicatorColor((Color.parseColor(tempColor)));
+//                    if (x >= 1) {
+//                        item.setIndicatorColor((Color.parseColor(orange)));
 //                    }
-                    if (x <= 0) {
-                        item.setIndicatorColor((Color.parseColor(grey)));
-                    }
+//                    if (x == o) {
+//                        item.setIndicatorColor((Color.parseColor(orange)));
+//                    }
+//                    if (x <= 0) {
+//                        item.setIndicatorColor((Color.parseColor(grey)));
+//                    }
                 }
-                if (x == o) {
-                    item.setIndicatorColor((Color.parseColor(green)));
-                }
+//                if (x == o) {
+//                    item.setIndicatorColor((Color.parseColor(green)));
+//                }
             }
         });
 
@@ -866,4 +853,9 @@ public class ResultActivity extends AppCompatActivity {
             activity.recreate();
         }
     }
+    public void setStateChangedListener(ExpandingItem.OnItemStateChanged listener) {
+        mListener = listener;
+    }
+
+
 }

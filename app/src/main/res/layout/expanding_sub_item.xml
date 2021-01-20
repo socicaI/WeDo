@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Copyright (c) 2016, Diego Bezerra <diego.bezerra@gmail.com>
-    Permission to use, copy, modify, and/or distribute this software for any purpose
-    with or without fee is hereby granted, provided that the above copyright notice
-    and this permission notice appear in all copies.
-    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
-    FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT,
-    OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
-    DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
-    ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
--->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/frameBackground"
     android:layout_width="match_parent"
     android:layout_height="48dp">
 
@@ -21,7 +10,6 @@
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-7dp"
         android:buttonTint="#E58600"/>
 
     <TextView
@@ -29,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:fontFamily="@font/muli"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="13dp"
         android:layout_marginLeft="35dp"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -39,7 +27,6 @@
         android:id="@+id/update_sub_item"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="-6dp"
         android:layout_marginLeft="200dp"
         android:padding="16dp"
         android:src="@drawable/ic_sub_update_24"/>
@@ -48,7 +35,6 @@
         android:id="@+id/remove_sub_item"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="-6dp"
         android:layout_marginLeft="230dp"
         android:padding="16dp"
         android:src="@drawable/ic_sub_remove"/>
