@@ -69,7 +69,6 @@ public class ResultActivity extends AppCompatActivity {
     private Context mContext;
 
 
-
     int o;
     private Activity mActivity;
 
@@ -331,7 +330,7 @@ public class ResultActivity extends AppCompatActivity {
                                         JSONObject jsonResponse = new JSONObject(response);
                                         boolean success = jsonResponse.getBoolean("success");
                                         if (success) {
-                                            addItem(title, new String[]{}, R.color.grey, R.drawable.wedo_btn);
+                                            addItem(title, new String[]{}, R.color.blue, R.drawable.wedo_btn);
                                             dialog.dismiss();
                                             Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
                                                 @Override
@@ -373,33 +372,25 @@ public class ResultActivity extends AppCompatActivity {
             ((TextView) item.findViewById(R.id.title)).setText(title);
             tta = title;
 
-            ImageView upImg = (ImageView)item.findViewById(R.id.up2);
-            ImageView downImg = (ImageView)item.findViewById(R.id.down2);
+            ImageView upImg = (ImageView) item.findViewById(R.id.up2);
+            ImageView downImg = (ImageView) item.findViewById(R.id.down2);
             ;
 
 
             ((TextView) item.findViewById(R.id.title)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    if(item.isExpanded()){
+                    if (item.isExpanded()) {
                         item.toggleExpanded();
                         upImg.setVisibility(View.GONE);
                         downImg.setVisibility(View.VISIBLE);
-
-                    }else {
+                    } else {
                         item.toggleExpanded();
                         upImg.setVisibility(View.VISIBLE);
                         downImg.setVisibility(View.GONE);
                     }
-
                 }
             });
-
-
-
-
-
 
 
             //We can create items in batch.
@@ -600,7 +591,7 @@ public class ResultActivity extends AppCompatActivity {
         }
     }
 
-    private void configureSubItem(final ExpandingItem item, final View view, final String subTitle, final String title ) {
+    private void configureSubItem(final ExpandingItem item, final View view, final String subTitle, final String title) {
 //        TextView textView = (TextView)findViewById(R.id.sub_title);
 
         ((TextView) view.findViewById(R.id.sub_title)).setText(subTitle);
@@ -609,16 +600,16 @@ public class ResultActivity extends AppCompatActivity {
 //        ImageView downImg = (ImageView)view.findViewById(R.id.down2);
 
 
-        String grey   = "#808080";
-        String black  = "#000000";
+        String grey = "#808080";
+        String black = "#000000";
         String orange = "#ff7f00";
-        String blue  = "#89cff0";
-        String white  = "#ffffff";
+        String blue = "#89cff0";
+        String white = "#ffffff";
 
         CheckBox checkBox = view.findViewById(R.id.checkBox);
         FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.frameBackground);
 
-         x = 0;
+        x = 0;
         int o = item.getSubItemsCount();
 
         checkBox.setOnClickListener(new View.OnClickListener() {
@@ -630,7 +621,7 @@ public class ResultActivity extends AppCompatActivity {
                     System.out.println("체크 확인: " + o + "개");
                     ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(((TextView) view.findViewById(R.id.sub_title)).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
-                    frameLayout.setBackgroundResource(R.drawable.rounded_background);
+//                    frameLayout.setBackgroundResource(R.drawable.rounded_background);
 
 //                    if (x >= 1) {
 //                        item.setIndicatorColor((Color.parseColor(orange)));
@@ -640,7 +631,7 @@ public class ResultActivity extends AppCompatActivity {
 //                    System.out.println("체크 풀림 확인: " + x);
                     ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(0);
                     ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(black));
-                    frameLayout.setBackgroundColor(Color.parseColor(white));
+//                    frameLayout.setBackgroundColor(Color.parseColor(white));
 
 
 //                    if (x >= 1) {
@@ -853,6 +844,7 @@ public class ResultActivity extends AppCompatActivity {
             activity.recreate();
         }
     }
+
     public void setStateChangedListener(ExpandingItem.OnItemStateChanged listener) {
         mListener = listener;
     }
