@@ -21,7 +21,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +29,8 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.diegodobelo.expandingview.ExpandingItem;
 import com.diegodobelo.expandingview.ExpandingList;
+import com.example.wedo.ScheduleHttp.ScheduleComplete;
+import com.example.wedo.ScheduleHttp.ScheduleinComplete;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -274,7 +275,6 @@ public class ResultActivity extends AppCompatActivity {
                     }
                     System.out.println("할 일: " + tasks.size());
                     for (int i = 0; i < tasks.size(); i++) {
-
                         addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.blue, R.drawable.wedo_btn);
                     }
 
@@ -621,6 +621,19 @@ public class ResultActivity extends AppCompatActivity {
                     System.out.println("체크 확인: " + o + "개");
                     ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(((TextView) view.findViewById(R.id.sub_title)).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
+
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            System.out.println(subTitle+"일정 체크");
+                        }
+                    };
+                    ScheduleComplete ScheduleComplete = new ScheduleComplete(str_user, str_group, title, subTitle, responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                    queue.add(ScheduleComplete);
+
+
+
 //                    frameLayout.setBackgroundResource(R.drawable.rounded_background);
 
 //                    if (x >= 1) {
@@ -631,6 +644,16 @@ public class ResultActivity extends AppCompatActivity {
 //                    System.out.println("체크 풀림 확인: " + x);
                     ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(0);
                     ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(black));
+
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            System.out.println(subTitle+"일정 체크 헤제");
+                        }
+                    };
+                    ScheduleinComplete ScheduleinComplete = new ScheduleinComplete(str_user, str_group, title, subTitle, responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                    queue.add(ScheduleinComplete);
 //                    frameLayout.setBackgroundColor(Color.parseColor(white));
 
 
