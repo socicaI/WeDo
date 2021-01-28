@@ -68,15 +68,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!--            <androidx.recyclerview.widget.RecyclerView-->
-            <!--                android:id="@+id/recyclerview_main_list"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="match_parent"-->
-            <!--                android:layout_marginTop="0dp"-->
-            <!--                android:layout_marginBottom="60dp"-->
-            <!--                android:background="@color/white"-->
-            <!--                android:visibility="visible"></androidx.recyclerview.widget.RecyclerView>-->
-
             <com.diegodobelo.expandingview.ExpandingList
                 android:id="@+id/expanding_list_main"
                 android:layout_width="match_parent"

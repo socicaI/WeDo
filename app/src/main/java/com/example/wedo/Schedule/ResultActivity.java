@@ -49,21 +49,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ResultActivity extends AppCompatActivity {
-    /**
-     * ExpandingListView
-     */
-    private ExpandingList mExpandingList;
 
-    CheckBox checkBox;
-
+    private ExpandingList mExpandingList;   //목록 및 할 일에 관한 ExpandingList
+    public CheckBox checkBox;   //할 일 체크박스
     private DrawerLayout drawerLayout;
     private View drawerView;
-
-    public String id, nick, profilePath, userEmail, userID, userPass;
-    public String str_group, str_user, str_profile;
-    ProgressDialog progressDialog;
-
-    // Task Model ArrayList
+    public String id, nick, profilePath, userEmail, userID, userPass;   //그룹명, 사용자 이름, 프로필, 사용자 이메일, 사용자 Id, 사용자 Pass
+    public String str_group, str_user, str_profile; //그룹명, 사용자 이름, 프로필
     private ArrayList<TaskModel> tasks;
 
     @Override
@@ -71,20 +63,15 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("ProgressDialog running...");
-        progressDialog.setCancelable(true);
-        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
-
         Bundle extras = getIntent().getExtras();
 
         id = extras.getString("id");    //그룹명
-        nick = extras.getString("nick");
+        nick = extras.getString("nick");    //사용자 이름
         profilePath = extras.getString("profilePath");  //프로필
-        userEmail = extras.getString("userEmail");
-        userID = extras.getString("userID");
-        userPass = extras.getString("userPass");
-        tasks = new ArrayList<>();
+        userEmail = extras.getString("userEmail");  //사용자 이메일
+        userID = extras.getString("userID");    //사용자 Id
+        userPass = extras.getString("userPass");    //사용자 Pass
+        tasks = new ArrayList<>();  // Task Model 클래스 ArrayList
 
         /**
          * ExpandingList
@@ -92,14 +79,18 @@ public class ResultActivity extends AppCompatActivity {
         mExpandingList = findViewById(R.id.expanding_list_main);
         createTitle();
 
-        TextView textView = (TextView) findViewById(R.id.id);
-        str_group = id;
-        str_user = nick;
+        str_group = id; //그룹명
+        str_user = nick;    //사용자 이름
         str_profile = profilePath;   //프로필
-        textView.setText(str_group);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerView = (View) findViewById(R.id.drawer);
-        ImageView btn_open = (ImageView) findViewById(R.id.btnOpen);
+        ImageView btn_open = (ImageView) findViewById(R.id.btnOpen);    //채팅, 그룹수정, 그룹삭제를 보여주는 햄버거 버튼
+        TextView textView = (TextView) findViewById(R.id.id);
+        textView.setText(str_group);    //그룹명
+
+        /**
+         * 채팅, 그룹수정, 그룹 삭제가 있는 햄버거 버튼
+         */
         btn_open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +98,10 @@ public class ResultActivity extends AppCompatActivity {
             }
         });
 
+
+        /**
+         * 그룹 수정
+         */
         Button updateGroup = (Button) findViewById(R.id.updateGroup);
         updateGroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,6 +158,9 @@ public class ResultActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * 그룹 삭제
+         */
         Button removeGroup = (Button) findViewById(R.id.removeGroup);
         removeGroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,15 +203,12 @@ public class ResultActivity extends AppCompatActivity {
                 dialog1.show();
             }
         });
-        /**
-         * 서버에 저장되어 있는 목록/일정 데이터를 불러오는 부분
-         */
-        load();
-        progressDialog.dismiss();
+
+        load(); //목록 및 할 일을 서버에서 불러옴
     }
 
     /**
-     * 서버에 저장되어 있는 목록/일정 데이터를 불러오게 해주는 클래스
+     * 목차 및 할 일을 서버에서 불러오게 해주는 메소드
      */
     private void load() {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -264,11 +259,10 @@ public class ResultActivity extends AppCompatActivity {
         ResultActivityListRequest ResultActivityListRequest = new ResultActivityListRequest(str_user, str_group, responseListener);
         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
         queue.add(ResultActivityListRequest);
-        progressDialog.show();
     }
 
     /**
-     * ExpandablelistView에 대한 Data
+     * 목차 추가 메소드
      */
     private void createTitle() {
         ImageButton addButton = (ImageButton) findViewById(R.id.button_main_insert);
@@ -335,8 +329,11 @@ public class ResultActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 목차 추가, 수정, 삭제와 할 일 추가
+     * 추가한 목차 및 할 일을 사용자에게 보여줌
+     */
     private void addItem(String title, final String[] subItems, final int colorRes, int iconRes, final String[] booleanValue) {
-
         //Let's create an item with R.layout.expanding_layout
         ExpandingItem item = mExpandingList.createNewItem(R.layout.expanding_layout);
 
@@ -349,6 +346,10 @@ public class ResultActivity extends AppCompatActivity {
 
             ImageView upImg = (ImageView) item.findViewById(R.id.up2);
             ImageView downImg = (ImageView) item.findViewById(R.id.down2);
+
+            /**
+             * 해당 목차를 클릭할 때마다 바뀌는 upImg, downImg 이미지
+             */
             ((TextView) item.findViewById(R.id.title)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -364,8 +365,12 @@ public class ResultActivity extends AppCompatActivity {
                 }
             });
             //We can create items in batch.
+
             item.createSubItems(subItems.length);
 
+            /**
+             * 해당 목차의 할 일을 보여주는 반복문
+             */
             for (int i = 0; i < item.getSubItemsCount(); i++) {
                 //Let's get the created sub item by its index
                 final View view = item.getSubItemView(i);
@@ -373,6 +378,10 @@ public class ResultActivity extends AppCompatActivity {
                 //Let's set some values in
                 configureSubItem(item, view, subItems[i], title, booleanValue[i]);
             }
+
+            /**
+             * 목차 수정
+             */
             item.findViewById(R.id.update_item).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -438,6 +447,10 @@ public class ResultActivity extends AppCompatActivity {
                     dialog.show();
                 }
             });
+
+            /**
+             * 할 일 추가
+             */
             item.findViewById(R.id.add_more_sub_items).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -492,6 +505,9 @@ public class ResultActivity extends AppCompatActivity {
                 }
             });
 
+            /**
+             * 목차 삭제
+             */
             item.findViewById(R.id.remove_item).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -529,14 +545,12 @@ public class ResultActivity extends AppCompatActivity {
                     dialog1.show();
                 }
             });
-
-            /**
-             * 목록 수정 부분
-             */
-
         }
     }
 
+    /**
+     * 할 일 수정, 삭제, 체크박스 관리
+     */
     private void configureSubItem(final ExpandingItem item, final View view, final String subTitle, final String title, String check) {
         ((TextView) view.findViewById(R.id.sub_title)).setText(subTitle);
         ((TextView) item.findViewById(R.id.title)).setText(title);
@@ -731,6 +745,9 @@ public class ResultActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 그룹 추가에 대한 AlertDialog
+     */
     private void showInsertDialog(final OnItemCreated positive) {
         AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
 
@@ -763,10 +780,16 @@ public class ResultActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * 사용자가 입력한 목록 및 할 일 명을 출력해주기 위해 필요한 메소드
+     */
     interface OnItemCreated {
         String itemCreated(String title);
     }
 
+    /**
+     * 뒤로 가기 버튼을 눌렀을 때 사용자 프로필, userID, 사용자 이름, userPass, userEmail를 Intent로 전달
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
