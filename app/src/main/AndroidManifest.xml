@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".App"
+        android:name=".Login.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_wedo"
         android:label="@string/app_name"
@@ -18,33 +18,24 @@
         android:roundIcon="@mipmap/ic_launcher_wedo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WeDo">
-        <activity android:name=".List.ResultActivity"></activity>
-        <activity android:name=".NickChangeActivity"/>
+        <activity android:name=".Schedule.ResultActivity"></activity>
+        <activity android:name=".Group.NickChangeActivity"/>
         <activity
-            android:name=".MainCategoryActivity"
+            android:name=".Group.MainCategoryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".KakaoSetNickActivity"
+            android:name=".Register.KakaoSetNickActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".GmailSetNickActivity"
+            android:name=".Register.GmailSetNickActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".NicknameActivity"
+            android:name=".LookingFor.LookingForPass"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".LookingForPass"
-            android:screenOrientation="portrait" />
-        <activity android:name=".Loading"
+        <activity android:name=".Schedule.Loading"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".LookingFor_ID"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".EmailActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Main2Activity"
+            android:name=".LookingFor.LookingFor_ID"
             android:screenOrientation="portrait" />
 
         <meta-data
@@ -52,16 +43,13 @@
             android:value="@string/kakao_app_key" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".Register.RegisterActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".Register.CameraActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CameraActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".LoginActivity"
+            android:name=".Login.LoginActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

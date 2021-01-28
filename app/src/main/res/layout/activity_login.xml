@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".LoginActivity">
+    tools:context=".Login.LoginActivity">
 
     <!--android:ems는 View의 너비를 지정해줌
       (단, android:layout_width의 값이 "wrap_content"여야 적용이 됨.) -->
