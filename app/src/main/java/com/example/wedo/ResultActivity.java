@@ -49,6 +49,8 @@ public class ResultActivity extends AppCompatActivity {
     int x;
     ExpandingItem.OnItemStateChanged mListener;
 
+    CheckBox checkBox;
+
     /**
      * RecyclerView 부분
      */
@@ -225,10 +227,7 @@ public class ResultActivity extends AppCompatActivity {
          * 서버에 저장되어 있는 목록/일정 데이터를 불러오는 부분
          */
         load();
-
         progressDialog.dismiss();
-
-
     }
 
     /**
@@ -245,51 +244,47 @@ public class ResultActivity extends AppCompatActivity {
                     /**
                      * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
                      */
-
                     for (int i = 0; i < list.length(); i++) {
                         String tempTaskName = list.getJSONObject(i).getString("userlist");
                         TaskModel tempTaskModel = new TaskModel();
-
+//                        tempTaskModel.addBooleanValue(list.getJSONObject(i).getString("complete"));
+//                        System.out.println("할 일 불린111111111 : " + list.getJSONObject(i).getString("complete"));
                         if (i > 0) {
                             if (tasks.get(tasks.size() - 1).getTitle().equals(tempTaskName)) {
                                 tasks.get(tasks.size() - 1).addSubTitle(list.getJSONObject(i).getString("userSchedule"));
+                                tasks.get(tasks.size() -1 ).addBooleanValue(list.getJSONObject(i).getString("complete"));
                             } else {
                                 tempTaskModel.setTitle(tempTaskName);
-
                                 if (!list.getJSONObject(i).getString("userSchedule").equals("null")) {
                                     tempTaskModel.addSubTitle(list.getJSONObject(i).getString("userSchedule"));
-                                }
+                                    tempTaskModel.addBooleanValue(list.getJSONObject(i).getString("complete"));
 
+                                }
                                 tasks.add(tempTaskModel);
                             }
                         } else {
                             tempTaskModel.setTitle(tempTaskName);
-
                             if (!list.getJSONObject(i).getString("userSchedule").equals("null")) {
                                 tempTaskModel.addSubTitle(list.getJSONObject(i).getString("userSchedule"));
+                                tempTaskModel.addBooleanValue(list.getJSONObject(i).getString("complete"));
                             }
-
                             tasks.add(tempTaskModel);
                         }
-
                     }
                     System.out.println("할 일: " + tasks.size());
                     for (int i = 0; i < tasks.size(); i++) {
-                        addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.blue, R.drawable.wedo_btn);
+                        System.out.println("tasks: "+ tasks.size());
+                        addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.blue, R.drawable.wedo_btn, tasks.get(i).getBooleanValueArray());
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         };
         ResultActivityListRequest ResultActivityListRequest = new ResultActivityListRequest(str_user, str_group, responseListener);
         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
         queue.add(ResultActivityListRequest);
         progressDialog.show();
-
-
     }
 
     /**
@@ -330,7 +325,7 @@ public class ResultActivity extends AppCompatActivity {
                                         JSONObject jsonResponse = new JSONObject(response);
                                         boolean success = jsonResponse.getBoolean("success");
                                         if (success) {
-                                            addItem(title, new String[]{}, R.color.blue, R.drawable.wedo_btn);
+                                            addItem(title, new String[]{}, R.color.blue, R.drawable.wedo_btn, null);
                                             dialog.dismiss();
                                             Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
                                                 @Override
@@ -360,7 +355,8 @@ public class ResultActivity extends AppCompatActivity {
         });
     }
 
-    private void addItem(String title, final String[] subItems, final int colorRes, int iconRes) {
+    private void addItem(String title, final String[] subItems, final int colorRes, int iconRes, final String[] booleanValue) {
+
         //Let's create an item with R.layout.expanding_layout
         ExpandingItem item = mExpandingList.createNewItem(R.layout.expanding_layout);
 
@@ -374,9 +370,6 @@ public class ResultActivity extends AppCompatActivity {
 
             ImageView upImg = (ImageView) item.findViewById(R.id.up2);
             ImageView downImg = (ImageView) item.findViewById(R.id.down2);
-            ;
-
-
             ((TextView) item.findViewById(R.id.title)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -391,35 +384,18 @@ public class ResultActivity extends AppCompatActivity {
                     }
                 }
             });
-
-
             //We can create items in batch.
             item.createSubItems(subItems.length);
-
+            System.out.println("subItems.length: "+ subItems.length);
+            System.out.println("booleanValue.length: "+ booleanValue.length);
 
             for (int i = 0; i < item.getSubItemsCount(); i++) {
                 //Let's get the created sub item by its index
                 final View view = item.getSubItemView(i);
 
                 //Let's set some values in
-                configureSubItem(item, view, subItems[i], title);
+                configureSubItem(item, view, subItems[i], title, booleanValue[i]);
             }
-
-
-//            item.findViewById(R.id.a).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    ImageView imageView = (ImageView) item.findViewById(R.id.updown_item);
-//                    if(imageView.equals(R.drawable.ic_down)){
-//                        imageView.setImageResource(R.drawable.ic_up_down);
-//
-//                    }else {
-//                        imageView.setImageResource(R.drawable.ic_down);
-//                    }
-//                }
-//            });
-
-
             item.findViewById(R.id.update_item).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -428,16 +404,11 @@ public class ResultActivity extends AppCompatActivity {
                     View title_view = LayoutInflater.from(ResultActivity.this)
                             .inflate(R.layout.edit_box, null, false);
                     builder.setView(title_view);
-
                     Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
                     final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
-
                     editTextID.setHint(title);
                     ButtonSubmit.setText("수정하기");
-
                     final AlertDialog dialog = builder.create();
-
-
                     // 3. 다이얼로그에 있는 삽입 버튼을 클릭하면
                     ButtonSubmit.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -490,14 +461,12 @@ public class ResultActivity extends AppCompatActivity {
                     dialog.show();
                 }
             });
-
             item.findViewById(R.id.add_more_sub_items).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showInsertDialog(new OnItemCreated() {
                         @Override
                         public String itemCreated(final String title1) {
-
                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
@@ -510,7 +479,7 @@ public class ResultActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onResponse(String response) {
                                                     final View newSubItem = item.createSubItem();
-                                                    configureSubItem(item, newSubItem, title1, title);
+                                                    configureSubItem(item, newSubItem, title1, title, "false");
                                                     /**
                                                      * 삽입
                                                      */
@@ -591,41 +560,44 @@ public class ResultActivity extends AppCompatActivity {
         }
     }
 
-    private void configureSubItem(final ExpandingItem item, final View view, final String subTitle, final String title) {
-//        TextView textView = (TextView)findViewById(R.id.sub_title);
-
+    private void configureSubItem(final ExpandingItem item, final View view, final String subTitle, final String title, String check) {
         ((TextView) view.findViewById(R.id.sub_title)).setText(subTitle);
         ((TextView) item.findViewById(R.id.title)).setText(title);
-//        ImageView upImg = (ImageView)view.findViewById(R.id.up2);
-//        ImageView downImg = (ImageView)view.findViewById(R.id.down2);
-
+        checkBox = view.findViewById(R.id.checkBox);
+        System.out.println("타이틀 확인: " + title);
+        System.out.println("서브 타이틀 확인: " + subTitle);
+        System.out.println("체크박스 확인: " + check);
 
         String grey = "#808080";
         String black = "#000000";
-        String orange = "#ff7f00";
-        String blue = "#89cff0";
-        String white = "#ffffff";
 
-        CheckBox checkBox = view.findViewById(R.id.checkBox);
-        FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.frameBackground);
+        for (int i = 0; i < check.length(); i++) {
+            System.out.println("값 확인" + check.length());
+            if (check.equals("true")) {
+                checkBox.setChecked(true);
+                ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(((TextView) view.findViewById(R.id.sub_title)).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
+            } else {
+                checkBox.setChecked(false);
+                ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(0);
+                ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(black));
+            }
+        }
 
-        x = 0;
-        int o = item.getSubItemsCount();
 
-        checkBox.setOnClickListener(new View.OnClickListener() {
+        checkBox.setOnClickListener(new CheckBox.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (checkBox.isChecked()) {
-                    x++;
-                    System.out.println("체크 확인: " + o + "개");
+                if (((CheckBox) v).isChecked()) {
+
                     ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(((TextView) view.findViewById(R.id.sub_title)).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
 
                     Response.Listener<String> responseListener = new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            System.out.println(subTitle+"일정 체크");
+                            System.out.println(subTitle + "일정 체크");
                         }
                     };
                     ScheduleComplete ScheduleComplete = new ScheduleComplete(str_user, str_group, title, subTitle, responseListener);
@@ -633,43 +605,20 @@ public class ResultActivity extends AppCompatActivity {
                     queue.add(ScheduleComplete);
 
 
-
-//                    frameLayout.setBackgroundResource(R.drawable.rounded_background);
-
-//                    if (x >= 1) {
-//                        item.setIndicatorColor((Color.parseColor(orange)));
-//                    }
                 } else {
-//                    x -= 1;
-//                    System.out.println("체크 풀림 확인: " + x);
                     ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(0);
                     ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(black));
 
                     Response.Listener<String> responseListener = new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            System.out.println(subTitle+"일정 체크 헤제");
+                            System.out.println(subTitle + "일정 체크 헤제");
                         }
                     };
                     ScheduleinComplete ScheduleinComplete = new ScheduleinComplete(str_user, str_group, title, subTitle, responseListener);
                     RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                     queue.add(ScheduleinComplete);
-//                    frameLayout.setBackgroundColor(Color.parseColor(white));
-
-
-//                    if (x >= 1) {
-//                        item.setIndicatorColor((Color.parseColor(orange)));
-//                    }
-//                    if (x == o) {
-//                        item.setIndicatorColor((Color.parseColor(orange)));
-//                    }
-//                    if (x <= 0) {
-//                        item.setIndicatorColor((Color.parseColor(grey)));
-//                    }
                 }
-//                if (x == o) {
-//                    item.setIndicatorColor((Color.parseColor(green)));
-//                }
             }
         });
 
@@ -711,7 +660,7 @@ public class ResultActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onResponse(String response) {
                                                     final View newSubItem = item.createSubItem();
-                                                    configureSubItem(item, newSubItem, title1, title);
+                                                    configureSubItem(item, newSubItem, title1, title, "false");
                                                     /**
                                                      * 삽입
                                                      */
@@ -851,7 +800,7 @@ public class ResultActivity extends AppCompatActivity {
         intent.putExtra("userID", userID);
         intent.putExtra("userPass", userPass);
         startActivity(intent);
-        finish();
+        finishAndRemoveTask();
     }
 
     public void MatrixTime(int delayTime) {
