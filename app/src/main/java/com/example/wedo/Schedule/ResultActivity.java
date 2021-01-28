@@ -71,7 +71,6 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("ProgressDialog running...");
         progressDialog.setCancelable(true);
@@ -366,8 +365,6 @@ public class ResultActivity extends AppCompatActivity {
             });
             //We can create items in batch.
             item.createSubItems(subItems.length);
-            System.out.println("subItems.length: " + subItems.length);
-            System.out.println("booleanValue.length: " + booleanValue.length);
 
             for (int i = 0; i < item.getSubItemsCount(); i++) {
                 //Let's get the created sub item by its index
