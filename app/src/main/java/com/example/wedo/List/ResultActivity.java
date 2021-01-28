@@ -1,16 +1,13 @@
-package com.example.wedo;
+package com.example.wedo.List;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,8 +25,23 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.diegodobelo.expandingview.ExpandingItem;
 import com.diegodobelo.expandingview.ExpandingList;
+import com.example.wedo.GroupHttp.UserGroupRemove;
+import com.example.wedo.GroupHttp.UserGroupUpdate;
+import com.example.wedo.GroupHttp.ValidateGroup;
+import com.example.wedo.ListHttp.ResultActivityListRequest;
+import com.example.wedo.ListHttp.UserListAdd;
+import com.example.wedo.ListHttp.UserListRemove;
+import com.example.wedo.ListHttp.UserListUpdate;
+import com.example.wedo.ListHttp.ValidateList;
+import com.example.wedo.Loading;
+import com.example.wedo.MainCategoryActivity;
+import com.example.wedo.R;
 import com.example.wedo.ScheduleHttp.ScheduleComplete;
 import com.example.wedo.ScheduleHttp.ScheduleinComplete;
+import com.example.wedo.ScheduleHttp.UserScheduleAdd;
+import com.example.wedo.ScheduleHttp.UserScheduleRemove;
+import com.example.wedo.ScheduleHttp.UserScheduleUpdate;
+import com.example.wedo.ScheduleHttp.ValidateSchedule;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,39 +53,15 @@ public class ResultActivity extends AppCompatActivity {
     /**
      * ExpandingListView
      */
-    ArrayList<String> scheduleDemo = new ArrayList<>();
     private ExpandingList mExpandingList;
-    String tta;
-    String schedule1;
-    int x;
-    ExpandingItem.OnItemStateChanged mListener;
 
     CheckBox checkBox;
-
-    /**
-     * RecyclerView 부분
-     */
-    private ArrayList<DictionaryList> mDictionaryList;
-    private CustomAdapterList mAdapterList;
-    private int count = -1;
-    private String TAG_JSON = "userlist";
-    private String tagSchedule = "userSchedule";
 
     private DrawerLayout drawerLayout;
     private View drawerView;
 
-    private int subItemLength;
-
-
     public String id, nick, profilePath, userEmail, userID, userPass;
-    public String str_group, str_user, str_profile, strID3;
-
-    private Context mContext;
-
-
-    int o;
-    private Activity mActivity;
-
+    public String str_group, str_user, str_profile;
     ProgressDialog progressDialog;
 
     // Task Model ArrayList
@@ -90,9 +77,6 @@ public class ResultActivity extends AppCompatActivity {
         progressDialog.setMessage("ProgressDialog running...");
         progressDialog.setCancelable(true);
         progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
-
-
-        mActivity = ResultActivity.this;
 
         Bundle extras = getIntent().getExtras();
 
@@ -364,7 +348,6 @@ public class ResultActivity extends AppCompatActivity {
             item.setIndicatorIconRes(iconRes);
             //It is possible to get any view inside the inflated layout. Let's set the text in the item
             ((TextView) item.findViewById(R.id.title)).setText(title);
-            tta = title;
 
             ImageView upImg = (ImageView) item.findViewById(R.id.up2);
             ImageView downImg = (ImageView) item.findViewById(R.id.down2);
@@ -411,7 +394,7 @@ public class ResultActivity extends AppCompatActivity {
                     ButtonSubmit.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            String title1 = editTextID.getText().toString();
+                            String List = editTextID.getText().toString();
                             if (title.equals("")) {
                                 Toast.makeText(ResultActivity.this, "목차를 입력하세요.", Toast.LENGTH_SHORT).show();
                             } else {
@@ -439,7 +422,7 @@ public class ResultActivity extends AppCompatActivity {
                                                     }
                                                 };
                                                 //서버로 volley를 이용해서 요청을 함
-                                                UserListUpdate UserListUpdate = new UserListUpdate(str_user, str_group, title, title1, responseListener);
+                                                UserListUpdate UserListUpdate = new UserListUpdate(str_user, str_group, title, List, responseListener);
                                                 RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                                 queue.add(UserListUpdate);
                                             } else {
@@ -450,7 +433,7 @@ public class ResultActivity extends AppCompatActivity {
                                         }
                                     }
                                 };
-                                ValidateList ValidateList = new ValidateList(str_user, str_group, title1, responseListener);
+                                ValidateList ValidateList = new ValidateList(str_user, str_group, List, responseListener);
                                 RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                 queue.add(ValidateList);
                             }
@@ -464,7 +447,7 @@ public class ResultActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     showInsertDialog(new OnItemCreated() {
                         @Override
-                        public String itemCreated(final String title1) {
+                        public String itemCreated(final String List) {
                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
@@ -477,7 +460,7 @@ public class ResultActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onResponse(String response) {
                                                     final View newSubItem = item.createSubItem();
-                                                    configureSubItem(item, newSubItem, title1, title, "false");
+                                                    configureSubItem(item, newSubItem, List, title, "false");
                                                     /**
                                                      * 삽입
                                                      */
@@ -493,7 +476,7 @@ public class ResultActivity extends AppCompatActivity {
                                                     finish();
                                                 }
                                             };
-                                            UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(str_user, str_group, title, title1, responseListener);
+                                            UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(str_user, str_group, title, List, responseListener);
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                             queue.add(UserScheduleAdd);
                                         } else {
@@ -504,7 +487,7 @@ public class ResultActivity extends AppCompatActivity {
                                     }
                                 }
                             };
-                            ValidateSchedule ValidateSchedule = new ValidateSchedule(str_user, str_group, title, title1, responseListener);
+                            ValidateSchedule ValidateSchedule = new ValidateSchedule(str_user, str_group, title, List, responseListener);
                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                             queue.add(ValidateSchedule);
                             return title;
@@ -642,7 +625,7 @@ public class ResultActivity extends AppCompatActivity {
                 ButtonSubmit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String title1 = editTextID.getText().toString();
+                        String subtitle = editTextID.getText().toString();
                         if (title.equals("")) {
                             Toast.makeText(ResultActivity.this, "할 일을 입력해주세요.", Toast.LENGTH_SHORT).show();
                         } else {
@@ -658,7 +641,7 @@ public class ResultActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onResponse(String response) {
                                                     final View newSubItem = item.createSubItem();
-                                                    configureSubItem(item, newSubItem, title1, title, "false");
+                                                    configureSubItem(item, newSubItem, subtitle, title, "false");
                                                     /**
                                                      * 삽입
                                                      */
@@ -674,7 +657,7 @@ public class ResultActivity extends AppCompatActivity {
                                                     finish();
                                                 }
                                             };
-                                            UserScheduleUpdate UserScheduleUpdate = new UserScheduleUpdate(str_user, str_group, title, subTitle, title1, responseListener);
+                                            UserScheduleUpdate UserScheduleUpdate = new UserScheduleUpdate(str_user, str_group, title, subTitle, subtitle, responseListener);
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                             queue.add(UserScheduleUpdate);
                                         } else {
@@ -685,7 +668,7 @@ public class ResultActivity extends AppCompatActivity {
                                     }
                                 }
                             };
-                            ValidateSchedule ValidateSchedule = new ValidateSchedule(str_user, str_group, title, title1, responseListener);
+                            ValidateSchedule ValidateSchedule = new ValidateSchedule(str_user, str_group, title, subtitle, responseListener);
                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                             queue.add(ValidateSchedule);
                         }
@@ -800,24 +783,4 @@ public class ResultActivity extends AppCompatActivity {
         startActivity(intent);
         finishAndRemoveTask();
     }
-
-    public void MatrixTime(int delayTime) {
-        long saveTime = System.currentTimeMillis();
-        long currTime = 0;
-        while (currTime - saveTime < delayTime) {
-            currTime = System.currentTimeMillis();
-        }
-    }
-
-    public static void restartActivity(Activity activity) {
-        if (Build.VERSION.SDK_INT >= 11) {
-            activity.recreate();
-        }
-    }
-
-    public void setStateChangedListener(ExpandingItem.OnItemStateChanged listener) {
-        mListener = listener;
-    }
-
-
 }

@@ -1,13 +1,11 @@
 package com.example.wedo;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
-
-import org.w3c.dom.Text;
+import com.example.wedo.GroupHttp.UserGroupRemove;
+import com.example.wedo.GroupHttp.UserGroupUpdate;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.example.wedo;
+package com.example.wedo.GroupHttp;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -8,16 +8,17 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ValidateRequest extends StringRequest {
+public class UserGroupAdd extends StringRequest {
     //서버 url 설정(php파일 연동)
-    final static  private String URL="http://13.209.99.25/Validate.php";
+    final static  private String URL="http://13.209.99.25/userGroup.php";
     private Map<String,String> map;
 
-    public ValidateRequest(String userID, Response.Listener<String>listener){
+    public UserGroupAdd(String nick, String usergroup, Response.Listener<String>listener){
         super(Request.Method.POST,URL,listener,null);
 
         map=new HashMap<>();
-        map.put("userID",userID);
+        map.put("nick", nick);
+        map.put("usergroup", usergroup);
     }
 
     @Override
@@ -25,3 +26,4 @@ public class ValidateRequest extends StringRequest {
         return map;
     }
 }
+

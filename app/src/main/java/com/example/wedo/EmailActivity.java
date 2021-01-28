@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.example.wedo.RegisterHttp.EmailRequest;
+import com.example.wedo.RegisterHttp.Validate_emailRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;

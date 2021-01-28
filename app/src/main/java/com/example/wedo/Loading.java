@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.example.wedo.List.ResultActivity;
+
 public class Loading extends Activity {
 
     public String id, nick, profilePath, userEmail, userID, userPass;

@@ -1,4 +1,4 @@
-package com.example.wedo;
+package com.example.wedo.RegisterHttp;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -7,6 +7,9 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 기입한 양식을 DB에 저장할 수 있게 서버에 요청
+ */
 public class RegisterRequest extends StringRequest {
     //서버 url 설정(php파일 연동)
     final static private String URL = "http://13.209.99.25/Register.php";

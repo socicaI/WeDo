@@ -1,4 +1,4 @@
-package com.example.wedo;
+package com.example.wedo.ListHttp;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -8,18 +8,18 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserListRemove extends StringRequest {
+public class UserListAdd extends StringRequest {
     //서버 url 설정(php파일 연동)
-    final static  private String URL="http://13.209.99.25/userListRemove.php";
-    private Map<String,String> map;
+    final static private String URL = "http://13.209.99.25/userListAdd.php";
+    private Map<String, String> map;
 
-    public UserListRemove(String nick, String usergroup, String userlist, Response.Listener<String>listener){
-        super(Request.Method.POST,URL,listener,null);
+    public UserListAdd(String nick, String usergroup, String userList, Response.Listener<String> listener) {
+        super(Request.Method.POST, URL, listener, null);
 
-        map=new HashMap<>();
+        map = new HashMap<>();
         map.put("nick", nick);
         map.put("usergroup", usergroup);
-        map.put("userlist", userlist);
+        map.put("userlist", userList);
     }
 
     @Override
@@ -27,4 +27,3 @@ public class UserListRemove extends StringRequest {
         return map;
     }
 }
-

@@ -1,4 +1,4 @@
-package com.example.wedo;
+package com.example.wedo.List;
 
 import java.util.ArrayList;
 
