@@ -3,7 +3,9 @@ package com.example.wedo.Login;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -197,12 +199,16 @@ public class LoginActivity extends AppCompatActivity {
                                             String profileUri = jsonResponse.getString("profilePath");
 
                                             if (success4) {
-//                                                Toast.makeText(getApplicationContext(), "환영합니다.", Toast.LENGTH_SHORT).show();
                                                 Intent intent = new Intent(LoginActivity.this, MainCategoryActivity.class);
                                                 intent.putExtra("userID", userID);
                                                 intent.putExtra("userPass", userPass);
                                                 intent.putExtra("ID", nick);
                                                 intent.putExtra("profileUri", profileUri);
+                                                SharedPreferences pref = getSharedPreferences("loginInfo", Activity.MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = pref.edit();
+                                                editor.putString("userID",userID);
+                                                editor.putString("userPass",userPass);
+                                                editor.commit();
                                                 startActivity(intent);
                                                 finish();
                                             } else {
@@ -234,6 +240,50 @@ public class LoginActivity extends AppCompatActivity {
                 queue.add(loginRequest);
             }
         });
+
+        /**
+         * shared "loginInfo"에 데이터가 있을 경우 바로 목록 화면으로 전환
+         */
+        SharedPreferences pref = getSharedPreferences("loginInfo", Activity.MODE_PRIVATE);
+        String userId = pref.getString("userID","0");
+        String userPass = pref.getString("userPass", "0");
+
+        System.out.println("userID: "+userId+"////////userPass: "+userPass);
+
+        if(userId!="0"){
+            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        boolean success4 = jsonResponse.getBoolean("success4");
+                        String nick = jsonResponse.getString("nick");
+                        String profileUri = jsonResponse.getString("profilePath");
+
+                        if (success4) {
+                            Intent intent = new Intent(LoginActivity.this, MainCategoryActivity.class);
+                            intent.putExtra("userID", userId);
+                            intent.putExtra("userPass", userPass);
+                            intent.putExtra("ID", nick);
+                            intent.putExtra("profileUri", profileUri);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Intent intent = new Intent(LoginActivity.this, GmailSetNickActivity.class);
+                            intent.putExtra("userID", userId);
+                            intent.putExtra("userPass", userPass);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            nickCorrectRequest nickCorrectRequest = new nickCorrectRequest(userId, userPass, responseListener);
+            RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+            queue.add(nickCorrectRequest);
+        }
     }
 
     /*
