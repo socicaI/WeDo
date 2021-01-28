@@ -247,8 +247,6 @@ public class ResultActivity extends AppCompatActivity {
                     for (int i = 0; i < list.length(); i++) {
                         String tempTaskName = list.getJSONObject(i).getString("userlist");
                         TaskModel tempTaskModel = new TaskModel();
-//                        tempTaskModel.addBooleanValue(list.getJSONObject(i).getString("complete"));
-//                        System.out.println("할 일 불린111111111 : " + list.getJSONObject(i).getString("complete"));
                         if (i > 0) {
                             if (tasks.get(tasks.size() - 1).getTitle().equals(tempTaskName)) {
                                 tasks.get(tasks.size() - 1).addSubTitle(list.getJSONObject(i).getString("userSchedule"));
