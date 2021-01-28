@@ -12,11 +12,10 @@ public class ValidateRegisterNick extends StringRequest {
     final static private String URL = "http://13.209.99.25/ValidateRegisterNick.php";
     private Map<String, String> map;
 
-    public ValidateRegisterNick(String beforeNick,  Response.Listener<String> listener) {
+    public ValidateRegisterNick(String beforeNick, Response.Listener<String> listener) {
         super(Method.POST, URL, listener, null);
         map = new HashMap<>();
         map.put("beforeNick", beforeNick);
-
     }
 
     @Override

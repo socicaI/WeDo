@@ -47,7 +47,7 @@ import java.io.InputStream;
 
 public class GmailSetNickActivity extends AppCompatActivity {
 
-    boolean profile=false, nickValidate=false;
+    boolean profile = false, nickValidate = false;
     Button nickValidateButton, mainButton;
     String nick, profileUri;
     EditText setNickInput;
@@ -71,20 +71,20 @@ public class GmailSetNickActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         userId = intent.getStringExtra("userEmail");
-        Log.e("로그12345",userId);
+        Log.e("로그12345", userId);
 
         mainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(profile){
-                    if(nickValidate){
+                if (profile) {
+                    if (nickValidate) {
                         ProgressDialog dialog1 = ProgressDialog.show(GmailSetNickActivity.this, "",
                                 "WeDo-잠시만 기다려주세요 :)", true);
                         dialog1.onStart();
                         FirebaseStorage storage = FirebaseStorage.getInstance();
 
                         StorageReference storageRef = storage.getReference();
-                        final StorageReference mountainImagesRef = storageRef.child("images/"+nick+"/profile.jpg"); //파일 경로 images/사용자 ID/
+                        final StorageReference mountainImagesRef = storageRef.child("images/" + nick + "/profile.jpg"); //파일 경로 images/사용자 ID/
                         try {
                             InputStream stream = new FileInputStream(new File(profilePath));
                             UploadTask uploadTask = mountainImagesRef.putStream(stream);
@@ -127,12 +127,10 @@ public class GmailSetNickActivity extends AppCompatActivity {
                         } catch (FileNotFoundException e) {
                             Log.e("로그", "에러:" + e.toString());
                         }
-                    }
-                    else {
+                    } else {
                         Toast.makeText(GmailSetNickActivity.this, "사용할 이름을 확인해주세요.", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else{
+                } else {
                     Toast.makeText(GmailSetNickActivity.this, "프로필 사진을 찍어주세요.", Toast.LENGTH_SHORT).show();
                     profileImageText.setText("프로필 사진을 찍어주세요.");
                     profileImageText.setTextColor(Color.parseColor("#FF0000"));

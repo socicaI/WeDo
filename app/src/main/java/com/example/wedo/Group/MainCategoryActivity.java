@@ -132,7 +132,7 @@ public class MainCategoryActivity extends AppCompatActivity {
         queue.add(MainCategoryGroupRequest);
 
         Log.e("어레이에 값 들어있나(Group)", String.valueOf(mArrayList.size()));
-        if(mArrayList.size()==0){
+        if (mArrayList.size() == 0) {
             emptyRecycler.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
         } else {

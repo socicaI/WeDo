@@ -9,12 +9,12 @@ import java.util.Map;
 
 public class KakaoLogin2 extends StringRequest {
     //서버 url 설정(php파일 연동)
-    final static  private String URL="http://13.209.99.25/KakaoLogin2.php";
-    private Map<String,String> map;
+    final static private String URL = "http://13.209.99.25/KakaoLogin2.php";
+    private Map<String, String> map;
 
-    public KakaoLogin2(String userID, Response.Listener<String>listener){
-        super(Method.POST,URL,listener,null);
-        map=new HashMap<>();
+    public KakaoLogin2(String userID, Response.Listener<String> listener) {
+        super(Method.POST, URL, listener, null);
+        map = new HashMap<>();
         map.put("userID", userID);
     }
 

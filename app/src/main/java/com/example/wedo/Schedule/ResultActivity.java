@@ -233,7 +233,7 @@ public class ResultActivity extends AppCompatActivity {
                         if (i > 0) {
                             if (tasks.get(tasks.size() - 1).getTitle().equals(tempTaskName)) {
                                 tasks.get(tasks.size() - 1).addSubTitle(list.getJSONObject(i).getString("userSchedule"));
-                                tasks.get(tasks.size() -1 ).addBooleanValue(list.getJSONObject(i).getString("complete"));
+                                tasks.get(tasks.size() - 1).addBooleanValue(list.getJSONObject(i).getString("complete"));
                             } else {
                                 tempTaskModel.setTitle(tempTaskName);
                                 if (!list.getJSONObject(i).getString("userSchedule").equals("null")) {
@@ -254,7 +254,7 @@ public class ResultActivity extends AppCompatActivity {
                     }
                     System.out.println("할 일: " + tasks.size());
                     for (int i = 0; i < tasks.size(); i++) {
-                        System.out.println("tasks: "+ tasks.size());
+                        System.out.println("tasks: " + tasks.size());
                         addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.blue, R.drawable.wedo_btn, tasks.get(i).getBooleanValueArray());
                     }
                 } catch (JSONException e) {
@@ -366,8 +366,8 @@ public class ResultActivity extends AppCompatActivity {
             });
             //We can create items in batch.
             item.createSubItems(subItems.length);
-            System.out.println("subItems.length: "+ subItems.length);
-            System.out.println("booleanValue.length: "+ booleanValue.length);
+            System.out.println("subItems.length: " + subItems.length);
+            System.out.println("booleanValue.length: " + booleanValue.length);
 
             for (int i = 0; i < item.getSubItemsCount(); i++) {
                 //Let's get the created sub item by its index

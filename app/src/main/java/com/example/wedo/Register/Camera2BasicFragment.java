@@ -269,9 +269,11 @@ public class Camera2BasicFragment extends Fragment
     };
     */
     private ImageReader.OnImageAvailableListener mOnImageAvailableListener;
-    public void setmOnImageAvailableListener(ImageReader.OnImageAvailableListener mOnImageAvailableListener){
+
+    public void setmOnImageAvailableListener(ImageReader.OnImageAvailableListener mOnImageAvailableListener) {
         this.mOnImageAvailableListener = mOnImageAvailableListener;
     }
+
     /**
      * {@link CaptureRequest.Builder} for the camera preview
      */

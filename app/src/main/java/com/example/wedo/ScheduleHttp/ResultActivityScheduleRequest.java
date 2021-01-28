@@ -10,12 +10,12 @@ import java.util.Map;
 
 public class ResultActivityScheduleRequest extends StringRequest {
     //서버 url 설정(php파일 연동)
-    final static  private String URL="http://13.209.99.25/userScheduleLoad.php";
-    private Map<String,String> map;
+    final static private String URL = "http://13.209.99.25/userScheduleLoad.php";
+    private Map<String, String> map;
 
-    public ResultActivityScheduleRequest(String nick, String usergroup, Response.Listener<String>listener){
-        super(Method.POST,URL,listener,null);
-        map=new HashMap<>();
+    public ResultActivityScheduleRequest(String nick, String usergroup, Response.Listener<String> listener) {
+        super(Method.POST, URL, listener, null);
+        map = new HashMap<>();
         map.put("nick", nick);
         map.put("usergroup", usergroup);
     }

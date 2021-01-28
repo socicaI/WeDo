@@ -260,9 +260,9 @@ public class RegisterActivity extends AppCompatActivity {
                                                                                    }
                                                                                };
                                                                                EmailRequest EmailRequest = new EmailRequest(inputEmail, num, sendEmail, responseListener1);
-                                                                               System.out.println("123"+inputEmail);
-                                                                               System.out.println("123"+num);
-                                                                               System.out.println("123"+sendEmail);
+                                                                               System.out.println("123" + inputEmail);
+                                                                               System.out.println("123" + num);
+                                                                               System.out.println("123" + sendEmail);
 
                                                                                RequestQueue queue1 = Volley.newRequestQueue(RegisterActivity.this);
                                                                                queue1.add(EmailRequest);

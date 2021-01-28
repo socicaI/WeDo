@@ -206,8 +206,8 @@ public class LoginActivity extends AppCompatActivity {
                                                 intent.putExtra("profileUri", profileUri);
                                                 SharedPreferences pref = getSharedPreferences("loginInfo", Activity.MODE_PRIVATE);
                                                 SharedPreferences.Editor editor = pref.edit();
-                                                editor.putString("userID",userID);
-                                                editor.putString("userPass",userPass);
+                                                editor.putString("userID", userID);
+                                                editor.putString("userPass", userPass);
                                                 editor.commit();
                                                 startActivity(intent);
                                                 finish();
@@ -245,12 +245,12 @@ public class LoginActivity extends AppCompatActivity {
          * shared "loginInfo"에 데이터가 있을 경우 바로 목록 화면으로 전환
          */
         SharedPreferences pref = getSharedPreferences("loginInfo", Activity.MODE_PRIVATE);
-        String userId = pref.getString("userID","0");
+        String userId = pref.getString("userID", "0");
         String userPass = pref.getString("userPass", "0");
 
-        System.out.println("userID: "+userId+"////////userPass: "+userPass);
+        System.out.println("userID: " + userId + "////////userPass: " + userPass);
 
-        if(userId!="0"){
+        if (userId != "0") {
             Response.Listener<String> responseListener = new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -560,7 +560,8 @@ public class LoginActivity extends AppCompatActivity {
                                 KakaoUserInfo KakaoUserInfo = new KakaoUserInfo(kakaoId, responseListener1);
                                 RequestQueue queue1 = Volley.newRequestQueue(LoginActivity.this);
                                 queue1.add(KakaoUserInfo);
-                            }                        }
+                            }
+                        }
                     };
                     //서버로 volley를 이용해서 요청을 함
                     kakaoId = result.getKakaoAccount().getEmail();

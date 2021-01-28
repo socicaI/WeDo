@@ -11,7 +11,6 @@ public class Loading extends Activity {
 
     public String id, nick, profilePath, userEmail, userID, userPass;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

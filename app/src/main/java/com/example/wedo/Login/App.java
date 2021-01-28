@@ -24,7 +24,7 @@ public class App extends Application {
             return new ISessionConfig() {
                 @Override
                 public AuthType[] getAuthTypes() {
-                    return new AuthType[] {AuthType.KAKAO_ACCOUNT};
+                    return new AuthType[]{AuthType.KAKAO_ACCOUNT};
                     //로그인을 어떤 방식으로 할지 지정
                     //KAKAO_LOGIN_ALL: 모든 로그인방식을 사용하고 싶을때 지정.
                 }
@@ -70,7 +70,7 @@ public class App extends Application {
     }
 
     public static App getGlobalApplicationContext() {
-        if(instance == null) {
+        if (instance == null) {
             throw new IllegalStateException("this application does not inherit com.kakao.GlobalApplication");
         }
         return instance;

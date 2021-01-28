@@ -17,7 +17,6 @@ public class ValidateRegisterNick2 extends StringRequest {
         map = new HashMap<>();
         map.put("nick", nick);
         map.put("beforeNick", beforeNick);
-
     }
 
     @Override

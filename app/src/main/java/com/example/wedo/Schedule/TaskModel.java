@@ -7,7 +7,6 @@ public class TaskModel {
     ArrayList<String> subTitle;
     ArrayList<String> booleanValue;
 
-
     public TaskModel() {
         this.title = "업무 설정 안됨";
         subTitle = new ArrayList<String>();
