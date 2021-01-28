@@ -117,6 +117,8 @@ public class ResultActivity extends AppCompatActivity {
                 ButtonSubmit.setText("편집하기");
 
                 final AlertDialog dialog = builder.create();
+
+                //그룹 수정 버튼
                 ButtonSubmit.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         String strID = editTextID.getText().toString();
@@ -173,6 +175,8 @@ public class ResultActivity extends AppCompatActivity {
                 final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
 
                 final AlertDialog dialog1 = builder1.create();
+
+                //그룹 삭제 버튼
                 ButtonSubmit1.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
@@ -194,6 +198,8 @@ public class ResultActivity extends AppCompatActivity {
                         queue.add(UserGroupRemove);
                     }
                 });
+
+                //그룹 삭제 취소 버튼
                 ButtonSubmit2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -203,7 +209,6 @@ public class ResultActivity extends AppCompatActivity {
                 dialog1.show();
             }
         });
-
         load(); //목록 및 할 일을 서버에서 불러옴
     }
 
@@ -218,8 +223,9 @@ public class ResultActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(response);
                     System.out.println("리스폰스 확인 : " + response);
                     JSONArray list = jsonObject.getJSONArray("Schedule_List");
+
                     /**
-                     * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
+                     * 서버에 불러온 Schedule_List의 크기 만큼 돌아 tasksArray에 추가 해주는 반복문
                      */
                     for (int i = 0; i < list.length(); i++) {
                         String tempTaskName = list.getJSONObject(i).getString("userlist");
@@ -246,7 +252,10 @@ public class ResultActivity extends AppCompatActivity {
                             tasks.add(tempTaskModel);
                         }
                     }
-                    System.out.println("할 일: " + tasks.size());
+
+                    /**
+                     * tasksArray의 크기 만큼 돌면서 해당 목록 및 할 일을 생성하는 반복문
+                     */
                     for (int i = 0; i < tasks.size(); i++) {
                         System.out.println("tasks: " + tasks.size());
                         addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.blue, R.drawable.wedo_btn, tasks.get(i).getBooleanValueArray());
@@ -284,7 +293,9 @@ public class ResultActivity extends AppCompatActivity {
 
                 final AlertDialog dialog = builder.create();
 
-                // 3. 다이얼로그에 있는 삽입 버튼을 클릭하면
+                /**
+                 * 목차 추가 버튼
+                 */
                 ButtonSubmit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
