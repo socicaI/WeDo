@@ -18,8 +18,9 @@
         android:roundIcon="@mipmap/ic_launcher_wedo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WeDo">
-        <activity android:name=".Schedule.ResultActivity"></activity>
-        <activity android:name=".Group.NickChangeActivity"/>
+        <activity android:name=".UserSearchActivity"></activity>
+        <activity android:name=".Schedule.ResultActivity" />
+        <activity android:name=".Group.NickChangeActivity" />
         <activity
             android:name=".Group.MainCategoryActivity"
             android:screenOrientation="portrait" />
@@ -32,8 +33,9 @@
         <activity
             android:name=".LookingFor.LookingForPass"
             android:screenOrientation="portrait" />
-        <activity android:name=".Schedule.Loading"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Schedule.Loading"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".LookingFor.LookingFor_ID"
             android:screenOrientation="portrait" />

@@ -6,6 +6,11 @@ public class TaskModel {
     String title;
     ArrayList<String> subTitle;
     ArrayList<String> booleanValue;
+    int percent  = 0;
+    int all;
+    int part;
+    String[] array;
+    String[] checkArray;
 
     public TaskModel() {
         this.title = "업무 설정 안됨";
@@ -60,8 +65,9 @@ public class TaskModel {
     }
 
     public String[] getSubTitleArray() {
-        String[] array = new String[subTitle.size()];
+        array = new String[subTitle.size()];
         System.out.println("체크박스여부1: " + array.length);
+        all  =  array.length;
 
         for (int i = 0; i < subTitle.size(); i++) {
             array[i] = subTitle.get(i);
@@ -70,7 +76,7 @@ public class TaskModel {
     }
 
     public String[] getBooleanValueArray() {
-        String[] checkArray = new String[booleanValue.size()];
+         checkArray = new String[booleanValue.size()];
         System.out.println("체크박스여부2: " + booleanValue.size());
 
         for (int i = 0; i < booleanValue.size(); i++) {
@@ -88,4 +94,20 @@ public class TaskModel {
             System.out.println(Integer.toString(i + 1) + " 번 째 SUB TASK 제목 : " + booleanValue.get(i));
         }
     }
+//    public int getBooleanPercent(){
+//        for(int i = 0; i <booleanValue.size(); i++){
+//            if(booleanValue.get(i).equals("true")){
+//                part +=1;
+//
+//            }
+//        }
+//
+//        System.out.println("파트 222 : "  + all);
+//        percent = (int)( (double)part/ (double)all * 100.0 );
+//
+//        System.out.println("퍼센트 333 : "  + percent);
+//
+//        return percent;
+//    }
+
 }
