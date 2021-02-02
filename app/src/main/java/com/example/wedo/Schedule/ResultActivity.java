@@ -223,14 +223,16 @@ public class ResultActivity extends AppCompatActivity {
             ((TextView) item.findViewById(R.id.title)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (item.isExpanded()) {
-                        item.toggleExpanded();
-                        upImg.setVisibility(View.GONE);
-                        downImg.setVisibility(View.VISIBLE);
-                    } else {
-                        item.toggleExpanded();
-                        upImg.setVisibility(View.VISIBLE);
-                        downImg.setVisibility(View.GONE);
+                    if(item.getSubItemsCount()>0){
+                        if (item.isExpanded()) {
+                            item.toggleExpanded();
+                            upImg.setVisibility(View.GONE);
+                            downImg.setVisibility(View.VISIBLE);
+                        } else {
+                            item.toggleExpanded();
+                            upImg.setVisibility(View.VISIBLE);
+                            downImg.setVisibility(View.GONE);
+                        }
                     }
                 }
             });
