@@ -204,7 +204,7 @@ public class ResultActivity extends AppCompatActivity {
         //Let's create an item with R.layout.expanding_layout
         ExpandingItem item = mExpandingList.createNewItem(R.layout.expanding_layout);
 
-        String orange = "#FFCD12";
+        String blue = "#7ED2FF";
 
         //If item creation is successful, let's configure it
         if (item != null) {
@@ -214,7 +214,7 @@ public class ResultActivity extends AppCompatActivity {
             ((TextView) item.findViewById(R.id.title)).setText(title);
             ((TextView) item.findViewById(R.id.percent)).setText(percent);
             //목차 생성할 때 색
-            ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(orange));
+            ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(blue));
 
             ImageView upImg = (ImageView) item.findViewById(R.id.up2);
             ImageView downImg = (ImageView) item.findViewById(R.id.down2);
