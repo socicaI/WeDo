@@ -37,7 +37,6 @@ import com.example.wedo.ListHttp.UserListUpdate;
 import com.example.wedo.ListHttp.ValidateList;
 import com.example.wedo.Group.MainCategoryActivity;
 import com.example.wedo.R;
-import com.example.wedo.ScheduleHttp.ScheduleCheck;
 import com.example.wedo.ScheduleHttp.ScheduleComplete;
 import com.example.wedo.ScheduleHttp.ScheduleinComplete;
 import com.example.wedo.ScheduleHttp.UserScheduleAdd;
@@ -49,7 +48,6 @@ import com.example.wedo.UserSearchActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -70,9 +68,7 @@ public class ResultActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-
         iniView();
-
         load();
     }
 
@@ -208,6 +204,8 @@ public class ResultActivity extends AppCompatActivity {
         //Let's create an item with R.layout.expanding_layout
         ExpandingItem item = mExpandingList.createNewItem(R.layout.expanding_layout);
 
+        String orange = "#FFCD12";
+
         //If item creation is successful, let's configure it
         if (item != null) {
             item.setIndicatorColorRes(colorRes);
@@ -215,6 +213,8 @@ public class ResultActivity extends AppCompatActivity {
             //It is possible to get any view inside the inflated layout. Let's set the text in the item
             ((TextView) item.findViewById(R.id.title)).setText(title);
             ((TextView) item.findViewById(R.id.percent)).setText(percent);
+            //목차 생성할 때 색
+            ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(orange));
 
             ImageView upImg = (ImageView) item.findViewById(R.id.up2);
             ImageView downImg = (ImageView) item.findViewById(R.id.down2);
@@ -234,7 +234,6 @@ public class ResultActivity extends AppCompatActivity {
                     }
                 }
             });
-            //We can create items in batch.
 
             item.createSubItems(subItems.length);
 
@@ -414,23 +413,25 @@ public class ResultActivity extends AppCompatActivity {
      * 할 일 수정, 삭제, 체크박스 관리
      */
     private void configureSubItem(final ExpandingItem item, final View view, final String subTitle, final String title, String check) {
+
+        String grey = "#D8D8D8";
+        String black = "#000000";
+        String blue = "#7ED2FF";
+        String orange = "#FFCD12";
+        String green = "#1DDB16";
+
         ((TextView) view.findViewById(R.id.sub_title)).setText(subTitle);
         ((TextView) item.findViewById(R.id.title)).setText(title);
         checkBox = view.findViewById(R.id.checkBox);
 
-        System.out.println("타이틀 확인: " + title);
-        System.out.println("서브 타이틀 확인: " + subTitle);
-        System.out.println("체크박스 확인: " + check);
-
-        String grey = "#808080";
-        String black = "#000000";
-
-        System.out.println("체크값2: " + item.getSubItemsCount());
+        if(trueCheck==0.0){
+            ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(blue));
+            item.setIndicatorColorRes(R.color.blue);
+        }
 
         for (int i = 0; i < item.getSubItemsCount(); i++) {
             if (check.equals("true")) {
                 checkBox.setChecked(true);
-                // ((TextView) item.findViewById(R.id.parent)).setText(percent +"%");
                 ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(((TextView) view.findViewById(R.id.sub_title)).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
                 if (!mainTitle.equals(title)) {
@@ -440,10 +441,19 @@ public class ResultActivity extends AppCompatActivity {
                 } else {
                     trueCheck++;
                 }
+
                 DecimalFormat form = new DecimalFormat("#");
-                ((TextView) item.findViewById(R.id.percent)).setText(form.format(trueCheck* 100 / item.getSubItemsCount()) + "%");
-//                ((TextView) item.findViewById(R.id.percent)).setText(form.format(trueCheck / item.getSubItemsCount() * 100) + "%");
-                System.out.println("참참참: " + trueCheck / item.getSubItemsCount());
+
+                if (trueCheck < item.getSubItemsCount()) {
+                    ((TextView) item.findViewById(R.id.percent)).setText(form.format(trueCheck * 100 / item.getSubItemsCount()) + "%");
+                    ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(orange));
+                    item.setIndicatorColor(Color.parseColor(orange));
+                }
+                if (trueCheck == item.getSubItemsCount()) {
+                    ((TextView) item.findViewById(R.id.percent)).setText(form.format(trueCheck * 100 / item.getSubItemsCount()) + "%");
+                    ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(green));
+                    item.setIndicatorColor(Color.parseColor(green));
+                }
                 break;
             }
             if (check.equals("false")) {
@@ -465,20 +475,24 @@ public class ResultActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(String response) {
                             try {
-                                System.out.println(subTitle + "일정 체크");
-                                String a = response;
-                                System.out.println("성공성공1 : " + a);
                                 double checkSchedule = Double.parseDouble(response);
-                                System.out.println("성공성공2 : "+checkSchedule);
-                                System.out.println("성공성공2-1 : "+item.getSubItemsCount());
-
                                 DecimalFormat form = new DecimalFormat("#");
-                                ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule* 100 / item.getSubItemsCount()) + "%");
-                                System.out.println("성공성공2-2 : "+(double)(checkSchedule / item.getSubItemsCount()));
-                            }catch (Exception e){
-                                System.out.println("error message : "+e.getMessage());
-                            }
 
+                                if (checkSchedule < item.getSubItemsCount()) {
+                                    ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
+                                    ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(orange));
+                                    item.setIndicatorColor(Color.parseColor(orange));
+                                }
+                                if (checkSchedule == item.getSubItemsCount()) {
+                                    ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
+                                    ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(green));
+                                    item.setIndicatorColor(Color.parseColor(green));
+                                } else {
+                                    ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
+                                }
+                            } catch (Exception e) {
+                                System.out.println("error message : " + e.getMessage());
+                            }
                         }
                     };
                     ScheduleComplete ScheduleComplete = new ScheduleComplete(str_user, str_group, title, subTitle, responseListener);
@@ -491,13 +505,24 @@ public class ResultActivity extends AppCompatActivity {
                     Response.Listener<String> responseListener = new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            System.out.println(subTitle + "일정 체크 헤제");
-                            String a = response;
                             double checkSchedule = Double.parseDouble(response);
-
                             DecimalFormat form = new DecimalFormat("#");
-                            ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule* 100 / item.getSubItemsCount()) + "%");
-                            System.out.println("해제해제2-2 : "+(double)(checkSchedule / item.getSubItemsCount()));
+
+                            if (checkSchedule < item.getSubItemsCount()) {
+                                ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
+                                ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(orange));
+                                item.setIndicatorColor(Color.parseColor(orange));
+                            }
+                            if (checkSchedule == item.getSubItemsCount()) {
+                                ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
+                                ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(green));
+                                item.setIndicatorColor(Color.parseColor(green));
+                            }
+                            if (checkSchedule * 100 / item.getSubItemsCount() == 0.0) {
+                                ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
+                                ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(blue));
+                                item.setIndicatorColorRes(R.color.blue);
+                            }
                         }
                     };
                     ScheduleinComplete ScheduleinComplete = new ScheduleinComplete(str_user, str_group, title, subTitle, responseListener);
@@ -506,7 +531,6 @@ public class ResultActivity extends AppCompatActivity {
                 }
             }
         });
-
 
         Toast.makeText(this, title, Toast.LENGTH_SHORT).show();
         view.findViewById(R.id.update_sub_item).setOnClickListener(new View.OnClickListener() {
@@ -615,13 +639,7 @@ public class ResultActivity extends AppCompatActivity {
                         /**
                          * sub 삭제
                          */
-                        String list = item.toString();
                         String schedule = subTitle;
-
-                        System.out.println("삭제: " + str_user);
-                        System.out.println("삭제: " + str_group);
-                        System.out.println("삭제: " + title);
-                        System.out.println("삭제: " + schedule);
 
                         UserScheduleRemove UserScheduleRemove = new UserScheduleRemove(str_user, str_group, title, schedule, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
@@ -656,7 +674,6 @@ public class ResultActivity extends AppCompatActivity {
         ButtonSubmit.setText("할 일 추가");
 
         final AlertDialog dialog = builder.create();
-
 
         // 3. 다이얼로그에 있는 삽입 버튼을 클릭하면
         ButtonSubmit.setOnClickListener(new View.OnClickListener() {
@@ -773,7 +790,6 @@ public class ResultActivity extends AppCompatActivity {
             }
         });
 
-
         /**
          * 그룹 수정
          */
@@ -810,7 +826,6 @@ public class ResultActivity extends AppCompatActivity {
                                             }
                                         };
                                         //서버로 volley를 이용해서 요청을 함
-
                                         UserGroupUpdate UserGroupUpdate = new UserGroupUpdate(str_user, str_group, strID, responseListener);
 
                                         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
@@ -828,7 +843,6 @@ public class ResultActivity extends AppCompatActivity {
                         ValidateGroup ValidateGroup = new ValidateGroup(str_user, strID, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                         queue.add(ValidateGroup);
-
                     }
                 });
                 dialog.show();
@@ -884,9 +898,5 @@ public class ResultActivity extends AppCompatActivity {
                 dialog1.show();
             }
         });
-    }
-
-    public void getPercent() {
-
     }
 }
