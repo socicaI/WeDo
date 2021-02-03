@@ -107,6 +107,8 @@ public class NickChangeActivity extends AppCompatActivity {
                                     RequestQueue queue = Volley.newRequestQueue(NickChangeActivity.this);
                                     queue.add(ValidateRegisterNick2);
                                 }
+
+
                                 /**
                                  * google
                                  */
@@ -136,6 +138,8 @@ public class NickChangeActivity extends AppCompatActivity {
                                                 RequestQueue queue = Volley.newRequestQueue(NickChangeActivity.this);
                                                 queue.add(ValidateGmailNick2);
                                             }
+
+
                                             /**
                                              * kakao
                                              */

@@ -223,7 +223,7 @@ public class ResultActivity extends AppCompatActivity {
             ((TextView) item.findViewById(R.id.title)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(item.getSubItemsCount()>0){
+                    if (item.getSubItemsCount() > 0) {
                         if (item.isExpanded()) {
                             item.toggleExpanded();
                             upImg.setVisibility(View.GONE);
@@ -262,7 +262,7 @@ public class ResultActivity extends AppCompatActivity {
                     editTextID.setHint(title);
                     ButtonSubmit.setText("수정하기");
                     AlertDialog dialog = builder.create();
-                    // 3. 다이얼로그에 있는 삽입 버튼을 클릭하면
+                    // 다이얼로그에 있는 삽입 버튼을 클릭하면
                     ButtonSubmit.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -280,6 +280,8 @@ public class ResultActivity extends AppCompatActivity {
                                                 Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
                                                     @Override
                                                     public void onResponse(String response) {
+//                                                        ((TextView) item.findViewById(R.id.title)).setText(List);
+//                                                        dialog.dismiss();
                                                         //스플레쉬
                                                         Intent intent = new Intent(getApplicationContext(), Loading.class);
                                                         intent.putExtra("id", id);
@@ -335,9 +337,8 @@ public class ResultActivity extends AppCompatActivity {
                                                 public void onResponse(String response) {
                                                     final View newSubItem = item.createSubItem();
                                                     configureSubItem(item, newSubItem, List, title, "false");
-                                                    /**
-                                                     * 삽입
-                                                     */
+
+                                                    /** 삽입 */
                                                     Intent intent = new Intent(getApplicationContext(), Loading.class);
                                                     intent.putExtra("id", id);
                                                     intent.putExtra("nick", nick);
@@ -370,7 +371,7 @@ public class ResultActivity extends AppCompatActivity {
                 }
             });
 
-            /**목차 삭제*/
+            /** 목차 삭제 */
             item.findViewById(R.id.remove_item).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -426,7 +427,7 @@ public class ResultActivity extends AppCompatActivity {
         ((TextView) item.findViewById(R.id.title)).setText(title);
         checkBox = view.findViewById(R.id.checkBox);
 
-        if(trueCheck==0.0){
+        if (trueCheck == 0.0) {
             ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(blue));
             item.setIndicatorColorRes(R.color.blue);
         }
@@ -719,7 +720,6 @@ public class ResultActivity extends AppCompatActivity {
     public void iniView() {
 
         Bundle extras = getIntent().getExtras();
-
         id = extras.getString("id");    //그룹명
         nick = extras.getString("nick");    //사용자 이름
         profilePath = extras.getString("profilePath");  //프로필
@@ -728,9 +728,7 @@ public class ResultActivity extends AppCompatActivity {
         userPass = extras.getString("userPass");    //사용자 Pass
         tasks = new ArrayList<>();  // Task Model 클래스 ArrayList
 
-        /**
-         * ExpandingList
-         */
+        /** ExpandingList */
         mExpandingList = findViewById(R.id.expanding_list_main);
         createTitle();
 
@@ -748,9 +746,7 @@ public class ResultActivity extends AppCompatActivity {
         textView.setText(str_group);    //그룹명
         ImageView groupInvite = (ImageView) findViewById(R.id.group_invite);
 
-        /**
-         * 초대된 그룹을 확인 할 수 있는 인물 버튼
-         */
+        /** 초대된 그룹을 확인 할 수 있는 인물 버튼 */
         groupInvite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -782,9 +778,7 @@ public class ResultActivity extends AppCompatActivity {
             }
         });
 
-        /**
-         * 채팅, 그룹수정, 그룹 삭제가 있는 햄버거 버튼
-         */
+        /** 채팅, 그룹수정, 그룹 삭제가 있는 햄버거 버튼 */
         btn_open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -792,9 +786,7 @@ public class ResultActivity extends AppCompatActivity {
             }
         });
 
-        /**
-         * 그룹 수정
-         */
+        /** 그룹 수정 */
         Button updateGroup = (Button) findViewById(R.id.updateGroup);
         updateGroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -815,45 +807,56 @@ public class ResultActivity extends AppCompatActivity {
                 ButtonSubmit.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         String strID = editTextID.getText().toString();
-                        Response.Listener<String> responseListener = new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONObject jsonResponse = new JSONObject(response);
-                                    boolean success = jsonResponse.getBoolean("success");
-                                    if (success) {
-                                        Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
-                                            @Override
-                                            public void onResponse(String response) {
-                                            }
-                                        };
-                                        //서버로 volley를 이용해서 요청을 함
-                                        UserGroupUpdate UserGroupUpdate = new UserGroupUpdate(str_user, str_group, strID, responseListener);
-
-                                        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                                        queue.add(UserGroupUpdate);
-                                        textView.setText(strID);
-                                        dialog.dismiss();
-                                    } else {
-                                        Toast.makeText(ResultActivity.this, "그룹명이 존재합니다.", Toast.LENGTH_SHORT).show();
+                        if (strID.equals("")) {
+                            Toast.makeText(ResultActivity.this, "그룹명을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    try {
+                                        JSONObject jsonResponse = new JSONObject(response);
+                                        boolean success = jsonResponse.getBoolean("success");
+                                        if (success) {
+                                            Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                                                @Override
+                                                public void onResponse(String response) {
+                                                    Intent intent = new Intent(getApplicationContext(), Loading.class);
+                                                    intent.putExtra("id", strID);
+                                                    intent.putExtra("nick", nick);
+                                                    intent.putExtra("profilePath", profilePath);
+                                                    intent.putExtra("userEmail", userEmail);
+                                                    intent.putExtra("userID", userID);
+                                                    intent.putExtra("userPass", userPass);
+                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            };
+                                            //서버로 volley를 이용해서 요청을 함
+                                            UserGroupUpdate UserGroupUpdate = new UserGroupUpdate(str_user, str_group, strID, responseListener);
+                                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                            queue.add(UserGroupUpdate);
+                                            textView.setText(strID);
+                                            dialog.dismiss();
+                                        } else {
+                                            Toast.makeText(ResultActivity.this, "그룹명이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
                                 }
-                            }
-                        };
-                        ValidateGroup ValidateGroup = new ValidateGroup(str_user, strID, responseListener);
-                        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                        queue.add(ValidateGroup);
+                            };
+                            ValidateGroup ValidateGroup = new ValidateGroup(str_user, strID, responseListener);
+                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                            queue.add(ValidateGroup);
+                        }
                     }
                 });
                 dialog.show();
             }
         });
 
-        /**
-         * 그룹 삭제
-         */
+        /** 그룹 삭제 */
         Button removeGroup = (Button) findViewById(R.id.removeGroup);
         removeGroup.setOnClickListener(new View.OnClickListener() {
             @Override
