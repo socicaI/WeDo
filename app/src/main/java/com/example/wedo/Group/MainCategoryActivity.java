@@ -147,7 +147,7 @@ public class MainCategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 Dictionary dict = mArrayList.get(position);
-                Toast.makeText(getApplicationContext(), dict.getId() + ' ', Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), dict.getId() + ' ', Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent(getBaseContext(), ResultActivity.class);
 

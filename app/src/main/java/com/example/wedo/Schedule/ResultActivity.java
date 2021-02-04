@@ -116,7 +116,7 @@ public class ResultActivity extends AppCompatActivity {
                     /**tasksArray의 크기 만큼 돌면서 해당 목록 및 할 일을 생성하는 반복문*/
                     for (int i = 0; i < tasks.size(); i++) {
                         System.out.println("tasks: " + tasks.size());
-                        addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.blue, R.drawable.wedo_btn, tasks.get(i).getBooleanValueArray(), "0%");
+                        addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.blue, R.drawable.wedo_img, tasks.get(i).getBooleanValueArray(), "0%");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -166,7 +166,7 @@ public class ResultActivity extends AppCompatActivity {
                                         JSONObject jsonResponse = new JSONObject(response);
                                         boolean success = jsonResponse.getBoolean("success");
                                         if (success) {
-                                            addItem(title, new String[]{}, R.color.blue, R.drawable.wedo_btn, null, "0%");
+                                            addItem(title, new String[]{}, R.color.blue, R.drawable.wedo_img, null, "0%");
                                             dialog.dismiss();
                                             Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
                                                 @Override
@@ -535,7 +535,7 @@ public class ResultActivity extends AppCompatActivity {
             }
         });
 
-        Toast.makeText(this, title, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, title, Toast.LENGTH_SHORT).show();
         view.findViewById(R.id.update_sub_item).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
