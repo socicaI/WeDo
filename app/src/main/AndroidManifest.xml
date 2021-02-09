@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_wedo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WeDo">
-        <activity android:name=".UserSearchActivity"></activity>
+        <activity android:name=".SearchFilter.UserSearchActivity"></activity>
         <activity android:name=".Schedule.ResultActivity" />
         <activity android:name=".Group.NickChangeActivity" />
         <activity

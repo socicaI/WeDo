@@ -4,7 +4,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -43,7 +42,7 @@ import com.example.wedo.ScheduleHttp.UserScheduleAdd;
 import com.example.wedo.ScheduleHttp.UserScheduleRemove;
 import com.example.wedo.ScheduleHttp.UserScheduleUpdate;
 import com.example.wedo.ScheduleHttp.ValidateSchedule;
-import com.example.wedo.UserSearchActivity;
+import com.example.wedo.SearchFilter.UserSearchActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -766,8 +765,9 @@ public class ResultActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getApplicationContext(), UserSearchActivity.class);
-                        intent.putExtra("profileUri", str_profile);
-                        intent.putExtra("ID", str_user);
+                        intent.putExtra("id", id);
+                        intent.putExtra("nick", nick);
+                        intent.putExtra("profilePath", profilePath);
                         intent.putExtra("userEmail", userEmail);
                         intent.putExtra("userID", userID);
                         intent.putExtra("userPass", userPass);

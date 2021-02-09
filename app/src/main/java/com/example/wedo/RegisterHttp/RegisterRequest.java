@@ -15,7 +15,7 @@ public class RegisterRequest extends StringRequest {
     final static private String URL = "http://13.209.99.25/Register.php";
     private Map<String, String> map;
 
-    public RegisterRequest(String userID, String nick, String userPass, String email, String emailSuccess, String downloadUri, Response.Listener<String> listener) {
+    public RegisterRequest(String userID, String nick, String userPass, String email, String emailSuccess, String profilePath, Response.Listener<String> listener) {
         super(Method.POST, URL, listener, null);//위 url에 post방식으로 값을 전송
 
         map = new HashMap<>();
@@ -24,7 +24,7 @@ public class RegisterRequest extends StringRequest {
         map.put("userPass", userPass);
         map.put("email", email);
         map.put("emailSuccess", String.valueOf(emailSuccess));
-        map.put("downloadUri", downloadUri);
+        map.put("profilePath", profilePath);
     }
 
     @Override

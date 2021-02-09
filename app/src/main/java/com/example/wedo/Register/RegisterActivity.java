@@ -97,7 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
 
-        /*
+        /**
         비밀번호 입력 재확인란이 비밀번호 입력란과 서로 일치한지 확인하기 위한 메소드
          */
         registration_password_check_input.addTextChangedListener(new TextWatcher() {
@@ -105,7 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
-            /*
+            /**
             비밀번호 입력란과 비밀번호 입력 재확인란이 서로 일치한지 판별하여 맞다면 'V' 이미지를 아닐 경우 'X' 이미지를 보여주기 위한 메소드
              */
             @Override
@@ -132,7 +132,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        /*
+        /**
         위와 동일 (비밀번호 입력란과 비밀번호 입력 재확인란과 서로 일치한지 확인하기 위한 메소드)
          */
         registration_password_input.addTextChangedListener(new TextWatcher() {
@@ -140,7 +140,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
-            /*
+            /**
             비밀번호 입력란과 비밀번호 입력 재확인란이 서로 일치한지 판별하여 맞다면 'V' 이미지를 아닐 경우 'X' 이미지를 보여주기 위한 메소드
              */
             @Override
@@ -167,7 +167,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        /*
+        /**
         아이디를 다시 수정했을 경우
          */
         registration_id_input.addTextChangedListener(new TextWatcher() {
@@ -187,7 +187,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        /*
+        /**
         사용할 이름을 다시 수정했을 경우
          */
         setNickInput.addTextChangedListener(new TextWatcher() {
@@ -207,7 +207,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        /*
+        /**
         이메일의 인증 버튼을 통해 양식에 맞게 이메일을 입력했다면 해당 메일로 인증 메일이 전송이 되는 메소드.
          */
         emailValidateButton = findViewById(R.id.emailValidateButton);
@@ -260,10 +260,6 @@ public class RegisterActivity extends AppCompatActivity {
                                                                                    }
                                                                                };
                                                                                EmailRequest EmailRequest = new EmailRequest(inputEmail, num, sendEmail, responseListener1);
-                                                                               System.out.println("123" + inputEmail);
-                                                                               System.out.println("123" + num);
-                                                                               System.out.println("123" + sendEmail);
-
                                                                                RequestQueue queue1 = Volley.newRequestQueue(RegisterActivity.this);
                                                                                queue1.add(EmailRequest);
                                                                            } else {
@@ -279,7 +275,6 @@ public class RegisterActivity extends AppCompatActivity {
                                                                    }
                                                                };
                                                                Validate_emailRequest Validate_emailRequest = new Validate_emailRequest(inputEmail, responseListener);
-                                                               System.out.println("이리오너라~~111: " + inputEmail);
                                                                RequestQueue queue = Volley.newRequestQueue(RegisterActivity.this);
                                                                queue.add(Validate_emailRequest);
                                                            } else { //이메일 양식에 맞지 않게 텍스트를 입력했을 경우 다이얼로그 출력.
@@ -348,7 +343,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        /*
+        /**
         아이디 중복 체크 버튼을 통해 DB에 중복되는 아이디가 있는지 체크하는 메소드
          */
         id_validate_button = findViewById(R.id.id_validate_button); //중복 확인 버튼
@@ -367,7 +362,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
 
-                /*
+                /**
                 ID 입력란에 입력 되어 있는 상태에서 사용할 수 있는 ID인지 사용할 수 없는 ID인지 판별해주는 메소드
                  */
                 Response.Listener<String> responseListener = new Response.Listener<String>() {

@@ -54,7 +54,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
         viewholder.id.setGravity(Gravity.CENTER);
 
-
         viewholder.id.setText(mList.get(position).getId());
     }
 

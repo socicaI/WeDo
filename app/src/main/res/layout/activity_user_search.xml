@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#03A9F4"
     android:orientation="vertical"
-    tools:context=".UserSearchActivity">
+    tools:context=".SearchFilter.UserSearchActivity">
 
     <EditText
         android:id="@+id/userSearch"
@@ -15,16 +15,19 @@
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
         android:background="@xml/user_search_background"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView"
         android:hint="사용자 검색"
         android:inputType="textPersonName"
-        android:textSize="30dp" />
+        android:textSize="30dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="300dp"
         android:layout_height="440dp"
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
-        android:background="#4BBDF1" />
+        android:background="@drawable/user_search_border" />
 
 
 </LinearLayout>
