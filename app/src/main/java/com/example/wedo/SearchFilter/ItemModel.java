@@ -2,11 +2,11 @@ package com.example.wedo.SearchFilter;
 
 public class ItemModel {
     private String imageResource;
-    private String text1;
+    private String text;
 
     public ItemModel(String imageResource, String text1) {
         this.imageResource = imageResource;
-        this.text1 = text1;
+        this.text = text1;
     }
 
     public String getImageResource() {
@@ -17,12 +17,12 @@ public class ItemModel {
         this.imageResource = imageResource;
     }
 
-    public String getText1() {
-        return text1;
+    public String getText() {
+        return text;
     }
 
-    public void setText1(String text1) {
-        this.text1 = text1;
+    public void setText(String text) {
+        this.text = text;
     }
 }
 

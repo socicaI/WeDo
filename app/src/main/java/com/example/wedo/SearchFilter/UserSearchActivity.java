@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -94,7 +95,6 @@ public class UserSearchActivity extends AppCompatActivity implements ItemAdapter
             }
         };
         Bundle extras = getIntent().getExtras();
-        System.out.println("유저는유저: "+extras.getString("nick"));
         SearchRequest SearchRequest = new SearchRequest(extras.getString("nick"), responseListener);
         RequestQueue queue = Volley.newRequestQueue(UserSearchActivity.this);
         queue.add(SearchRequest);
@@ -139,7 +139,18 @@ public class UserSearchActivity extends AppCompatActivity implements ItemAdapter
      ***************************************************/
     @Override
     public void onItemClicked(int position) {
-        Toast.makeText(this, "" + position, Toast.LENGTH_SHORT).show();
+        ItemModel model = itemList.get(position);
+
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getApplicationContext(), "" + model.getText() + "님을 초대하였습니다.", Toast.LENGTH_SHORT).show();
+            }
+        };
+        Bundle extras = getIntent().getExtras();
+        InviteRequest InviteRequest = new InviteRequest(model.getText(), extras.getString("nick"), extras.getString("id"), model.getImageResource(), responseListener);
+        RequestQueue queue = Volley.newRequestQueue(UserSearchActivity.this);
+        queue.add(InviteRequest);
     }
 
     @Override

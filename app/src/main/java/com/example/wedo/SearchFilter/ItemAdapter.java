@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -69,17 +70,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 .into(holder.imageView);
 
         /**가입된 사용자 이름을 불러옴*/
-        holder.textView1.setText(currentItem.getText1());
+        holder.textView.setText(currentItem.getText());
 
         // TODO : 리스너를 정의하시오.
         if (mListener != null){
             int pos = position;
             //final ItemModel item = mItems.get(viewHolder.getAdapterPosition());
-            holder.itemView.setOnClickListener(new View.OnClickListener(){
+            holder.user_invite.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
                     mListener.onItemClicked(pos);
-                    //mListener.onItemClicked(item);
                 }
             });
             //버튼등에도 동일하게 지정할 수 있음 holder.버튼이름.setOnClickListener..형식으로
@@ -111,7 +111,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 String filterPattern = constraint.toString().toLowerCase().trim();
                 for (ItemModel item : mDataListAll) {
                     //TODO filter 대상 setting
-                    if (item.getText1().toLowerCase().contains(filterPattern)) {
+                    if (item.getText().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }
@@ -134,13 +134,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     class ItemViewHolder extends RecyclerView.ViewHolder {
         // TODO : 뷰홀더 완성하시오
         ImageView imageView;
-        TextView textView1;
+        TextView textView;
+        Button user_invite;
 
         ItemViewHolder(View itemView) {
             super(itemView);
             // TODO : 뷰홀더 완성하시오
             imageView = itemView.findViewById(R.id.profile_image_view);
-            textView1 = itemView.findViewById(R.id.text_view1);
+            textView = itemView.findViewById(R.id.text_view);
+            user_invite = itemView.findViewById(R.id.user_invite);
         }
     }
 
