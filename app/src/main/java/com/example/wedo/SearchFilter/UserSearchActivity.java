@@ -144,13 +144,32 @@ public class UserSearchActivity extends AppCompatActivity implements ItemAdapter
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getApplicationContext(), "" + model.getText() + "님을 초대하였습니다.", Toast.LENGTH_SHORT).show();
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    if(success){
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Toast.makeText(getApplicationContext(), "" + model.getText() + "님을 초대하였습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        };
+                        Bundle extras = getIntent().getExtras();
+                        InviteRequest InviteRequest = new InviteRequest(model.getText(), extras.getString("nick"), extras.getString("id"), model.getImageResource(), responseListener);
+                        RequestQueue queue = Volley.newRequestQueue(UserSearchActivity.this);
+                        queue.add(InviteRequest);
+                    }else{
+                        Toast.makeText(getApplicationContext(), "이미 초대된 사용자입니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }catch (Exception e){
+                    System.out.println("에러 메시지: "+ e.toString());
+                }
             }
         };
         Bundle extras = getIntent().getExtras();
-        InviteRequest InviteRequest = new InviteRequest(model.getText(), extras.getString("nick"), extras.getString("id"), model.getImageResource(), responseListener);
+        ValidateInvite ValidateInvite = new ValidateInvite(model.getText(), extras.getString("nick"), extras.getString("id"), responseListener);
         RequestQueue queue = Volley.newRequestQueue(UserSearchActivity.this);
-        queue.add(InviteRequest);
+        queue.add(ValidateInvite);
     }
 
     @Override
