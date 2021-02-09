@@ -93,7 +93,9 @@ public class UserSearchActivity extends AppCompatActivity implements ItemAdapter
                 }
             }
         };
-        SearchRequest SearchRequest = new SearchRequest(responseListener);
+        Bundle extras = getIntent().getExtras();
+        System.out.println("유저는유저: "+extras.getString("nick"));
+        SearchRequest SearchRequest = new SearchRequest(extras.getString("nick"), responseListener);
         RequestQueue queue = Volley.newRequestQueue(UserSearchActivity.this);
         queue.add(SearchRequest);
     }
