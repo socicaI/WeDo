@@ -26,7 +26,7 @@
         android:textColor="#9E9090"
         android:layout_gravity="bottom|right"
         android:layout_marginRight="80dp"
-        android:text="반장:"
+        android:text="팀장:"
         android:textSize="10dp"
         android:textStyle="bold" />
     <TextView

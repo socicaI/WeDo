@@ -893,7 +893,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 //그룹 삭제 버튼
                 ButtonSubmit1.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
                                 Intent intent = new Intent(getApplicationContext(), MainCategoryActivity.class);
@@ -972,7 +972,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     }
 
     /**
-     * 그룹 반장이 특정 사용자를 추방할 수 있는 메소드
+     * 그룹 반장이 그룹에서 특정 사용자를 내보낼 수 있는 메소드
      */
     @Override
     public void onItemClicked(int position) {
@@ -984,7 +984,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         builder1.setView(view1);
 
         final TextView out = (TextView) view1.findViewById(R.id.delete_text);
-        out.setText("추방시키겠습니까?");
+        out.setText("내보내시겠습니까?");
         final Button ButtonSubmit1 = (Button) view1.findViewById(R.id.button_remove_submit);
         final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
 
@@ -996,7 +996,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                     public void onResponse(String response) {
                         OrderItemList.remove(position);
                         adapter.notifyDataSetChanged();
-                        Toast.makeText(ResultActivity.this, model.getText()+"가 추방되었습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ResultActivity.this, model.getText()+"을 내보냈습니다.", Toast.LENGTH_SHORT).show();
                         dialog1.dismiss();
                     }
                 };

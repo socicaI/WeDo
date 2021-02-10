@@ -51,8 +51,7 @@ public class MainCategoryActivity extends AppCompatActivity {
      */
     private ArrayList<Dictionary> mArrayList;
     private CustomAdapter mAdapter;
-    private int count = -1;
-    private String TAG_NAME = "group", TAG_JSON = "webnautes";
+    private String TAG_JSON = "webnautes";
 
     private DrawerLayout drawerLayout;
     private View drawerView;
@@ -122,6 +121,35 @@ public class MainCategoryActivity extends AppCompatActivity {
         MainCategoryGroupRequest MainCategoryGroupRequest = new MainCategoryGroupRequest(strID, responseListener);
         RequestQueue queue = Volley.newRequestQueue(MainCategoryActivity.this);
         queue.add(MainCategoryGroupRequest);
+
+        Response.Listener<String> responseListener1 = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray list = jsonObject.getJSONArray("userSearch");
+
+                    /**
+                     * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
+                     */
+                    for (int i = 0; i < list.length(); i++) {
+                        String group2 = list.getJSONObject(i).getString("orderGroup");
+                        String nick = list.getJSONObject(i).getString("orderUser");
+                        Dictionary dict = new Dictionary(group2);
+                        dict.setUser(nick);
+                        mArrayList.add(dict); //마지막 줄에 삽입됨 1
+                        mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
+                        emptyRecycler.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        InviteGroupRequest InviteGroupRequest = new InviteGroupRequest(strID, responseListener1);
+        RequestQueue queue1 = Volley.newRequestQueue(MainCategoryActivity.this);
+        queue1.add(InviteGroupRequest);
 
         if (mArrayList.size() == 0) {
             emptyRecycler.setVisibility(View.VISIBLE);
@@ -204,15 +232,11 @@ public class MainCategoryActivity extends AppCompatActivity {
                                             emptyRecycler.setVisibility(View.GONE);
                                             mRecyclerView.setVisibility(View.VISIBLE);
                                             Dictionary dict = new Dictionary(strID2);
-//                        mArrayList.add(0, dict); //첫번째 줄에 삽입됨 1
+//                                          mArrayList.add(0, dict); //첫번째 줄에 삽입됨 1
                                             dict.setUser(strID);
 
                                             mArrayList.add(dict); //마지막 줄에 삽입됨 1
-
-
-                                            // 6. 어댑터에서 RecyclerView에 반영하도록 합니다.
-
-//                        mAdapter.notifyItemInserted(0); //첫번째 줄에 삽입됨 2
+//                                          mAdapter.notifyItemInserted(0); //첫번째 줄에 삽입됨 2
                                             mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
                                             dialog.dismiss();
 
