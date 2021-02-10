@@ -970,6 +970,10 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
 
         }
     }
+
+    /**
+     * 그룹 반장이 특정 사용자를 추방할 수 있는 메소드
+     */
     @Override
     public void onItemClicked(int position) {
         OrderInvitees model = OrderItemList.get(position);
@@ -990,8 +994,8 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
                     @Override
                     public void onResponse(String response) {
-//                        mExpandingList.removeItem(item);
-                        
+                        OrderItemList.remove(position);
+                        adapter.notifyDataSetChanged();
                         Toast.makeText(ResultActivity.this, model.getText()+"가 추방되었습니다.", Toast.LENGTH_SHORT).show();
                         dialog1.dismiss();
                     }
