@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class UserSearchActivity extends AppCompatActivity implements ItemAdapter.onItemListener {
 
-    public String id, nick, profilePath, userEmail, userID, userPass;
+    public String id, nick, profilePath, userEmail, userID, userPass, orderNick;
     private ItemAdapter adapter;
     public List<ItemModel> itemList;
     private EditText userSearch;
@@ -128,6 +128,7 @@ public class UserSearchActivity extends AppCompatActivity implements ItemAdapter
         Bundle extras = getIntent().getExtras();
         id = extras.getString("id");    //그룹명
         nick = extras.getString("nick");
+        orderNick = extras.getString("orderNick");
         profilePath = extras.getString("profilePath");  //프로필
         userEmail = extras.getString("userEmail");
         userID = extras.getString("userID");
@@ -179,6 +180,7 @@ public class UserSearchActivity extends AppCompatActivity implements ItemAdapter
         Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
         intent.putExtra("id", id);
         intent.putExtra("nick", nick);
+        intent.putExtra("orderNick",orderNick);
         intent.putExtra("profilePath", profilePath);
         intent.putExtra("userID", userID);
         intent.putExtra("userPass", userPass);

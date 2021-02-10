@@ -79,7 +79,6 @@ public class MainCategoryActivity extends AppCompatActivity {
 
         mArrayList = new ArrayList<>();
 
-        //mAdapter = new CustomAdapter( mArrayList);
         mAdapter = new CustomAdapter(this, mArrayList);
 
         mRecyclerView.setAdapter(mAdapter);
@@ -102,17 +101,12 @@ public class MainCategoryActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray group = jsonObject.getJSONArray(TAG_JSON);
 
-                    Log.e("user2: ", String.valueOf(group.length()));
-
                     /**
                      * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
                      */
                     for (int i = 0; i < group.length(); i++) {
                         JSONObject item = group.getJSONObject(i);
-
                         String group1 = item.getString("group");
-                        Log.e("유저 그룹: ", group1);
-
                         Dictionary dict = new Dictionary(group1);
                         dict.setUser(strID);
                         mArrayList.add(dict); //마지막 줄에 삽입됨 1
@@ -129,7 +123,6 @@ public class MainCategoryActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(MainCategoryActivity.this);
         queue.add(MainCategoryGroupRequest);
 
-        Log.e("어레이에 값 들어있나(Group)", String.valueOf(mArrayList.size()));
         if (mArrayList.size() == 0) {
             emptyRecycler.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
@@ -149,7 +142,8 @@ public class MainCategoryActivity extends AppCompatActivity {
                 Intent intent = new Intent(getBaseContext(), ResultActivity.class);
 
                 intent.putExtra("id", dict.getId());
-                intent.putExtra("nick", dict.getUser());
+                intent.putExtra("nick", strID);
+                intent.putExtra("orderNick", dict.getUser());
                 intent.putExtra("profilePath", profilePath);
                 intent.putExtra("userEmail", userEmail);
                 intent.putExtra("userID", userID);

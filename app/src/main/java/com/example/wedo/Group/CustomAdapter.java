@@ -24,6 +24,8 @@ import com.example.wedo.GroupHttp.UserGroupRemove;
 import com.example.wedo.GroupHttp.UserGroupUpdate;
 import com.example.wedo.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 /**
@@ -55,6 +57,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         viewholder.id.setGravity(Gravity.CENTER);
 
         viewholder.id.setText(mList.get(position).getId());
+
+        viewholder.user.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+
+        viewholder.user.setGravity(Gravity.CENTER);
+
+        viewholder.user.setText(mList.get(position).getUser());
     }
 
     @Override
@@ -66,11 +74,13 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     public class CustomViewHolder extends RecyclerView.ViewHolder
             implements View.OnCreateContextMenuListener { // 1. 리스너 추가
         protected TextView id;
+        protected TextView user;
 
 
         public CustomViewHolder(View view) {
             super(view);
             this.id = (TextView) view.findViewById(R.id.id_listitem);
+            this.user = (TextView) view.findViewById(R.id.order);
 
             view.setOnCreateContextMenuListener(this); //2. 리스너 등록
         }

@@ -3,6 +3,8 @@ package com.example.wedo.Schedule;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -42,7 +44,12 @@ import com.example.wedo.ScheduleHttp.UserScheduleAdd;
 import com.example.wedo.ScheduleHttp.UserScheduleRemove;
 import com.example.wedo.ScheduleHttp.UserScheduleUpdate;
 import com.example.wedo.ScheduleHttp.ValidateSchedule;
+import com.example.wedo.SearchFilter.InviteRequest;
+import com.example.wedo.SearchFilter.ItemAdapter;
+import com.example.wedo.SearchFilter.ItemModel;
+import com.example.wedo.SearchFilter.SearchRequest;
 import com.example.wedo.SearchFilter.UserSearchActivity;
+import com.example.wedo.SearchFilter.ValidateInvite;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +57,7 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -57,11 +65,14 @@ public class ResultActivity extends AppCompatActivity {
     public CheckBox checkBox;   //할 일 체크박스
     private DrawerLayout drawerLayout;
     private View drawerView, drawerGroupView;
-    public String id, nick, profilePath, userEmail, userID, userPass;   //그룹명, 사용자 이름, 프로필, 사용자 이메일, 사용자 Id, 사용자 Pass
+    public String id, nick, profilePath, userEmail, userID, userPass, orderNick;   //그룹명, 사용자 이름, 프로필, 사용자 이메일, 사용자 Id, 사용자 Pass, 그룹 반장명
     public String str_group, str_user, str_profile; //그룹명, 사용자 이름, 프로필
     private ArrayList<TaskModel> tasks;
     public String mainTitle = "a";
     public Double trueCheck = 0.0;
+    public List<OrderInvitees> OrderItemList;   //반장 리스트
+    private OrderAdapter adapter;   //반장 어댑터
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +80,7 @@ public class ResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_result);
         iniView();
         load();
+        invitees();
     }
 
     /**
@@ -285,6 +297,7 @@ public class ResultActivity extends AppCompatActivity {
                                                         Intent intent = new Intent(getApplicationContext(), Loading.class);
                                                         intent.putExtra("id", id);
                                                         intent.putExtra("nick", nick);
+                                                        intent.putExtra("orderNick", orderNick);
                                                         intent.putExtra("profilePath", profilePath);
                                                         intent.putExtra("userEmail", userEmail);
                                                         intent.putExtra("userID", userID);
@@ -341,6 +354,7 @@ public class ResultActivity extends AppCompatActivity {
                                                     Intent intent = new Intent(getApplicationContext(), Loading.class);
                                                     intent.putExtra("id", id);
                                                     intent.putExtra("nick", nick);
+                                                    intent.putExtra("orderNick", orderNick);
                                                     intent.putExtra("profilePath", profilePath);
                                                     intent.putExtra("userEmail", userEmail);
                                                     intent.putExtra("userID", userID);
@@ -578,6 +592,7 @@ public class ResultActivity extends AppCompatActivity {
                                                     Intent intent = new Intent(getApplicationContext(), Loading.class);
                                                     intent.putExtra("id", id);
                                                     intent.putExtra("nick", nick);
+                                                    intent.putExtra("orderNick", orderNick);
                                                     intent.putExtra("profilePath", profilePath);
                                                     intent.putExtra("userEmail", userEmail);
                                                     intent.putExtra("userID", userID);
@@ -629,6 +644,7 @@ public class ResultActivity extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext(), Loading.class);
                                 intent.putExtra("id", id);
                                 intent.putExtra("nick", nick);
+                                intent.putExtra("orderNick", orderNick);
                                 intent.putExtra("profilePath", profilePath);
                                 intent.putExtra("userEmail", userEmail);
                                 intent.putExtra("userID", userID);
@@ -721,6 +737,7 @@ public class ResultActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         id = extras.getString("id");    //그룹명
         nick = extras.getString("nick");    //사용자 이름
+        orderNick = extras.getString("orderNick");  //그룹 반장 이름
         profilePath = extras.getString("profilePath");  //프로필
         userEmail = extras.getString("userEmail");  //사용자 이메일
         userID = extras.getString("userID");    //사용자 Id
@@ -767,6 +784,7 @@ public class ResultActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), UserSearchActivity.class);
                         intent.putExtra("id", id);
                         intent.putExtra("nick", nick);
+                        intent.putExtra("orderNick",orderNick);
                         intent.putExtra("profilePath", profilePath);
                         intent.putExtra("userEmail", userEmail);
                         intent.putExtra("userID", userID);
@@ -823,6 +841,7 @@ public class ResultActivity extends AppCompatActivity {
                                                     Intent intent = new Intent(getApplicationContext(), Loading.class);
                                                     intent.putExtra("id", strID);
                                                     intent.putExtra("nick", nick);
+                                                    intent.putExtra("orderNick", orderNick);
                                                     intent.putExtra("profilePath", profilePath);
                                                     intent.putExtra("userEmail", userEmail);
                                                     intent.putExtra("userID", userID);
@@ -903,5 +922,51 @@ public class ResultActivity extends AppCompatActivity {
                 dialog1.show();
             }
         });
+    }
+
+    /**
+     * 초대된 사용자
+     */
+    public void invitees(){
+        if(nick.equals(orderNick)){
+            //recyclerview
+            RecyclerView recyclerView = findViewById(R.id.inviteesInfo);
+            recyclerView.setHasFixedSize(true);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+
+            //adapter
+            OrderItemList = new ArrayList<>();
+
+            /**
+             * WeDo에 가입된 사용자 이름을 불러오는 클래스
+             */
+            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        JSONArray list = jsonObject.getJSONArray("userSearch");
+                        for (int i = 0; i < list.length(); i++) {
+                            /**
+                             * userName의 값을 출력해야하는 부분
+                             */
+                            OrderItemList.add(new OrderInvitees(list.getJSONObject(i).getString("profilePath"), list.getJSONObject(i).getString("invitees")));
+                            adapter = new OrderAdapter(OrderItemList);    //생성된 item들을 adapter에서 생성
+                            recyclerView.setLayoutManager(layoutManager);   //recyclerView에 item을 Linear형식으로 만듦
+                            recyclerView.setAdapter(adapter);
+//                            adapter.setOnClickListener(ResultActivity.this);    //어댑터의 리스너 호출
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            Bundle extras = getIntent().getExtras();
+            OrderRequest OrderRequest = new OrderRequest(extras.getString("orderNick"), extras.getString("id"), responseListener);
+            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+            queue.add(OrderRequest);
+        }else{
+
+        }
     }
 }

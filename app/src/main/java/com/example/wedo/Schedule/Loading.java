@@ -9,7 +9,7 @@ import com.example.wedo.R;
 
 public class Loading extends Activity {
 
-    public String id, nick, profilePath, userEmail, userID, userPass;
+    public String id, nick, profilePath, userEmail, userID, userPass, orderNick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +19,7 @@ public class Loading extends Activity {
         id = extras.getString("id");    //그룹명
         nick = extras.getString("nick");
         profilePath = extras.getString("profilePath");  //프로필
+        orderNick = extras.getString("orderNick");
         userEmail = extras.getString("userEmail");
         userID = extras.getString("userID");
         userPass = extras.getString("userPass");
@@ -37,6 +38,7 @@ public class Loading extends Activity {
             Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
             intent.putExtra("id", id);
             intent.putExtra("nick", nick);
+            intent.putExtra("orderNick", orderNick);
             intent.putExtra("profilePath", profilePath);
             intent.putExtra("userID", userID);
             intent.putExtra("userPass", userPass);

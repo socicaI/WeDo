@@ -20,6 +20,25 @@
         android:textSize="30dp"
         android:textStyle="bold" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#9E9090"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="80dp"
+        android:text="반장:"
+        android:textSize="10dp"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#9E9090"
+        android:layout_gravity="bottom|left"
+        android:layout_marginLeft="245dp"
+        android:text="TextView"
+        android:textSize="10dp"/>
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
