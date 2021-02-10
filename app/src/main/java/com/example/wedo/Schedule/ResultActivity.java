@@ -54,12 +54,13 @@ import com.example.wedo.SearchFilter.ValidateInvite;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultActivity extends AppCompatActivity {
+public class ResultActivity extends AppCompatActivity implements OrderAdapter.onItemListener{
 
     private ExpandingList mExpandingList;   //목록 및 할 일에 관한 ExpandingList
     public CheckBox checkBox;   //할 일 체크박스
@@ -954,7 +955,7 @@ public class ResultActivity extends AppCompatActivity {
                             adapter = new OrderAdapter(OrderItemList);    //생성된 item들을 adapter에서 생성
                             recyclerView.setLayoutManager(layoutManager);   //recyclerView에 item을 Linear형식으로 만듦
                             recyclerView.setAdapter(adapter);
-//                            adapter.setOnClickListener(ResultActivity.this);    //어댑터의 리스너 호출
+                            adapter.setOnClickListener(ResultActivity.this);    //어댑터의 리스너 호출
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -968,5 +969,45 @@ public class ResultActivity extends AppCompatActivity {
         }else{
 
         }
+    }
+    @Override
+    public void onItemClicked(int position) {
+        OrderInvitees model = OrderItemList.get(position);
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(ResultActivity.this);
+        View view1 = LayoutInflater.from(ResultActivity.this)
+                .inflate(R.layout.edit_box2, null, false);
+        builder1.setView(view1);
+
+        final TextView out = (TextView) view1.findViewById(R.id.delete_text);
+        out.setText("추방시키겠습니까?");
+        final Button ButtonSubmit1 = (Button) view1.findViewById(R.id.button_remove_submit);
+        final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
+
+        final AlertDialog dialog1 = builder1.create();
+        ButtonSubmit1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                    @Override
+                    public void onResponse(String response) {
+//                        mExpandingList.removeItem(item);
+                        
+                        Toast.makeText(ResultActivity.this, model.getText()+"가 추방되었습니다.", Toast.LENGTH_SHORT).show();
+                        dialog1.dismiss();
+                    }
+                };
+                //서버로 volley를 이용해서 요청을 함
+                ThrowOutRequest ThrowOutRequest = new ThrowOutRequest(model.getText(), orderNick, id, responseListener);
+                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                queue.add(ThrowOutRequest);
+            }
+        });
+        ButtonSubmit2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog1.dismiss();
+            }
+        });
+        dialog1.show();
     }
 }
