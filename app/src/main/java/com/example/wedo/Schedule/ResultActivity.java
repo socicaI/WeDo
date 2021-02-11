@@ -781,21 +781,24 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 userNickName.setText(str_user);
 
                 /**초대할 사용자를 검색하기 위해 검색 화면으로 전환*/
-                userGroupInvite.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getApplicationContext(), UserSearchActivity.class);
-                        intent.putExtra("id", id);
-                        intent.putExtra("nick", nick);
-                        intent.putExtra("orderNick",orderNick);
-                        intent.putExtra("profilePath", profilePath);
-                        intent.putExtra("userEmail", userEmail);
-                        intent.putExtra("userID", userID);
-                        intent.putExtra("userPass", userPass);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
+                if(nick.equals(orderNick)){
+                    userGroupInvite.setVisibility(View.VISIBLE);
+                    userGroupInvite.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getApplicationContext(), UserSearchActivity.class);
+                            intent.putExtra("id", id);
+                            intent.putExtra("nick", nick);
+                            intent.putExtra("orderNick",orderNick);
+                            intent.putExtra("profilePath", profilePath);
+                            intent.putExtra("userEmail", userEmail);
+                            intent.putExtra("userID", userID);
+                            intent.putExtra("userPass", userPass);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                }
             }
         });
 
@@ -807,124 +810,180 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             }
         });
 
-        /** 그룹 수정 */
-        Button updateGroup = (Button) findViewById(R.id.updateGroup);
-        updateGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
-                View view = LayoutInflater.from(ResultActivity.this)
-                        .inflate(R.layout.edit_box, null, false);
-                builder.setView(view);
-                final Button ButtonSubmit = (Button) view.findViewById(R.id.button_dialog_submit);
-                final EditText editTextID = (EditText) view.findViewById(R.id.mesgase);
+        /**
+         * 그룹 팀장일 경우 그룹 수정 및 삭제 버튼
+         * 그룹 팀장이 아닐 경우 그룹 나가기 버튼
+         * */
+        if(nick.equals(orderNick)){
+            /** 그룹 수정 */
+            Button updateGroup = (Button) findViewById(R.id.updateGroup);
+            updateGroup.setVisibility(View.VISIBLE);
+            updateGroup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+                    View view = LayoutInflater.from(ResultActivity.this)
+                            .inflate(R.layout.edit_box, null, false);
+                    builder.setView(view);
+                    final Button ButtonSubmit = (Button) view.findViewById(R.id.button_dialog_submit);
+                    final EditText editTextID = (EditText) view.findViewById(R.id.mesgase);
 
-                editTextID.setHint(textView.getText().toString());
-                ButtonSubmit.setText("편집하기");
+                    editTextID.setHint(textView.getText().toString());
+                    ButtonSubmit.setText("편집하기");
 
-                final AlertDialog dialog = builder.create();
+                    final AlertDialog dialog = builder.create();
 
-                //그룹 수정 버튼
-                ButtonSubmit.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        String strID = editTextID.getText().toString();
-                        if (strID.equals("")) {
-                            Toast.makeText(ResultActivity.this, "그룹명을 입력해주세요.", Toast.LENGTH_SHORT).show();
-                        } else {
+                    //그룹 수정 버튼
+                    ButtonSubmit.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            String strID = editTextID.getText().toString();
+                            if (strID.equals("")) {
+                                Toast.makeText(ResultActivity.this, "그룹명을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        try {
+                                            JSONObject jsonResponse = new JSONObject(response);
+                                            boolean success = jsonResponse.getBoolean("success");
+                                            if (success) {
+                                                Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                                                    @Override
+                                                    public void onResponse(String response) {
+                                                        Intent intent = new Intent(getApplicationContext(), Loading.class);
+                                                        intent.putExtra("id", strID);
+                                                        intent.putExtra("nick", nick);
+                                                        intent.putExtra("orderNick", orderNick);
+                                                        intent.putExtra("profilePath", profilePath);
+                                                        intent.putExtra("userEmail", userEmail);
+                                                        intent.putExtra("userID", userID);
+                                                        intent.putExtra("userPass", userPass);
+                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                        startActivity(intent);
+                                                        finish();
+                                                    }
+                                                };
+                                                //서버로 volley를 이용해서 요청을 함
+                                                UserGroupUpdate UserGroupUpdate = new UserGroupUpdate(str_user, str_group, strID, responseListener);
+                                                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                                queue.add(UserGroupUpdate);
+                                                textView.setText(strID);
+                                                dialog.dismiss();
+                                            } else {
+                                                Toast.makeText(ResultActivity.this, "그룹명이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                };
+                                ValidateGroup ValidateGroup = new ValidateGroup(str_user, strID, responseListener);
+                                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                queue.add(ValidateGroup);
+                            }
+                        }
+                    });
+                    dialog.show();
+                }
+            });
+
+            /** 그룹 삭제 */
+            Button removeGroup = (Button) findViewById(R.id.removeGroup);
+            removeGroup.setVisibility(View.VISIBLE);
+            removeGroup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(ResultActivity.this);
+                    View view1 = LayoutInflater.from(ResultActivity.this)
+                            .inflate(R.layout.edit_box2, null, false);
+                    builder1.setView(view1);
+                    final Button ButtonSubmit1 = (Button) view1.findViewById(R.id.button_remove_submit);
+                    final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
+
+                    final AlertDialog dialog1 = builder1.create();
+
+                    //그룹 삭제 버튼
+                    ButtonSubmit1.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-                                    try {
-                                        JSONObject jsonResponse = new JSONObject(response);
-                                        boolean success = jsonResponse.getBoolean("success");
-                                        if (success) {
-                                            Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
-                                                @Override
-                                                public void onResponse(String response) {
-                                                    Intent intent = new Intent(getApplicationContext(), Loading.class);
-                                                    intent.putExtra("id", strID);
-                                                    intent.putExtra("nick", nick);
-                                                    intent.putExtra("orderNick", orderNick);
-                                                    intent.putExtra("profilePath", profilePath);
-                                                    intent.putExtra("userEmail", userEmail);
-                                                    intent.putExtra("userID", userID);
-                                                    intent.putExtra("userPass", userPass);
-                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                                    startActivity(intent);
-                                                    finish();
-                                                }
-                                            };
-                                            //서버로 volley를 이용해서 요청을 함
-                                            UserGroupUpdate UserGroupUpdate = new UserGroupUpdate(str_user, str_group, strID, responseListener);
-                                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                                            queue.add(UserGroupUpdate);
-                                            textView.setText(strID);
-                                            dialog.dismiss();
-                                        } else {
-                                            Toast.makeText(ResultActivity.this, "그룹명이 존재합니다.", Toast.LENGTH_SHORT).show();
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
+                                    Intent intent = new Intent(getApplicationContext(), MainCategoryActivity.class);
+                                    intent.putExtra("profileUri", str_profile);
+                                    intent.putExtra("ID", str_user);
+                                    intent.putExtra("userEmail", userEmail);
+                                    intent.putExtra("userID", userID);
+                                    intent.putExtra("userPass", userPass);
+                                    startActivity(intent);
+                                    finish();
                                 }
                             };
-                            ValidateGroup ValidateGroup = new ValidateGroup(str_user, strID, responseListener);
+                            //서버로 volley를 이용해서 요청을 함
+                            UserGroupRemove UserGroupRemove = new UserGroupRemove(str_user, str_group, responseListener);
                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                            queue.add(ValidateGroup);
+                            queue.add(UserGroupRemove);
                         }
-                    }
-                });
-                dialog.show();
-            }
-        });
+                    });
 
-        /** 그룹 삭제 */
-        Button removeGroup = (Button) findViewById(R.id.removeGroup);
-        removeGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(ResultActivity.this);
-                View view1 = LayoutInflater.from(ResultActivity.this)
-                        .inflate(R.layout.edit_box2, null, false);
-                builder1.setView(view1);
-                final Button ButtonSubmit1 = (Button) view1.findViewById(R.id.button_remove_submit);
-                final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
+                    //그룹 삭제 취소 버튼
+                    ButtonSubmit2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog1.dismiss();
+                        }
+                    });
+                    dialog1.show();
+                }
+            });
+        } else {
+            Button leaveGroup = (Button) findViewById(R.id.leaveGroup);
+            leaveGroup.setVisibility(View.VISIBLE);
+            leaveGroup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(ResultActivity.this);
+                    View view1 = LayoutInflater.from(ResultActivity.this)
+                            .inflate(R.layout.edit_box2, null, false);
+                    builder1.setView(view1);
 
-                final AlertDialog dialog1 = builder1.create();
+                    final TextView out = (TextView) view1.findViewById(R.id.delete_text);
+                    out.setText("그룹을 나가시겠습니까?");
+                    final Button ButtonSubmit1 = (Button) view1.findViewById(R.id.button_remove_submit);
+                    final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
 
-                //그룹 삭제 버튼
-                ButtonSubmit1.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Response.Listener<String> responseListener = new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Intent intent = new Intent(getApplicationContext(), MainCategoryActivity.class);
-                                intent.putExtra("profileUri", str_profile);
-                                intent.putExtra("ID", str_user);
-                                intent.putExtra("userEmail", userEmail);
-                                intent.putExtra("userID", userID);
-                                intent.putExtra("userPass", userPass);
-                                startActivity(intent);
-                                finish();
-                            }
-                        };
-                        //서버로 volley를 이용해서 요청을 함
-                        UserGroupRemove UserGroupRemove = new UserGroupRemove(str_user, str_group, responseListener);
-                        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                        queue.add(UserGroupRemove);
-                    }
-                });
-
-                //그룹 삭제 취소 버튼
-                ButtonSubmit2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog1.dismiss();
-                    }
-                });
-                dialog1.show();
-            }
-        });
+                    final AlertDialog dialog1 = builder1.create();
+                    ButtonSubmit1.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                                @Override
+                                public void onResponse(String response) {
+                                    Toast.makeText(ResultActivity.this, "그룹을 나갔습니다.", Toast.LENGTH_SHORT).show();
+                                    dialog1.dismiss();
+                                    Intent intent = new Intent(getApplicationContext(), MainCategoryActivity.class);
+                                    intent.putExtra("profileUri", str_profile);
+                                    intent.putExtra("ID", str_user);
+                                    intent.putExtra("userEmail", userEmail);
+                                    intent.putExtra("userID", userID);
+                                    intent.putExtra("userPass", userPass);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            };
+                            LeaveGroupRequest LeaveGroupRequest = new LeaveGroupRequest(str_user, orderNick, id, responseListener);
+                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                            queue.add(LeaveGroupRequest);
+                        }
+                    });
+                    ButtonSubmit2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog1.dismiss();
+                        }
+                    });
+                    dialog1.show();
+                }
+            });
+        }
     }
 
     /**

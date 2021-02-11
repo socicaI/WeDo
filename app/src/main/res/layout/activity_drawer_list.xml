@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer"
     android:layout_width="170dp"
-    android:layout_height="145dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="end"
     android:layout_marginLeft="170dp"
     android:layout_marginTop="63dp"
@@ -27,6 +27,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:backgroundTint="#AFAAAA"
+        android:visibility="gone"
         android:text="그룹수정"
         android:textStyle="bold" />
 
@@ -37,7 +38,19 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:backgroundTint="#B51E1E"
+        android:visibility="gone"
         android:text="그룹삭제"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/leaveGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:backgroundTint="#B51E1E"
+        android:visibility="gone"
+        android:text="그룹나가기"
         android:textStyle="bold" />
 
 
