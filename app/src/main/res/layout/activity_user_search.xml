@@ -14,9 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
-        android:background="@xml/user_search_background"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"
+        android:textColorHint="@color/white"
         android:hint="사용자 검색"
         android:inputType="textPersonName"
         android:textSize="30dp"/>

@@ -56,9 +56,10 @@
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="-10dp"
         android:backgroundTint="#2196F3"
-        android:visibility="gone"
-        android:text="그룹 초대" />
+        android:text="그룹 초대"
+        android:visibility="gone" />
 
 
 </LinearLayout>
