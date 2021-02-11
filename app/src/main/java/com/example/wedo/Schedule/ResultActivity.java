@@ -67,12 +67,13 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     private DrawerLayout drawerLayout;
     private View drawerView, drawerGroupView;
     public String id, nick, profilePath, userEmail, userID, userPass, orderNick;   //그룹명, 사용자 이름, 프로필, 사용자 이메일, 사용자 Id, 사용자 Pass, 그룹 반장명
-    public String str_group, str_user, str_profile; //그룹명, 사용자 이름, 프로필
+    public String str_group, str_user, str_profile, order_user; //그룹명, 사용자 이름, 프로필
     private ArrayList<TaskModel> tasks;
     public String mainTitle = "a";
     public Double trueCheck = 0.0;
     public List<OrderInvitees> OrderItemList;   //반장 리스트
-    private OrderAdapter adapter;   //반장 어댑터
+    private OrderAdapter adapter;   //초대된 리스트와 관련된 어댑터
+    private InviteesAdapter inviteesAdapter;    //초대받은사람 어댑터
 
 
     @Override
@@ -135,7 +136,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 }
             }
         };
-        ResultActivityListRequest ResultActivityListRequest = new ResultActivityListRequest(str_user, str_group, responseListener);
+        ResultActivityListRequest ResultActivityListRequest = new ResultActivityListRequest(order_user, str_group, responseListener);
         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
         queue.add(ResultActivityListRequest);
     }
@@ -186,7 +187,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                 }
                                             };
                                             //서버로 volley를 이용해서 요청을 함
-                                            UserListAdd UserListAdd = new UserListAdd(str_user, str_group, title, responseListener);
+                                            UserListAdd UserListAdd = new UserListAdd(order_user, str_group, title, responseListener);
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                             queue.add(UserListAdd);
                                         } else {
@@ -197,7 +198,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                     }
                                 }
                             };
-                            ValidateList ValidateList = new ValidateList(str_user, str_group, title, responseListener);
+                            ValidateList ValidateList = new ValidateList(order_user, str_group, title, responseListener);
                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                             queue.add(ValidateList);
                         }
@@ -309,7 +310,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                     }
                                                 };
                                                 //서버로 volley를 이용해서 요청을 함
-                                                UserListUpdate UserListUpdate = new UserListUpdate(str_user, str_group, title, List, responseListener);
+                                                UserListUpdate UserListUpdate = new UserListUpdate(order_user, str_group, title, List, responseListener);
                                                 RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                                 queue.add(UserListUpdate);
                                             } else {
@@ -320,7 +321,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                         }
                                     }
                                 };
-                                ValidateList ValidateList = new ValidateList(str_user, str_group, List, responseListener);
+                                ValidateList ValidateList = new ValidateList(order_user, str_group, List, responseListener);
                                 RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                 queue.add(ValidateList);
                             }
@@ -365,7 +366,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                     finish();
                                                 }
                                             };
-                                            UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(str_user, str_group, title, List, responseListener);
+                                            UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(order_user, str_group, title, List, responseListener);
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                             queue.add(UserScheduleAdd);
                                         } else {
@@ -376,7 +377,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                     }
                                 }
                             };
-                            ValidateSchedule ValidateSchedule = new ValidateSchedule(str_user, str_group, title, List, responseListener);
+                            ValidateSchedule ValidateSchedule = new ValidateSchedule(order_user, str_group, title, List, responseListener);
                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                             queue.add(ValidateSchedule);
                             return title;
@@ -409,7 +410,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                             };
                             //서버로 volley를 이용해서 요청을 함
                             String a = title;
-                            UserListRemove UserListRemove = new UserListRemove(str_user, str_group, a, responseListener);
+                            UserListRemove UserListRemove = new UserListRemove(order_user, str_group, a, responseListener);
                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                             queue.add(UserListRemove);
                         }
@@ -512,7 +513,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                             }
                         }
                     };
-                    ScheduleComplete ScheduleComplete = new ScheduleComplete(str_user, str_group, title, subTitle, responseListener);
+                    ScheduleComplete ScheduleComplete = new ScheduleComplete(order_user, str_group, title, subTitle, responseListener);
                     RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                     queue.add(ScheduleComplete);
                 } else {
@@ -542,7 +543,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                             }
                         }
                     };
-                    ScheduleinComplete ScheduleinComplete = new ScheduleinComplete(str_user, str_group, title, subTitle, responseListener);
+                    ScheduleinComplete ScheduleinComplete = new ScheduleinComplete(order_user, str_group, title, subTitle, responseListener);
                     RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                     queue.add(ScheduleinComplete);
                 }
@@ -603,7 +604,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                     finish();
                                                 }
                                             };
-                                            UserScheduleUpdate UserScheduleUpdate = new UserScheduleUpdate(str_user, str_group, title, subTitle, subtitle, responseListener);
+                                            UserScheduleUpdate UserScheduleUpdate = new UserScheduleUpdate(order_user, str_group, title, subTitle, subtitle, responseListener);
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                             queue.add(UserScheduleUpdate);
                                         } else {
@@ -614,7 +615,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                     }
                                 }
                             };
-                            ValidateSchedule ValidateSchedule = new ValidateSchedule(str_user, str_group, title, subtitle, responseListener);
+                            ValidateSchedule ValidateSchedule = new ValidateSchedule(order_user, str_group, title, subtitle, responseListener);
                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                             queue.add(ValidateSchedule);
                         }
@@ -660,7 +661,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                          */
                         String schedule = subTitle;
 
-                        UserScheduleRemove UserScheduleRemove = new UserScheduleRemove(str_user, str_group, title, schedule, responseListener);
+                        UserScheduleRemove UserScheduleRemove = new UserScheduleRemove(order_user, str_group, title, schedule, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                         queue.add(UserScheduleRemove);
                     }
@@ -751,6 +752,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
 
         str_group = id; //그룹명
         str_user = nick;    //사용자 이름
+        order_user = orderNick; //그룹 팀장 명
         str_profile = profilePath;   //프로필
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerView = (View) findViewById(R.id.drawer);
@@ -967,7 +969,46 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
             queue.add(OrderRequest);
         }else{
+            Bundle extras = getIntent().getExtras();
+            String orderUser = "https://firebasestorage.googleapis.com/v0/b/wedo-b253f.appspot.com/o/images%2Fcrown.png?alt=media&token=e18759ec-6f18-4cc1-abc4-73c757e24e1d";
+            //recyclerview
+            RecyclerView recyclerView = findViewById(R.id.inviteesInfo);
+            recyclerView.setHasFixedSize(true);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
+            //adapter
+            OrderItemList = new ArrayList<>();
+
+            /**팀장 아이템 생성*/
+            OrderItemList.add(new OrderInvitees(extras.getString("profilePath"), extras.getString("orderNick")+"(팀장)"));
+            inviteesAdapter = new InviteesAdapter(OrderItemList);    //생성된 item들을 adapter에서 생성
+            recyclerView.setLayoutManager(layoutManager);   //recyclerView에 item을 Linear형식으로 만듦
+            recyclerView.setAdapter(inviteesAdapter);
+
+            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        JSONArray list = jsonObject.getJSONArray("userSearch");
+
+                        for (int i = 0; i < list.length(); i++) {
+                            /**
+                             * userName의 값을 출력해야하는 부분
+                             */
+                            OrderItemList.add(new OrderInvitees(list.getJSONObject(i).getString("profilePath"), list.getJSONObject(i).getString("invitees")));
+                            inviteesAdapter = new InviteesAdapter(OrderItemList);    //생성된 item들을 adapter에서 생성
+                            recyclerView.setLayoutManager(layoutManager);   //recyclerView에 item을 Linear형식으로 만듦
+                            recyclerView.setAdapter(inviteesAdapter);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            InviteesRequest InviteesRequest = new InviteesRequest(extras.getString("nick"), extras.getString("orderNick"), extras.getString("id"), responseListener);
+            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+            queue.add(InviteesRequest);
         }
     }
 
