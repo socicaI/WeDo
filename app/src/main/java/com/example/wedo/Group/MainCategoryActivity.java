@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.Activity;
 import android.content.Context;
@@ -44,7 +45,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MainCategoryActivity extends AppCompatActivity {
+public class MainCategoryActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     /**
      * RecyclerView 부분
@@ -62,26 +63,35 @@ public class MainCategoryActivity extends AppCompatActivity {
     String profilePath; //프로필 Uri 경로
     String userID, userPass, userEmail;
     private long backKeyPressedTime = 0; //뒤로가기 2번 클릭 시 종료하기 위한 변수
-
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    TextView emptyRecycler;
+    RecyclerView mRecyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_category);
-
-        /**
-         * RecyclerView 부분
-         */
-        TextView emptyRecycler = (TextView) findViewById(R.id.emptyRecycler);
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
+        emptyRecycler = (TextView) findViewById(R.id.emptyRecycler);
+//        emptyRecycler.setVisibility(View.GONE);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(MainCategoryActivity.this);
 
         mArrayList = new ArrayList<>();
 
         mAdapter = new CustomAdapter(this, mArrayList);
 
         mRecyclerView.setAdapter(mAdapter);
+        categoryList();
 
+    }
+
+    public void categoryList() {
+        /**
+         * RecyclerView 부분
+         */
+        mArrayList.clear();
         Intent intent = getIntent();
         strID = intent.getStringExtra("ID");    //사용자 이름
         profilePath = intent.getStringExtra("profileUri");  //사용자 프로필 경로를 받아온다.
@@ -110,9 +120,11 @@ public class MainCategoryActivity extends AppCompatActivity {
                         dict.setUser(strID);
                         mArrayList.add(dict); //마지막 줄에 삽입됨 1
                         mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
-                        emptyRecycler.setVisibility(View.GONE);
-                        mRecyclerView.setVisibility(View.VISIBLE);
                     }
+
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        emptyRecycler.setVisibility(View.GONE);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -139,6 +151,13 @@ public class MainCategoryActivity extends AppCompatActivity {
                         dict.setUser(nick);
                         mArrayList.add(dict); //마지막 줄에 삽입됨 1
                         mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
+//                        emptyRecycler.setVisibility(View.GONE);
+//                        mRecyclerView.setVisibility(View.VISIBLE);
+                    }
+                    if (mArrayList.size() == 0) {
+                        emptyRecycler.setVisibility(View.VISIBLE);
+                        mRecyclerView.setVisibility(View.GONE);
+                    } else {
                         emptyRecycler.setVisibility(View.GONE);
                         mRecyclerView.setVisibility(View.VISIBLE);
                     }
@@ -151,13 +170,6 @@ public class MainCategoryActivity extends AppCompatActivity {
         RequestQueue queue1 = Volley.newRequestQueue(MainCategoryActivity.this);
         queue1.add(InviteGroupRequest);
 
-        if (mArrayList.size() == 0) {
-            emptyRecycler.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
-        } else {
-            emptyRecycler.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
-        }
 
         /**
          * RecyclerView 아이템을 눌렀을 때 해당 화면으로 넘어간다.
@@ -367,6 +379,7 @@ public class MainCategoryActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     public void onBackPressed() {
         if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
@@ -376,6 +389,13 @@ public class MainCategoryActivity extends AppCompatActivity {
         } else {
             finish();
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        categoryList();
+
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     /**

@@ -96,7 +96,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-
         /**
         비밀번호 입력 재확인란이 비밀번호 입력란과 서로 일치한지 확인하기 위한 메소드
          */

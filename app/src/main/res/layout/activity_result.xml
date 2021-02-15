@@ -68,26 +68,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.diegodobelo.expandingview.ExpandingList
-                android:id="@+id/expanding_list_main"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="60dp"
-                android:background="@color/ic_launcher_background_wedo"></com.diegodobelo.expandingview.ExpandingList>
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="65dp">
 
-            <TextView
-                android:id="@+id/emptyRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="60dp"
-                android:background="@color/white"
-                android:gravity="center"
-                android:text="목록을 추가해주세요"
-                android:textSize="25dp"
-                android:textStyle="bold"
-                android:visibility="gone" />
+                <com.diegodobelo.expandingview.ExpandingList
+                    android:id="@+id/expanding_list_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="60dp"
+                    android:background="@color/ic_launcher_background_wedo"/>
+
+                <TextView
+                    android:id="@+id/emptyRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="60dp"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:text="목록을 추가해주세요"
+                    android:textSize="25dp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <ImageButton
                 android:id="@+id/button_main_insert"

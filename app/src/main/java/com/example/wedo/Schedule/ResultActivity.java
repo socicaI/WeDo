@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +62,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultActivity extends AppCompatActivity implements OrderAdapter.onItemListener{
+public class ResultActivity extends AppCompatActivity implements OrderAdapter.onItemListener, SwipeRefreshLayout.OnRefreshListener {
 
     private ExpandingList mExpandingList;   //목록 및 할 일에 관한 ExpandingList
     public CheckBox checkBox;   //할 일 체크박스
@@ -70,10 +72,11 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     public String str_group, str_user, str_profile, order_user; //그룹명, 사용자 이름, 프로필
     private ArrayList<TaskModel> tasks;
     public String mainTitle = "a";
-    public Double trueCheck = 0.0;
-    public List<OrderInvitees> OrderItemList;   //반장 리스트
+    Double trueCheck = 0.0;
+    private List<OrderInvitees> OrderItemList;   //반장 리스트
     private OrderAdapter adapter;   //초대된 리스트와 관련된 어댑터
     private InviteesAdapter inviteesAdapter;    //초대받은사람 어댑터
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     @Override
@@ -85,10 +88,14 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         invitees();
     }
 
+
     /**
      * 목차 및 할 일을 서버에서 불러오게 해주는 메소드
      */
     private void load() {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(ResultActivity.this);
+        mExpandingList.removeAllViews();
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -96,7 +103,6 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                     JSONObject jsonObject = new JSONObject(response);
                     System.out.println("리스폰스 확인 : " + response);
                     JSONArray list = jsonObject.getJSONArray("Schedule_List");
-
                     /**
                      * 서버에 불러온 Schedule_List의 크기 만큼 돌아 tasksArray에 추가 해주는 반복문
                      */
@@ -112,7 +118,6 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                 if (!list.getJSONObject(i).getString("userSchedule").equals("null")) {
                                     tempTaskModel.addSubTitle(list.getJSONObject(i).getString("userSchedule"));
                                     tempTaskModel.addBooleanValue(list.getJSONObject(i).getString("complete"));
-
                                 }
                                 tasks.add(tempTaskModel);
                             }
@@ -125,14 +130,16 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                             tasks.add(tempTaskModel);
                         }
                     }
-
                     /**tasksArray의 크기 만큼 돌면서 해당 목록 및 할 일을 생성하는 반복문*/
                     for (int i = 0; i < tasks.size(); i++) {
                         System.out.println("tasks: " + tasks.size());
                         addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.blue, R.drawable.wedo_img, tasks.get(i).getBooleanValueArray(), "0%");
                     }
+                    tasks.clear();
+                    //여기기다가
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    System.out.println("에러에러: " + e.toString());
                 }
             }
         };
@@ -216,9 +223,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     private void addItem(String title, final String[] subItems, final int colorRes, int iconRes, final String[] booleanValue, String percent) {
         //Let's create an item with R.layout.expanding_layout
         ExpandingItem item = mExpandingList.createNewItem(R.layout.expanding_layout);
-
         String blue = "#7ED2FF";
-
         //If item creation is successful, let's configure it
         if (item != null) {
             item.setIndicatorColorRes(colorRes);
@@ -449,25 +454,30 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
 
         for (int i = 0; i < item.getSubItemsCount(); i++) {
             if (check.equals("true")) {
+
                 checkBox.setChecked(true);
                 ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(((TextView) view.findViewById(R.id.sub_title)).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
                 if (!mainTitle.equals(title)) {
+                    Log.d("TAG", "configureSubItem: 왜 안되나용?1");
                     mainTitle = title;
                     trueCheck = 0.0;
                     trueCheck++;
                 } else {
+                    Log.d("TAG", "configureSubItem: 왜 안되나용?2");
                     trueCheck++;
                 }
-
+                Log.d("TAG", "configureSubItem: 왜 안되나용?3 trueCheck : " +trueCheck);
                 DecimalFormat form = new DecimalFormat("#");
 
                 if (trueCheck < item.getSubItemsCount()) {
+
                     ((TextView) item.findViewById(R.id.percent)).setText(form.format(trueCheck * 100 / item.getSubItemsCount()) + "%");
                     ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(orange));
                     item.setIndicatorColor(Color.parseColor(orange));
                 }
                 if (trueCheck == item.getSubItemsCount()) {
+
                     ((TextView) item.findViewById(R.id.percent)).setText(form.format(trueCheck * 100 / item.getSubItemsCount()) + "%");
                     ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(green));
                     item.setIndicatorColor(Color.parseColor(green));
@@ -475,6 +485,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 break;
             }
             if (check.equals("false")) {
+
                 checkBox.setChecked(false);
                 ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(0);
                 ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(black));
@@ -711,6 +722,15 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         dialog.show();
     }
 
+    @Override
+    public void onRefresh() {
+        trueCheck=0.0;
+        iniView();
+        load();
+        invitees();
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
     /**
      * 사용자가 입력한 목록 및 할 일 명을 출력해주기 위해 필요한 메소드
      */
@@ -769,6 +789,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         groupInvite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                invitees();
                 drawerLayout.openDrawer(drawerGroupView);
 
                 /**사용자 프로필 or 그룹 초대된 사용자 프로필*/
@@ -781,7 +802,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 userNickName.setText(str_user);
 
                 /**초대할 사용자를 검색하기 위해 검색 화면으로 전환*/
-                if(nick.equals(orderNick)){
+                if (nick.equals(orderNick)) {
                     userGroupInvite.setVisibility(View.VISIBLE);
                     userGroupInvite.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -789,7 +810,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                             Intent intent = new Intent(getApplicationContext(), UserSearchActivity.class);
                             intent.putExtra("id", id);
                             intent.putExtra("nick", nick);
-                            intent.putExtra("orderNick",orderNick);
+                            intent.putExtra("orderNick", orderNick);
                             intent.putExtra("profilePath", profilePath);
                             intent.putExtra("userEmail", userEmail);
                             intent.putExtra("userID", userID);
@@ -814,7 +835,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
          * 그룹 팀장일 경우 그룹 수정 및 삭제 버튼
          * 그룹 팀장이 아닐 경우 그룹 나가기 버튼
          * */
-        if(nick.equals(orderNick)){
+        if (nick.equals(orderNick)) {
             /** 그룹 수정 */
             Button updateGroup = (Button) findViewById(R.id.updateGroup);
             updateGroup.setVisibility(View.VISIBLE);
@@ -989,8 +1010,8 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     /**
      * 초대된 사용자
      */
-    public void invitees(){
-        if(nick.equals(orderNick)){
+    public void invitees() {
+        if (nick.equals(orderNick)) {
             //recyclerview
             RecyclerView recyclerView = findViewById(R.id.inviteesInfo);
             recyclerView.setHasFixedSize(true);
@@ -998,7 +1019,9 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
 
             //adapter
             OrderItemList = new ArrayList<>();
-
+            adapter = new OrderAdapter(OrderItemList);    //생성된 item들을 adapter에서 생성
+            recyclerView.setLayoutManager(layoutManager);   //recyclerView에 item을 Linear형식으로 만듦
+            recyclerView.setAdapter(adapter);
             /**
              * WeDo에 가입된 사용자 이름을 불러오는 클래스
              */
@@ -1013,11 +1036,11 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                              * userName의 값을 출력해야하는 부분
                              */
                             OrderItemList.add(new OrderInvitees(list.getJSONObject(i).getString("profilePath"), list.getJSONObject(i).getString("invitees")));
-                            adapter = new OrderAdapter(OrderItemList);    //생성된 item들을 adapter에서 생성
-                            recyclerView.setLayoutManager(layoutManager);   //recyclerView에 item을 Linear형식으로 만듦
-                            recyclerView.setAdapter(adapter);
                             adapter.setOnClickListener(ResultActivity.this);    //어댑터의 리스너 호출
                         }
+
+                            adapter.notifyDataSetChanged();
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1027,9 +1050,8 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             OrderRequest OrderRequest = new OrderRequest(extras.getString("orderNick"), extras.getString("id"), responseListener);
             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
             queue.add(OrderRequest);
-        }else{
+        } else {
             Bundle extras = getIntent().getExtras();
-            String orderUser = "https://firebasestorage.googleapis.com/v0/b/wedo-b253f.appspot.com/o/images%2Fcrown.png?alt=media&token=e18759ec-6f18-4cc1-abc4-73c757e24e1d";
             //recyclerview
             RecyclerView recyclerView = findViewById(R.id.inviteesInfo);
             recyclerView.setHasFixedSize(true);
@@ -1039,7 +1061,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             OrderItemList = new ArrayList<>();
 
             /**팀장 아이템 생성*/
-            OrderItemList.add(new OrderInvitees(extras.getString("profilePath"), extras.getString("orderNick")+"(팀장)"));
+            OrderItemList.add(new OrderInvitees(extras.getString("profilePath"), extras.getString("orderNick") + "(팀장)"));
             inviteesAdapter = new InviteesAdapter(OrderItemList);    //생성된 item들을 adapter에서 생성
             recyclerView.setLayoutManager(layoutManager);   //recyclerView에 item을 Linear형식으로 만듦
             recyclerView.setAdapter(inviteesAdapter);
@@ -1056,10 +1078,8 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                              * userName의 값을 출력해야하는 부분
                              */
                             OrderItemList.add(new OrderInvitees(list.getJSONObject(i).getString("profilePath"), list.getJSONObject(i).getString("invitees")));
-                            inviteesAdapter = new InviteesAdapter(OrderItemList);    //생성된 item들을 adapter에서 생성
-                            recyclerView.setLayoutManager(layoutManager);   //recyclerView에 item을 Linear형식으로 만듦
-                            recyclerView.setAdapter(inviteesAdapter);
                         }
+                        inviteesAdapter.notifyDataSetChanged();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1096,7 +1116,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                     public void onResponse(String response) {
                         OrderItemList.remove(position);
                         adapter.notifyDataSetChanged();
-                        Toast.makeText(ResultActivity.this, model.getText()+"을 내보냈습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ResultActivity.this, model.getText() + "을 내보냈습니다.", Toast.LENGTH_SHORT).show();
                         dialog1.dismiss();
                     }
                 };
