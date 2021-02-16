@@ -78,7 +78,6 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     private InviteesAdapter inviteesAdapter;    //초대받은사람 어댑터
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +86,6 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         load();
         invitees();
     }
-
 
     /**
      * 목차 및 할 일을 서버에서 불러오게 해주는 메소드
@@ -101,7 +99,6 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    System.out.println("리스폰스 확인 : " + response);
                     JSONArray list = jsonObject.getJSONArray("Schedule_List");
                     /**
                      * 서버에 불러온 Schedule_List의 크기 만큼 돌아 tasksArray에 추가 해주는 반복문
@@ -132,14 +129,12 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                     }
                     /**tasksArray의 크기 만큼 돌면서 해당 목록 및 할 일을 생성하는 반복문*/
                     for (int i = 0; i < tasks.size(); i++) {
-                        System.out.println("tasks: " + tasks.size());
                         addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.blue, R.drawable.wedo_img, tasks.get(i).getBooleanValueArray(), "0%");
                     }
                     tasks.clear();
                     //여기기다가
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    System.out.println("에러에러: " + e.toString());
                 }
             }
         };
@@ -156,62 +151,80 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
-
-                View title_view = LayoutInflater.from(ResultActivity.this)
-                        .inflate(R.layout.edit_box, null, false);
-                builder.setView(title_view);
-
-                Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
-                final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
-
-                ButtonSubmit.setText("목차 추가");
-                editTextID.setHint("추가하실 목차를 입력해주세요.");
-
-                final AlertDialog dialog = builder.create();
-
-                /**목차 추가 버튼*/
-                ButtonSubmit.setOnClickListener(new View.OnClickListener() {
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
-                    public void onClick(View view) {
-                        String title = editTextID.getText().toString();
-                        if (title.equals("")) {
-                            Toast.makeText(ResultActivity.this, "목차를 입력해주세요.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Response.Listener<String> responseListener = new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    try {
-                                        JSONObject jsonResponse = new JSONObject(response);
-                                        boolean success = jsonResponse.getBoolean("success");
-                                        if (success) {
-                                            addItem(title, new String[]{}, R.color.blue, R.drawable.wedo_img, null, "0%");
-                                            dialog.dismiss();
-                                            Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("success");
+                            if (success||nick.equals(orderNick)) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+
+                                View title_view = LayoutInflater.from(ResultActivity.this)
+                                        .inflate(R.layout.edit_box, null, false);
+                                builder.setView(title_view);
+
+                                Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
+                                final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
+
+                                ButtonSubmit.setText("목차 추가");
+                                editTextID.setHint("추가하실 목차를 입력해주세요.");
+
+                                final AlertDialog dialog = builder.create();
+
+                                /**목차 추가 버튼*/
+                                ButtonSubmit.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        String title = editTextID.getText().toString();
+                                        if (title.equals("")) {
+                                            Toast.makeText(ResultActivity.this, "목차를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Response.Listener<String> responseListener = new Response.Listener<String>() {
                                                 @Override
                                                 public void onResponse(String response) {
+                                                    try {
+                                                        JSONObject jsonResponse = new JSONObject(response);
+                                                        boolean success = jsonResponse.getBoolean("success");
+                                                        if (success) {
+                                                            addItem(title, new String[]{}, R.color.blue, R.drawable.wedo_img, null, "0%");
+                                                            dialog.dismiss();
+                                                            Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                                                                @Override
+                                                                public void onResponse(String response) {
+                                                                }
+                                                            };
+                                                            //서버로 volley를 이용해서 요청을 함
+                                                            UserListAdd UserListAdd = new UserListAdd(order_user, str_group, title, responseListener);
+                                                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                                            queue.add(UserListAdd);
+                                                        } else {
+                                                            Toast.makeText(ResultActivity.this, "동일한 목차가 존재합니다.", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
                                                 }
                                             };
-                                            //서버로 volley를 이용해서 요청을 함
-                                            UserListAdd UserListAdd = new UserListAdd(order_user, str_group, title, responseListener);
+                                            ValidateList ValidateList = new ValidateList(order_user, str_group, title, responseListener);
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                                            queue.add(UserListAdd);
-                                        } else {
-                                            Toast.makeText(ResultActivity.this, "동일한 목차가 존재합니다.", Toast.LENGTH_SHORT).show();
+                                            queue.add(ValidateList);
                                         }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
                                     }
-                                }
-                            };
-                            ValidateList ValidateList = new ValidateList(order_user, str_group, title, responseListener);
-                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                            queue.add(ValidateList);
+                                });
+                                dialog.show();
+                            } else {
+                                Toast.makeText(ResultActivity.this, "권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                });
-                dialog.show();
+                };
+                Bundle extras = getIntent().getExtras();
+                InviteesCheck InviteesCheck = new InviteesCheck(extras.getString("nick"), extras.getString("orderNick"), extras.getString("id"), responseListener);
+                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                queue.add(InviteesCheck);
             }
         });
     }
@@ -241,17 +254,36 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             ((TextView) item.findViewById(R.id.title)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (item.getSubItemsCount() > 0) {
-                        if (item.isExpanded()) {
-                            item.toggleExpanded();
-                            upImg.setVisibility(View.GONE);
-                            downImg.setVisibility(View.VISIBLE);
-                        } else {
-                            item.toggleExpanded();
-                            upImg.setVisibility(View.VISIBLE);
-                            downImg.setVisibility(View.GONE);
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonResponse = new JSONObject(response);
+                                boolean success = jsonResponse.getBoolean("success");
+                                if (success||nick.equals(orderNick)) {
+                                    if (item.getSubItemsCount() > 0) {
+                                        if (item.isExpanded()) {
+                                            item.toggleExpanded();
+                                            upImg.setVisibility(View.GONE);
+                                            downImg.setVisibility(View.VISIBLE);
+                                        } else {
+                                            item.toggleExpanded();
+                                            upImg.setVisibility(View.VISIBLE);
+                                            downImg.setVisibility(View.GONE);
+                                        }
+                                    }
+                                }else{
+                                    Toast.makeText(ResultActivity.this, "권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
+                    };
+                    Bundle extras = getIntent().getExtras();
+                    InviteesCheck InviteesCheck = new InviteesCheck(extras.getString("nick"), extras.getString("orderNick"), extras.getString("id"), responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                    queue.add(InviteesCheck);
                 }
             });
 
@@ -270,69 +302,88 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             item.findViewById(R.id.update_item).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
-
-                    View title_view = LayoutInflater.from(ResultActivity.this)
-                            .inflate(R.layout.edit_box, null, false);
-                    builder.setView(title_view);
-                    Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
-                    EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
-                    editTextID.setHint(title);
-                    ButtonSubmit.setText("수정하기");
-                    AlertDialog dialog = builder.create();
-                    // 다이얼로그에 있는 삽입 버튼을 클릭하면
-                    ButtonSubmit.setOnClickListener(new View.OnClickListener() {
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
                         @Override
-                        public void onClick(View view) {
-                            String List = editTextID.getText().toString();
-                            if (title.equals("")) {
-                                Toast.makeText(ResultActivity.this, "목차를 입력하세요.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Response.Listener<String> responseListener = new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                        try {
-                                            JSONObject jsonResponse = new JSONObject(response);
-                                            boolean success = jsonResponse.getBoolean("success");
-                                            if (success) {
-                                                Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonResponse = new JSONObject(response);
+                                boolean success = jsonResponse.getBoolean("success");
+                                if (success||nick.equals(orderNick)) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+
+                                    View title_view = LayoutInflater.from(ResultActivity.this)
+                                            .inflate(R.layout.edit_box, null, false);
+                                    builder.setView(title_view);
+                                    Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
+                                    EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
+                                    editTextID.setHint(title);
+                                    ButtonSubmit.setText("수정하기");
+                                    AlertDialog dialog = builder.create();
+                                    // 다이얼로그에 있는 삽입 버튼을 클릭하면
+                                    ButtonSubmit.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            String List = editTextID.getText().toString();
+                                            if (title.equals("")) {
+                                                Toast.makeText(ResultActivity.this, "목차를 입력하세요.", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Response.Listener<String> responseListener = new Response.Listener<String>() {
                                                     @Override
                                                     public void onResponse(String response) {
+                                                        try {
+                                                            JSONObject jsonResponse = new JSONObject(response);
+                                                            boolean success = jsonResponse.getBoolean("success");
+                                                            if (success) {
+                                                                Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                                                                    @Override
+                                                                    public void onResponse(String response) {
 //                                                        ((TextView) item.findViewById(R.id.title)).setText(List);
 //                                                        dialog.dismiss();
-                                                        //스플레쉬
-                                                        Intent intent = new Intent(getApplicationContext(), Loading.class);
-                                                        intent.putExtra("id", id);
-                                                        intent.putExtra("nick", nick);
-                                                        intent.putExtra("orderNick", orderNick);
-                                                        intent.putExtra("profilePath", profilePath);
-                                                        intent.putExtra("userEmail", userEmail);
-                                                        intent.putExtra("userID", userID);
-                                                        intent.putExtra("userPass", userPass);
-                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                                        startActivity(intent);
-                                                        finish();
+                                                                        //스플레쉬
+                                                                        Intent intent = new Intent(getApplicationContext(), Loading.class);
+                                                                        intent.putExtra("id", id);
+                                                                        intent.putExtra("nick", nick);
+                                                                        intent.putExtra("orderNick", orderNick);
+                                                                        intent.putExtra("profilePath", profilePath);
+                                                                        intent.putExtra("userEmail", userEmail);
+                                                                        intent.putExtra("userID", userID);
+                                                                        intent.putExtra("userPass", userPass);
+                                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                                        startActivity(intent);
+                                                                        finish();
+                                                                    }
+                                                                };
+                                                                //서버로 volley를 이용해서 요청을 함
+                                                                UserListUpdate UserListUpdate = new UserListUpdate(order_user, str_group, title, List, responseListener);
+                                                                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                                                queue.add(UserListUpdate);
+                                                            } else {
+                                                                Toast.makeText(ResultActivity.this, "동일한 목차가 존재합니다.", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
                                                     }
                                                 };
-                                                //서버로 volley를 이용해서 요청을 함
-                                                UserListUpdate UserListUpdate = new UserListUpdate(order_user, str_group, title, List, responseListener);
+                                                ValidateList ValidateList = new ValidateList(order_user, str_group, List, responseListener);
                                                 RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                                                queue.add(UserListUpdate);
-                                            } else {
-                                                Toast.makeText(ResultActivity.this, "동일한 목차가 존재합니다.", Toast.LENGTH_SHORT).show();
+                                                queue.add(ValidateList);
                                             }
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
                                         }
-                                    }
-                                };
-                                ValidateList ValidateList = new ValidateList(order_user, str_group, List, responseListener);
-                                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                                queue.add(ValidateList);
+                                    });
+                                    dialog.show();
+                                }else{
+                                    Toast.makeText(ResultActivity.this, "권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
-                    });
-                    dialog.show();
+                    };
+                    Bundle extras = getIntent().getExtras();
+                    InviteesCheck InviteesCheck = new InviteesCheck(extras.getString("nick"), extras.getString("orderNick"), extras.getString("id"), responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                    queue.add(InviteesCheck);
                 }
             });
 
@@ -340,54 +391,73 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             item.findViewById(R.id.add_more_sub_items).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showInsertDialog(new OnItemCreated() {
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
                         @Override
-                        public String itemCreated(final String List) {
-                            Response.Listener<String> responseListener = new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    try {
-                                        JSONObject jsonResponse = new JSONObject(response);
-                                        boolean success = jsonResponse.getBoolean("success");
-                                        Log.e("success", String.valueOf(success));
-                                        if (success) {
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonResponse = new JSONObject(response);
+                                boolean success = jsonResponse.getBoolean("success");
+                                if (success||nick.equals(orderNick)) {
+                                    showInsertDialog(new OnItemCreated() {
+                                        @Override
+                                        public String itemCreated(final String List) {
                                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                                 @Override
                                                 public void onResponse(String response) {
-                                                    final View newSubItem = item.createSubItem();
-                                                    configureSubItem(item, newSubItem, List, title, "false");
+                                                    try {
+                                                        JSONObject jsonResponse = new JSONObject(response);
+                                                        boolean success = jsonResponse.getBoolean("success");
+                                                        Log.e("success", String.valueOf(success));
+                                                        if (success) {
+                                                            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                                                @Override
+                                                                public void onResponse(String response) {
+                                                                    final View newSubItem = item.createSubItem();
+                                                                    configureSubItem(item, newSubItem, List, title, "false");
 
-                                                    /** 삽입 */
-                                                    Intent intent = new Intent(getApplicationContext(), Loading.class);
-                                                    intent.putExtra("id", id);
-                                                    intent.putExtra("nick", nick);
-                                                    intent.putExtra("orderNick", orderNick);
-                                                    intent.putExtra("profilePath", profilePath);
-                                                    intent.putExtra("userEmail", userEmail);
-                                                    intent.putExtra("userID", userID);
-                                                    intent.putExtra("userPass", userPass);
-                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                                    startActivity(intent);
-                                                    finish();
+                                                                    /** 삽입 */
+                                                                    Intent intent = new Intent(getApplicationContext(), Loading.class);
+                                                                    intent.putExtra("id", id);
+                                                                    intent.putExtra("nick", nick);
+                                                                    intent.putExtra("orderNick", orderNick);
+                                                                    intent.putExtra("profilePath", profilePath);
+                                                                    intent.putExtra("userEmail", userEmail);
+                                                                    intent.putExtra("userID", userID);
+                                                                    intent.putExtra("userPass", userPass);
+                                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                                    startActivity(intent);
+                                                                    finish();
+                                                                }
+                                                            };
+                                                            UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(order_user, str_group, title, List, responseListener);
+                                                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                                            queue.add(UserScheduleAdd);
+                                                        } else {
+                                                            Toast.makeText(ResultActivity.this, "동일한 할 일이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
                                                 }
                                             };
-                                            UserScheduleAdd UserScheduleAdd = new UserScheduleAdd(order_user, str_group, title, List, responseListener);
+                                            ValidateSchedule ValidateSchedule = new ValidateSchedule(order_user, str_group, title, List, responseListener);
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                                            queue.add(UserScheduleAdd);
-                                        } else {
-                                            Toast.makeText(ResultActivity.this, "동일한 할 일이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                            queue.add(ValidateSchedule);
+                                            return title;
                                         }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
+                                    });
+                                }else{
+                                    Toast.makeText(ResultActivity.this, "권한이 없습니다.", Toast.LENGTH_SHORT).show();
                                 }
-                            };
-                            ValidateSchedule ValidateSchedule = new ValidateSchedule(order_user, str_group, title, List, responseListener);
-                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                            queue.add(ValidateSchedule);
-                            return title;
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    });
+                    };
+                    Bundle extras = getIntent().getExtras();
+                    InviteesCheck InviteesCheck = new InviteesCheck(extras.getString("nick"), extras.getString("orderNick"), extras.getString("id"), responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                    queue.add(InviteesCheck);
                 }
             });
 
@@ -395,38 +465,57 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             item.findViewById(R.id.remove_item).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(ResultActivity.this);
-                    View view1 = LayoutInflater.from(ResultActivity.this)
-                            .inflate(R.layout.edit_box2, null, false);
-                    builder1.setView(view1);
-
-                    final Button ButtonSubmit1 = (Button) view1.findViewById(R.id.button_remove_submit);
-                    final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
-
-                    final AlertDialog dialog1 = builder1.create();
-                    ButtonSubmit1.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
-                                @Override
-                                public void onResponse(String response) {
-                                    mExpandingList.removeItem(item);
-                                    dialog1.dismiss();
-                                }
-                            };
-                            //서버로 volley를 이용해서 요청을 함
-                            String a = title;
-                            UserListRemove UserListRemove = new UserListRemove(order_user, str_group, a, responseListener);
-                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                            queue.add(UserListRemove);
-                        }
-                    });
-                    ButtonSubmit2.setOnClickListener(new View.OnClickListener() {
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
                         @Override
-                        public void onClick(View v) {
-                            dialog1.dismiss();
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonResponse = new JSONObject(response);
+                                boolean success = jsonResponse.getBoolean("success");
+                                if (success||nick.equals(orderNick)) {
+                                    AlertDialog.Builder builder1 = new AlertDialog.Builder(ResultActivity.this);
+                                    View view1 = LayoutInflater.from(ResultActivity.this)
+                                            .inflate(R.layout.edit_box2, null, false);
+                                    builder1.setView(view1);
+
+                                    final Button ButtonSubmit1 = (Button) view1.findViewById(R.id.button_remove_submit);
+                                    final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
+
+                                    final AlertDialog dialog1 = builder1.create();
+                                    ButtonSubmit1.setOnClickListener(new View.OnClickListener() {
+                                        public void onClick(View v) {
+                                            Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                                                @Override
+                                                public void onResponse(String response) {
+                                                    mExpandingList.removeItem(item);
+                                                    dialog1.dismiss();
+                                                }
+                                            };
+                                            //서버로 volley를 이용해서 요청을 함
+                                            String a = title;
+                                            UserListRemove UserListRemove = new UserListRemove(order_user, str_group, a, responseListener);
+                                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                            queue.add(UserListRemove);
+                                        }
+                                    });
+                                    ButtonSubmit2.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            dialog1.dismiss();
+                                        }
+                                    });
+                                    dialog1.show();
+                                }else{
+                                    Toast.makeText(ResultActivity.this, "권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    });
-                    dialog1.show();
+                    };
+                    Bundle extras = getIntent().getExtras();
+                    InviteesCheck InviteesCheck = new InviteesCheck(extras.getString("nick"), extras.getString("orderNick"), extras.getString("id"), responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                    queue.add(InviteesCheck);
                 }
             });
         }
@@ -459,15 +548,12 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(((TextView) view.findViewById(R.id.sub_title)).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
                 if (!mainTitle.equals(title)) {
-                    Log.d("TAG", "configureSubItem: 왜 안되나용?1");
                     mainTitle = title;
                     trueCheck = 0.0;
                     trueCheck++;
                 } else {
-                    Log.d("TAG", "configureSubItem: 왜 안되나용?2");
                     trueCheck++;
                 }
-                Log.d("TAG", "configureSubItem: 왜 안되나용?3 trueCheck : " +trueCheck);
                 DecimalFormat form = new DecimalFormat("#");
 
                 if (trueCheck < item.getSubItemsCount()) {
@@ -495,69 +581,93 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         checkBox.setOnClickListener(new CheckBox.OnClickListener() {
             @Override
             public void onClick(View v) {
-                item.getSubItemsCount();
-                if (((CheckBox) v).isChecked()) {
-                    ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(((TextView) view.findViewById(R.id.sub_title)).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
-
-                    Response.Listener<String> responseListener = new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                double checkSchedule = Double.parseDouble(response);
-                                DecimalFormat form = new DecimalFormat("#");
-
-                                if (checkSchedule < item.getSubItemsCount()) {
-                                    ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
-                                    ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(orange));
-                                    item.setIndicatorColor(Color.parseColor(orange));
-                                }
-                                if (checkSchedule == item.getSubItemsCount()) {
-                                    ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
-                                    ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(green));
-                                    item.setIndicatorColor(Color.parseColor(green));
-                                } else {
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("success");
+                            if (success||nick.equals(orderNick)) {
+                                item.getSubItemsCount();
+                                if (((CheckBox) v).isChecked()) {
+                                    ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(((TextView) view.findViewById(R.id.sub_title)).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                                     ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
+
+                                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            try {
+                                                double checkSchedule = Double.parseDouble(response);
+                                                DecimalFormat form = new DecimalFormat("#");
+
+                                                if (checkSchedule < item.getSubItemsCount()) {
+                                                    ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
+                                                    ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(orange));
+                                                    item.setIndicatorColor(Color.parseColor(orange));
+                                                }
+                                                if (checkSchedule == item.getSubItemsCount()) {
+                                                    ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
+                                                    ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(green));
+                                                    item.setIndicatorColor(Color.parseColor(green));
+                                                } else {
+                                                    ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
+                                                }
+                                            } catch (Exception e) {
+                                            }
+                                        }
+                                    };
+                                    ScheduleComplete ScheduleComplete = new ScheduleComplete(order_user, str_group, title, subTitle, responseListener);
+                                    RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                    queue.add(ScheduleComplete);
+                                } else {
+                                    ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(0);
+                                    ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(black));
+
+                                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            double checkSchedule = Double.parseDouble(response);
+                                            DecimalFormat form = new DecimalFormat("#");
+
+                                            if (checkSchedule < item.getSubItemsCount()) {
+                                                ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
+                                                ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(orange));
+                                                item.setIndicatorColor(Color.parseColor(orange));
+                                            }
+                                            if (checkSchedule == item.getSubItemsCount()) {
+                                                ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
+                                                ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(green));
+                                                item.setIndicatorColor(Color.parseColor(green));
+                                            }
+                                            if (checkSchedule * 100 / item.getSubItemsCount() == 0.0) {
+                                                ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
+                                                ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(blue));
+                                                item.setIndicatorColorRes(R.color.blue);
+                                            }
+                                        }
+                                    };
+                                    ScheduleinComplete ScheduleinComplete = new ScheduleinComplete(order_user, str_group, title, subTitle, responseListener);
+                                    RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                    queue.add(ScheduleinComplete);
                                 }
-                            } catch (Exception e) {
-                                System.out.println("error message : " + e.getMessage());
+                            }else{
+                                Toast.makeText(ResultActivity.this, "권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                if(check.equals("true")){
+                                    checkBox.setChecked(true);
+                                }
+                                if(check.equals("false")){
+                                    checkBox.setChecked(false);
+                                }
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    };
-                    ScheduleComplete ScheduleComplete = new ScheduleComplete(order_user, str_group, title, subTitle, responseListener);
-                    RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                    queue.add(ScheduleComplete);
-                } else {
-                    ((TextView) view.findViewById(R.id.sub_title)).setPaintFlags(0);
-                    ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(black));
-
-                    Response.Listener<String> responseListener = new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            double checkSchedule = Double.parseDouble(response);
-                            DecimalFormat form = new DecimalFormat("#");
-
-                            if (checkSchedule < item.getSubItemsCount()) {
-                                ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
-                                ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(orange));
-                                item.setIndicatorColor(Color.parseColor(orange));
-                            }
-                            if (checkSchedule == item.getSubItemsCount()) {
-                                ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
-                                ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(green));
-                                item.setIndicatorColor(Color.parseColor(green));
-                            }
-                            if (checkSchedule * 100 / item.getSubItemsCount() == 0.0) {
-                                ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
-                                ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(blue));
-                                item.setIndicatorColorRes(R.color.blue);
-                            }
-                        }
-                    };
-                    ScheduleinComplete ScheduleinComplete = new ScheduleinComplete(order_user, str_group, title, subTitle, responseListener);
-                    RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                    queue.add(ScheduleinComplete);
-                }
+                    }
+                };
+                Bundle extras = getIntent().getExtras();
+                InviteesCheck InviteesCheck = new InviteesCheck(extras.getString("nick"), extras.getString("orderNick"), extras.getString("id"), responseListener);
+                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                queue.add(InviteesCheck);
             }
         });
 
@@ -565,125 +675,163 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         view.findViewById(R.id.update_sub_item).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
-
-                View title_view = LayoutInflater.from(ResultActivity.this)
-                        .inflate(R.layout.edit_box, null, false);
-                builder.setView(title_view);
-
-                Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
-                final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
-
-                editTextID.setHint(subTitle);
-                ButtonSubmit.setText("할 일 추가");
-
-                final AlertDialog dialog = builder.create();
-                // 3. 다이얼로그에 있는 삽입 버튼을 클릭하면
-                ButtonSubmit.setOnClickListener(new View.OnClickListener() {
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
-                    public void onClick(View view) {
-                        String subtitle = editTextID.getText().toString();
-                        if (title.equals("")) {
-                            Toast.makeText(ResultActivity.this, "할 일을 입력해주세요.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Response.Listener<String> responseListener = new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    try {
-                                        JSONObject jsonResponse = new JSONObject(response);
-                                        boolean success = jsonResponse.getBoolean("success");
-                                        Log.e("success", String.valueOf(success));
-                                        if (success) {
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("success");
+                            if (success||nick.equals(orderNick)) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+
+                                View title_view = LayoutInflater.from(ResultActivity.this)
+                                        .inflate(R.layout.edit_box, null, false);
+                                builder.setView(title_view);
+
+                                Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
+                                final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
+
+                                editTextID.setHint(subTitle);
+                                ButtonSubmit.setText("할 일 추가");
+
+                                final AlertDialog dialog = builder.create();
+                                // 3. 다이얼로그에 있는 삽입 버튼을 클릭하면
+                                ButtonSubmit.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        String subtitle = editTextID.getText().toString();
+                                        if (title.equals("")) {
+                                            Toast.makeText(ResultActivity.this, "할 일을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                                        } else {
                                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                                 @Override
                                                 public void onResponse(String response) {
-                                                    final View newSubItem = item.createSubItem();
-                                                    configureSubItem(item, newSubItem, subtitle, title, "false");
-                                                    /**
-                                                     * 삽입
-                                                     */
-                                                    Intent intent = new Intent(getApplicationContext(), Loading.class);
-                                                    intent.putExtra("id", id);
-                                                    intent.putExtra("nick", nick);
-                                                    intent.putExtra("orderNick", orderNick);
-                                                    intent.putExtra("profilePath", profilePath);
-                                                    intent.putExtra("userEmail", userEmail);
-                                                    intent.putExtra("userID", userID);
-                                                    intent.putExtra("userPass", userPass);
-                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                                    startActivity(intent);
-                                                    finish();
+                                                    try {
+                                                        JSONObject jsonResponse = new JSONObject(response);
+                                                        boolean success = jsonResponse.getBoolean("success");
+                                                        Log.e("success", String.valueOf(success));
+                                                        if (success) {
+                                                            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                                                @Override
+                                                                public void onResponse(String response) {
+                                                                    final View newSubItem = item.createSubItem();
+                                                                    configureSubItem(item, newSubItem, subtitle, title, "false");
+                                                                    /**
+                                                                     * 삽입
+                                                                     */
+                                                                    Intent intent = new Intent(getApplicationContext(), Loading.class);
+                                                                    intent.putExtra("id", id);
+                                                                    intent.putExtra("nick", nick);
+                                                                    intent.putExtra("orderNick", orderNick);
+                                                                    intent.putExtra("profilePath", profilePath);
+                                                                    intent.putExtra("userEmail", userEmail);
+                                                                    intent.putExtra("userID", userID);
+                                                                    intent.putExtra("userPass", userPass);
+                                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                                    startActivity(intent);
+                                                                    finish();
+                                                                }
+                                                            };
+                                                            UserScheduleUpdate UserScheduleUpdate = new UserScheduleUpdate(order_user, str_group, title, subTitle, subtitle, responseListener);
+                                                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                                            queue.add(UserScheduleUpdate);
+                                                        } else {
+                                                            Toast.makeText(ResultActivity.this, "동일한 할 일이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
                                                 }
                                             };
-                                            UserScheduleUpdate UserScheduleUpdate = new UserScheduleUpdate(order_user, str_group, title, subTitle, subtitle, responseListener);
+                                            ValidateSchedule ValidateSchedule = new ValidateSchedule(order_user, str_group, title, subtitle, responseListener);
                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                                            queue.add(UserScheduleUpdate);
-                                        } else {
-                                            Toast.makeText(ResultActivity.this, "동일한 할 일이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                            queue.add(ValidateSchedule);
                                         }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
                                     }
-                                }
-                            };
-                            ValidateSchedule ValidateSchedule = new ValidateSchedule(order_user, str_group, title, subtitle, responseListener);
-                            RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                            queue.add(ValidateSchedule);
+                                });
+                                dialog.show();
+                            }else{
+                                Toast.makeText(ResultActivity.this, "권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                });
-                dialog.show();
+                };
+                Bundle extras = getIntent().getExtras();
+                InviteesCheck InviteesCheck = new InviteesCheck(extras.getString("nick"), extras.getString("orderNick"), extras.getString("id"), responseListener);
+                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                queue.add(InviteesCheck);
             }
         });
 
         view.findViewById(R.id.remove_sub_item).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(ResultActivity.this);
-                View view1 = LayoutInflater.from(ResultActivity.this)
-                        .inflate(R.layout.edit_box2, null, false);
-                builder1.setView(view1);
-                final Button ButtonSubmit1 = (Button) view1.findViewById(R.id.button_remove_submit);
-                final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
-
-                final AlertDialog dialog1 = builder1.create();
-                ButtonSubmit1.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
-                            @Override
-                            public void onResponse(String response) {
-                                item.removeSubItem(view);
-                                dialog1.dismiss();
-                                Intent intent = new Intent(getApplicationContext(), Loading.class);
-                                intent.putExtra("id", id);
-                                intent.putExtra("nick", nick);
-                                intent.putExtra("orderNick", orderNick);
-                                intent.putExtra("profilePath", profilePath);
-                                intent.putExtra("userEmail", userEmail);
-                                intent.putExtra("userID", userID);
-                                intent.putExtra("userPass", userPass);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                startActivity(intent);
-                                finish();
-                            }
-                        };
-                        /**
-                         * sub 삭제
-                         */
-                        String schedule = subTitle;
-
-                        UserScheduleRemove UserScheduleRemove = new UserScheduleRemove(order_user, str_group, title, schedule, responseListener);
-                        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                        queue.add(UserScheduleRemove);
-                    }
-                });
-                ButtonSubmit2.setOnClickListener(new View.OnClickListener() {
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
-                    public void onClick(View v) {
-                        dialog1.dismiss();
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("success");
+                            if (success||nick.equals(orderNick)) {
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(ResultActivity.this);
+                                View view1 = LayoutInflater.from(ResultActivity.this)
+                                        .inflate(R.layout.edit_box2, null, false);
+                                builder1.setView(view1);
+                                final Button ButtonSubmit1 = (Button) view1.findViewById(R.id.button_remove_submit);
+                                final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
+
+                                final AlertDialog dialog1 = builder1.create();
+                                ButtonSubmit1.setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
+                                            @Override
+                                            public void onResponse(String response) {
+                                                item.removeSubItem(view);
+                                                dialog1.dismiss();
+                                                Intent intent = new Intent(getApplicationContext(), Loading.class);
+                                                intent.putExtra("id", id);
+                                                intent.putExtra("nick", nick);
+                                                intent.putExtra("orderNick", orderNick);
+                                                intent.putExtra("profilePath", profilePath);
+                                                intent.putExtra("userEmail", userEmail);
+                                                intent.putExtra("userID", userID);
+                                                intent.putExtra("userPass", userPass);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        };
+                                        /**
+                                         * sub 삭제
+                                         */
+                                        String schedule = subTitle;
+
+                                        UserScheduleRemove UserScheduleRemove = new UserScheduleRemove(order_user, str_group, title, schedule, responseListener);
+                                        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                        queue.add(UserScheduleRemove);
+                                    }
+                                });
+                                ButtonSubmit2.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog1.dismiss();
+                                    }
+                                });
+                                dialog1.show();
+                            }else{
+                                Toast.makeText(ResultActivity.this, "권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                });
-                dialog1.show();
+                };
+                Bundle extras = getIntent().getExtras();
+                InviteesCheck InviteesCheck = new InviteesCheck(extras.getString("nick"), extras.getString("orderNick"), extras.getString("id"), responseListener);
+                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                queue.add(InviteesCheck);
             }
         });
     }
@@ -724,10 +872,29 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
 
     @Override
     public void onRefresh() {
-        trueCheck=0.0;
-        iniView();
-        load();
-        invitees();
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    if (success||nick.equals(orderNick)) {
+                        trueCheck = 0.0;
+                        iniView();
+                        load();
+                        invitees();
+                    }else{
+                        Toast.makeText(ResultActivity.this, "권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Bundle extras = getIntent().getExtras();
+        InviteesCheck InviteesCheck = new InviteesCheck(extras.getString("nick"), extras.getString("orderNick"), extras.getString("id"), responseListener);
+        RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+        queue.add(InviteesCheck);
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
@@ -828,6 +995,36 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             @Override
             public void onClick(View v) {
                 drawerLayout.openDrawer(drawerView);
+            }
+        });
+
+        /**
+         * 채팅과 관련된 버튼
+         */
+        Button chatBtn = (Button) findViewById(R.id.chatBtn);
+        chatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("success");
+                            if (success||nick.equals(orderNick)) {
+                                Toast.makeText(ResultActivity.this, "채팅화면으로 이동합니다.", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(ResultActivity.this, "권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                Bundle extras = getIntent().getExtras();
+                InviteesCheck InviteesCheck = new InviteesCheck(extras.getString("nick"), extras.getString("orderNick"), extras.getString("id"), responseListener);
+                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                queue.add(InviteesCheck);
             }
         });
 
@@ -1039,7 +1236,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                             adapter.setOnClickListener(ResultActivity.this);    //어댑터의 리스너 호출
                         }
 
-                            adapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
