@@ -84,8 +84,9 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
 
         mRecyclerView.setAdapter(mAdapter);
         categoryList();
-
     }
+
+
 
     public void categoryList() {
         /**
@@ -98,6 +99,18 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
         userID = intent.getStringExtra("userID");
         userPass = intent.getStringExtra("userPass");
         userEmail = intent.getStringExtra("userEmail");
+        ImageButton reloadBtn = (ImageButton) findViewById(R.id.reloadBtn);
+
+        /**
+         * reload 버튼 클릭 시
+         */
+        reloadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                categoryList();
+            }
+        });
+
 
         /**
          * 서버에 Group Data가 있는지 확인하고 가져오는 메소드

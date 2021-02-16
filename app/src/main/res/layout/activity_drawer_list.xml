@@ -21,6 +21,16 @@
         android:textStyle="bold" />
 
     <Button
+        android:id="@+id/activityInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:backgroundTint="#03A9F4"
+        android:text="활동내역"
+        android:textStyle="bold" />
+
+    <Button
         android:id="@+id/updateGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
