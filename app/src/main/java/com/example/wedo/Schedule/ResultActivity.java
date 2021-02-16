@@ -883,6 +883,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                         iniView();
                         load();
                         invitees();
+//                        TextView groupTitle = (TextView) findViewById(R.id.id);
                     }else{
                         Toast.makeText(ResultActivity.this, "권한이 없습니다.", Toast.LENGTH_SHORT).show();
                     }
