@@ -1,16 +1,19 @@
 package com.example.wedo.ActivityInfo;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.wedo.R;
 
 import java.util.List;
 
-public class ActivityItemAdapter extends RecyclerView.Adapter<ActivityItemAdapter.ItemViewHolder>{
+public class ActivityItemAdapter extends RecyclerView.Adapter<ActivityItemAdapter.ItemViewHolder> {
 
     private List<ActivityItemModel> mDataList;
 
@@ -32,8 +35,19 @@ public class ActivityItemAdapter extends RecyclerView.Adapter<ActivityItemAdapte
         /**가입된 사용자 이름을 불러옴*/
         holder.textView.setText(currentItem.getDateTime());
         holder.user.setText(currentItem.getUser());
-        holder.status.setText(currentItem.getStatus());
         holder.text.setText(currentItem.getText());
+        String status = currentItem.getStatus();
+        if (status=="추가 ") {
+            holder.status.setTextColor(Color.parseColor("#2196F3"));
+            System.out.println("추가: "+currentItem.getStatus());
+        }
+        if (status.equals("수정 ")) {
+            holder.status.setTextColor(Color.parseColor("#FFBB00"));
+        }
+        if (status.equals("삭제 ")) {
+            holder.status.setTextColor(Color.parseColor("#FF0000"));
+        }
+        holder.status.setText(currentItem.getStatus());
     }
 
     @Override

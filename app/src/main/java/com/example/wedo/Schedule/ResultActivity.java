@@ -248,6 +248,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                 dialog.show();
                             } else {
                                 Toast.makeText(ResultActivity.this, "강퇴되어 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                kickBack();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -307,6 +308,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                     }
                                 } else {
                                     Toast.makeText(ResultActivity.this, "강퇴되어 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                    kickBack();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -413,6 +415,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                     dialog.show();
                                 } else {
                                     Toast.makeText(ResultActivity.this, "강퇴되어 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                    kickBack();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -495,6 +498,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                     });
                                 } else {
                                     Toast.makeText(ResultActivity.this, "강퇴되어 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                    kickBack();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -562,6 +566,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                     dialog1.show();
                                 } else {
                                     Toast.makeText(ResultActivity.this, "강퇴되어 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                    kickBack();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -722,6 +727,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                 }
                             } else {
                                 Toast.makeText(ResultActivity.this, "강퇴되어 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                kickBack();
                                 if (check.equals("true")) {
                                     checkBox.setChecked(true);
                                 }
@@ -830,6 +836,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                 dialog.show();
                             } else {
                                 Toast.makeText(ResultActivity.this, "강퇴되어 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                kickBack();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -912,6 +919,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                 dialog1.show();
                             } else {
                                 Toast.makeText(ResultActivity.this, "강퇴되어 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                kickBack();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -975,6 +983,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                         invitees();
                     } else {
                         Toast.makeText(ResultActivity.this, "강퇴되어 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                        kickBack();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1008,7 +1017,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         intent.putExtra("userID", userID);
         intent.putExtra("userPass", userPass);
         startActivity(intent);
-        finishAndRemoveTask();
+        finish();
     }
 
     public void iniView() {
@@ -1058,6 +1067,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                 invitees();
                             } else {
                                 Toast.makeText(ResultActivity.this, "강퇴되어 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                kickBack();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1134,6 +1144,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                 Toast.makeText(ResultActivity.this, "채팅화면으로 이동합니다.", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(ResultActivity.this, "강퇴되어 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                kickBack();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1449,5 +1460,16 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             }
         });
         dialog1.show();
+    }
+
+    public void kickBack(){
+        Intent intent = new Intent(getApplicationContext(), MainCategoryActivity.class);
+        intent.putExtra("profileUri", str_profile);
+        intent.putExtra("ID", str_user);
+        intent.putExtra("userEmail", userEmail);
+        intent.putExtra("userID", userID);
+        intent.putExtra("userPass", userPass);
+        startActivity(intent);
+        finish();
     }
 }
