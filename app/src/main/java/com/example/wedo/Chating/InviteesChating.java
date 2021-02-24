@@ -86,7 +86,6 @@ public class InviteesChating extends AppCompatActivity {
     private void init() {
         try {
             mSocket = IO.socket("http://54.180.0.255:3333");
-//            Log.d("SOCKET", "Connection success : " + mSocket.id());
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -114,7 +113,6 @@ public class InviteesChating extends AppCompatActivity {
 
         mSocket.on(Socket.EVENT_CONNECT, args -> {
             mSocket.emit("enter", gson.toJson(new RoomData(username, roomNumber+"of"+orderNick, orderNick)));
-            System.out.println("사용자 이름: "+username + " /방 이름: "+roomNumber+"of"+orderNick +" /방 만든이: "+orderNick);
         });
         mSocket.on("update", args -> {
             MessageData data = gson.fromJson(args[0].toString(), MessageData.class);
@@ -134,11 +132,6 @@ public class InviteesChating extends AppCompatActivity {
                 content_edit.getText().toString(),
                 System.currentTimeMillis())));
 
-        Log.d("MESSAGE", new MessageData("MESSAGE",
-                username,
-                roomNumber,
-                content_edit.getText().toString(),
-                System.currentTimeMillis()).toString());
         adapter.addItem(new ChatItem(username, content_edit.getText().toString(), toDate(System.currentTimeMillis()), ChatType.RIGHT_MESSAGE));
         recyclerView.scrollToPosition(adapter.getItemCount() - 1);
         content_edit.setText("");
