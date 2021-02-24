@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class UserListUpdate extends StringRequest {
     //서버 url 설정(php파일 연동)
-    final static private String URL = "http://13.209.99.25/userListUpdate.php";
+    final static private String URL = "http://54.180.0.255/userListUpdate.php";
     private Map<String, String> map;
 
     public UserListUpdate(String nick, String usergroup, String userlist, String changelist, Response.Listener<String> listener) {

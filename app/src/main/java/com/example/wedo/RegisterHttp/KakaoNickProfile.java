@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class KakaoNickProfile extends StringRequest {
     //서버 url 설정(php파일 연동)
-    final static private String URL = "http://13.209.99.25/kakaoNickProfile.php";
+    final static private String URL = "http://54.180.0.255/kakaoNickProfile.php";
     private Map<String, String> map;
 
     public KakaoNickProfile(String userId, String nick, String downloadUri, Response.Listener<String> listener) {

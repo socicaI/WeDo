@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class ActivityInfoRequest extends StringRequest {
     //서버 url 설정(php파일 연동)
-    final static private String URL = "http://13.209.99.25/ActivityInfo.php";
+    final static private String URL = "http://54.180.0.255/ActivityInfo.php";
     private Map<String, String> map;
 
     public ActivityInfoRequest(String orderNick, String orderGroup, Response.Listener<String> listener) {

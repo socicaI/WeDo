@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.diegodobelo.expandingview.ExpandingItem;
 import com.diegodobelo.expandingview.ExpandingList;
 import com.example.wedo.ActivityInfo.ActivityInfo;
+import com.example.wedo.Chating.InviteesChating;
 import com.example.wedo.GroupHttp.UserGroupRemove;
 import com.example.wedo.GroupHttp.UserGroupUpdate;
 import com.example.wedo.GroupHttp.ValidateGroup;
@@ -1141,7 +1142,17 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
                             if (success || nick.equals(orderNick)) {
-                                Toast.makeText(ResultActivity.this, "채팅화면으로 이동합니다.", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), InviteesChating.class);
+                                intent.putExtra("id", id);
+                                intent.putExtra("nick", nick);
+                                intent.putExtra("orderNick", orderNick);
+                                intent.putExtra("profilePath", profilePath);
+                                intent.putExtra("userEmail", userEmail);
+                                intent.putExtra("userID", userID);
+                                intent.putExtra("userPass", userPass);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                startActivity(intent);
+                                finish();
                             } else {
                                 Toast.makeText(ResultActivity.this, "강퇴되어 권한이 없습니다.", Toast.LENGTH_SHORT).show();
                                 kickBack();

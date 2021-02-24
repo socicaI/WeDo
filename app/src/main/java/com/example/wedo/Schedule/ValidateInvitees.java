@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class ValidateInvitees extends StringRequest {
     //서버 url 설정(php파일 연동)
-    final static private String URL = "http://13.209.99.25/validateInvite.php";
+    final static private String URL = "http://54.180.0.255/validateInvite.php";
     private Map<String, String> map;
 
     public ValidateInvitees(String nick, String group, Response.Listener<String> listener) {

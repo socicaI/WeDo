@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class CheckLogInfoRequest extends StringRequest {
     //서버 url 설정(php파일 연동)
-    final static private String URL = "http://13.209.99.25/checkLogInfo.php";
+    final static private String URL = "http://54.180.0.255/checkLogInfo.php";
     private Map<String, String> map;
 
     public CheckLogInfoRequest(String OrderUser, String OrderGroup, String InviteesUser, String OrderList, String OrderSchedule, String CheckInfo, Response.Listener<String> listener) {
