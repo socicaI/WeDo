@@ -128,7 +128,7 @@ public class InviteesChating extends AppCompatActivity {
 
         mSocket.emit("newMessage", gson.toJson(new MessageData("MESSAGE",
                 username,
-                roomNumber,
+                roomNumber+"of"+orderNick,
                 content_edit.getText().toString(),
                 System.currentTimeMillis())));
 
@@ -173,7 +173,7 @@ public class InviteesChating extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mSocket.emit("left", gson.toJson(new RoomData(username, roomNumber,orderNick)));
+        mSocket.emit("left", gson.toJson(new RoomData(username, roomNumber+"of"+orderNick,orderNick)));
         mSocket.disconnect();
     }
 }
