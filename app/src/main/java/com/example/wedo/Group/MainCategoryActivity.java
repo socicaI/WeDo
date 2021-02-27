@@ -99,18 +99,6 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
         userID = intent.getStringExtra("userID");
         userPass = intent.getStringExtra("userPass");
         userEmail = intent.getStringExtra("userEmail");
-        ImageButton reloadBtn = (ImageButton) findViewById(R.id.reloadBtn);
-
-        /**
-         * reload 버튼 클릭 시
-         */
-        reloadBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                categoryList();
-            }
-        });
-
 
         /**
          * 서버에 Group Data가 있는지 확인하고 가져오는 메소드
@@ -128,13 +116,16 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                      */
                     for (int i = 0; i < group.length(); i++) {
                         JSONObject item = group.getJSONObject(i);
-                        String group1 = item.getString("group");
+                        String group1 = item.getString("usergroup");
+                        String profilePath123 = item.getString("profilePath");
                         Dictionary dict = new Dictionary(group1);
                         dict.setUser(strID);
+                        dict.setImageResource(profilePath123);
+                        System.out.println("프로필1: "+profilePath123);
+
                         mArrayList.add(dict); //마지막 줄에 삽입됨 1
                         mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
                     }
-
                         mRecyclerView.setVisibility(View.VISIBLE);
                         emptyRecycler.setVisibility(View.GONE);
 
@@ -160,8 +151,11 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                     for (int i = 0; i < list.length(); i++) {
                         String group2 = list.getJSONObject(i).getString("orderGroup");
                         String nick = list.getJSONObject(i).getString("orderUser");
+                        String profilePath223 = list.getJSONObject(i).getString("profilePath");
                         Dictionary dict = new Dictionary(group2);
                         dict.setUser(nick);
+                        dict.setImageResource(profilePath223);
+                        System.out.println("프로필2: "+profilePath223);
                         mArrayList.add(dict); //마지막 줄에 삽입됨 1
                         mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
 //                        emptyRecycler.setVisibility(View.GONE);
@@ -179,7 +173,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                 }
             }
         };
-        InviteGroupRequest InviteGroupRequest = new InviteGroupRequest(strID, responseListener1);
+        InviteGroupRequest InviteGroupRequest = new InviteGroupRequest(strID,responseListener1);
         RequestQueue queue1 = Volley.newRequestQueue(MainCategoryActivity.this);
         queue1.add(InviteGroupRequest);
 
@@ -229,7 +223,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                 final Button ButtonSubmit = (Button) view.findViewById(R.id.button_dialog_submit);
                 final EditText editTextID = (EditText) view.findViewById(R.id.mesgase);
 
-                ButtonSubmit.setText("그룹 추가");
+                ButtonSubmit.setText("주제 추가");
 
                 final AlertDialog dialog = builder.create();
 
@@ -244,7 +238,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                         String strID2 = editTextID.getText().toString();
 
                         if (strID2.equals("")) {
-                            Toast.makeText(MainCategoryActivity.this, "그룹명을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainCategoryActivity.this, "주제를 입력해주세요.", Toast.LENGTH_SHORT).show();
                         } else {
                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                 @Override
@@ -275,7 +269,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                                             RequestQueue queue = Volley.newRequestQueue(MainCategoryActivity.this);
                                             queue.add(UserGroup);
                                         } else {
-                                            Toast.makeText(MainCategoryActivity.this, "그룹명이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainCategoryActivity.this, "주제가 존재합니다.", Toast.LENGTH_SHORT).show();
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();

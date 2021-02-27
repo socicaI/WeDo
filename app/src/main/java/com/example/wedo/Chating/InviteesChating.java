@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.example.wedo.Chating.model.MessageData;
 import com.example.wedo.Chating.model.RoomData;
@@ -99,7 +100,7 @@ public class InviteesChating extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         //메시지 전송 버튼
-        Button send_btn = (Button) findViewById(R.id.send_btn);
+        ImageButton send_btn = (ImageButton) findViewById(R.id.send_btn);
         send_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

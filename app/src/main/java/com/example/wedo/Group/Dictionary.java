@@ -9,6 +9,8 @@ public class Dictionary {
 
     private String user;
 
+    private String imageResource;
+
     public String getId() {
         return id;
     }
@@ -23,6 +25,14 @@ public class Dictionary {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getImageResource() {
+        return imageResource;
+    }
+
+    public void setImageResource(String imageResource) {
+        this.imageResource = imageResource;
     }
 
     public Dictionary(String id) {

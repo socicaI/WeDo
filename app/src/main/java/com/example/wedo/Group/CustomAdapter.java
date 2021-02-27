@@ -1,6 +1,7 @@
 package com.example.wedo.Group;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,12 +22,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.example.wedo.GroupHttp.UserGroupRemove;
 import com.example.wedo.GroupHttp.UserGroupUpdate;
 import com.example.wedo.R;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -35,6 +39,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
     private ArrayList<Dictionary> mList;
     private Context mContext;
+    String profilePath;
 //    int Count;
 
     @NonNull
@@ -63,6 +68,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         viewholder.user.setGravity(Gravity.CENTER);
 
         viewholder.user.setText(mList.get(position).getUser());
+
+        profilePath = mList.get(position).getImageResource();
+        Uri uri = Uri.parse(profilePath);
+        Glide.with(viewholder.itemView.getContext())
+                .load(uri)
+                .into(viewholder.profileImageView);
     }
 
     @Override
@@ -75,12 +86,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             implements View.OnCreateContextMenuListener { // 1. 리스너 추가
         protected TextView id;
         protected TextView user;
+        protected ImageView profileImageView;
 
 
         public CustomViewHolder(View view) {
             super(view);
             this.id = (TextView) view.findViewById(R.id.id_listitem);
             this.user = (TextView) view.findViewById(R.id.order);
+            this.profileImageView = (ImageView) view.findViewById(R.id.profileImageView1);
 
             view.setOnCreateContextMenuListener(this); //2. 리스너 등록
         }
