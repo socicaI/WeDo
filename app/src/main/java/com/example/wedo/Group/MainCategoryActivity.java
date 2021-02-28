@@ -121,8 +121,6 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                         Dictionary dict = new Dictionary(group1);
                         dict.setUser(strID);
                         dict.setImageResource(profilePath123);
-                        System.out.println("프로필1: "+profilePath123);
-
                         mArrayList.add(dict); //마지막 줄에 삽입됨 1
                         mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
                     }
@@ -155,11 +153,8 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                         Dictionary dict = new Dictionary(group2);
                         dict.setUser(nick);
                         dict.setImageResource(profilePath223);
-                        System.out.println("프로필2: "+profilePath223);
                         mArrayList.add(dict); //마지막 줄에 삽입됨 1
                         mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
-//                        emptyRecycler.setVisibility(View.GONE);
-//                        mRecyclerView.setVisibility(View.VISIBLE);
                     }
                     if (mArrayList.size() == 0) {
                         emptyRecycler.setVisibility(View.VISIBLE);

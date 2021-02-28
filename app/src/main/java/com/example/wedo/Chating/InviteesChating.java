@@ -13,11 +13,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
 import com.example.wedo.Chating.model.MessageData;
 import com.example.wedo.Chating.model.RoomData;
 import com.example.wedo.R;
 import com.example.wedo.Schedule.ResultActivity;
+import com.example.wedo.SearchFilter.ItemAdapter;
+import com.example.wedo.SearchFilter.ItemModel;
+import com.example.wedo.SearchFilter.SearchRequest;
+import com.example.wedo.SearchFilter.UserSearchActivity;
 import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
@@ -93,7 +104,6 @@ public class InviteesChating extends AppCompatActivity {
 //        retrofitClient = RetrofitClient.getInstance();
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-
         adapter = new ChatAdapter(getApplicationContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -119,6 +129,31 @@ public class InviteesChating extends AppCompatActivity {
             MessageData data = gson.fromJson(args[0].toString(), MessageData.class);
             addChat(data);
         });
+    }
+
+    /**
+     * 서버에서 채팅 데이터 불러옴
+     */
+    private void chatServerLoad(){
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray list = jsonObject.getJSONArray("userSearch");
+                    for (int i = 0; i < list.length(); i++) {
+                        adapter.addItem(new ChatItem(username, content_edit.getText().toString(), toDate(System.currentTimeMillis()), ChatType.RIGHT_MESSAGE));
+                        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                        content_edit.setText("");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        ChatDataRequest ChatDataRequest = new ChatDataRequest(roomNumber+"of"+orderNick, responseListener);
+        RequestQueue queue = Volley.newRequestQueue(InviteesChating.this);
+        queue.add(ChatDataRequest);
     }
 
     private void sendMessage() {
