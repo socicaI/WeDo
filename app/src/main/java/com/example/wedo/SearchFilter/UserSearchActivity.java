@@ -126,7 +126,7 @@ public class UserSearchActivity extends AppCompatActivity implements ItemAdapter
 
     public void load() {
         Bundle extras = getIntent().getExtras();
-        id = extras.getString("id");    //그룹명
+        id = extras.getString("id");    //주제
         nick = extras.getString("nick");
         orderNick = extras.getString("orderNick");
         profilePath = extras.getString("profilePath");  //프로필

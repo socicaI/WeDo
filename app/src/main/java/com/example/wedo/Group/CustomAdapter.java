@@ -147,7 +147,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                                 RequestQueue queue = Volley.newRequestQueue(mContext);
                                 queue.add(UserGroupUpdate);
 
-                                Dictionary dict = new Dictionary(strID);    //목록 변경 된 이름을 setter에 넣기 (strID)
+                                Dictionary dict = new Dictionary(strID);    //할 일 변경 된 이름을 setter에 넣기 (strID)
                                 dict.setUser(mList.get(getAdapterPosition()).getUser());    //변경후 사용자 이름 setter에 넣기 (mList.get(getAdapterPosition()))
 
                                 mList.set(getAdapterPosition(), dict);

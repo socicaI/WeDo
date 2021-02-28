@@ -37,7 +37,7 @@ public class ActivityInfo extends AppCompatActivity implements SwipeRefreshLayou
         setContentView(R.layout.activity_info);
 
         Bundle extras = getIntent().getExtras();
-        id = extras.getString("id");    //그룹명
+        id = extras.getString("id");    //주제
         nick = extras.getString("nick");
         profilePath = extras.getString("profilePath");  //프로필
         orderNick = extras.getString("orderNick");

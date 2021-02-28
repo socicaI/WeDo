@@ -112,7 +112,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                     JSONArray group = jsonObject.getJSONArray(TAG_JSON);
 
                     /**
-                     * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
+                     * 주제 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
                      */
                     for (int i = 0; i < group.length(); i++) {
                         JSONObject item = group.getJSONObject(i);
@@ -146,7 +146,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                     JSONArray list = jsonObject.getJSONArray("userSearch");
 
                     /**
-                     * 그룹 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
+                     * 주제 배열의 크기만큼 반복문을 돌려 데이터를 String에 넣어줌과 동시에 RecyclerView item 생성
                      */
                     for (int i = 0; i < list.length(); i++) {
                         String group2 = list.getJSONObject(i).getString("orderGroup");
@@ -253,6 +253,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                                             Dictionary dict = new Dictionary(strID2);
 //                                          mArrayList.add(0, dict); //첫번째 줄에 삽입됨 1
                                             dict.setUser(strID);
+                                            dict.setImageResource(profilePath);
 
                                             mArrayList.add(dict); //마지막 줄에 삽입됨 1
 //                                          mAdapter.notifyItemInserted(0); //첫번째 줄에 삽입됨 2
@@ -269,7 +270,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                                             RequestQueue queue = Volley.newRequestQueue(MainCategoryActivity.this);
                                             queue.add(UserGroup);
                                         } else {
-                                            Toast.makeText(MainCategoryActivity.this, "주제가 존재합니다.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainCategoryActivity.this, "동일한 주제가 존재합니다.", Toast.LENGTH_SHORT).show();
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -135,14 +136,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         // TODO : 뷰홀더 완성하시오
         ImageView imageView;
         TextView textView;
-        Button user_invite;
+        ImageView user_invite;
 
         ItemViewHolder(View itemView) {
             super(itemView);
             // TODO : 뷰홀더 완성하시오
             imageView = itemView.findViewById(R.id.profile_image_view);
             textView = itemView.findViewById(R.id.text_view);
-            user_invite = itemView.findViewById(R.id.user_invite);
+            user_invite = itemView.findViewById(R.id.user_invite1);
         }
     }
 

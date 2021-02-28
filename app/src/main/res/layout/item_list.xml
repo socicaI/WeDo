@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:paddingLeft="10dp"
-        android:text="  총원: "
+        android:text="  방장: "
         android:textColor="#9E9090"
         android:textSize="10dp"
         android:textStyle="bold" />
@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:text="인원 수"
+        android:text="유저명"
         android:textColor="#9E9090"
         android:textSize="10dp" />
 </LinearLayout>

@@ -46,7 +46,7 @@ public class InviteesChating extends AppCompatActivity {
     /**
      * Schedule 관련 필요한 데이터
      */
-    public String roomNumber, username, profilePath, userEmail, userID, userPass, orderNick;    //roomNumber=그룹명, nick=사용자 이름, orderNick=그룹주인
+    public String roomNumber, username, profilePath, userEmail, userID, userPass, orderNick;    //roomNumber=주제, nick=사용자 이름, orderNick=주제주인
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class InviteesChating extends AppCompatActivity {
         setContentView(R.layout.activity_invitees_chating);
 
         Bundle extras = getIntent().getExtras();
-        roomNumber = extras.getString("id");    //그룹명
+        roomNumber = extras.getString("id");    //주제
         username = extras.getString("nick");
         profilePath = extras.getString("profilePath");  //프로필
         orderNick = extras.getString("orderNick");
@@ -124,7 +124,7 @@ public class InviteesChating extends AppCompatActivity {
     private void sendMessage() {
         content_edit = (EditText) findViewById(R.id.content_edit);
         Bundle extras = getIntent().getExtras();
-        roomNumber = extras.getString("id");    //그룹명
+        roomNumber = extras.getString("id");    //주제
         username = extras.getString("nick");
 
         mSocket.emit("newMessage", gson.toJson(new MessageData("MESSAGE",

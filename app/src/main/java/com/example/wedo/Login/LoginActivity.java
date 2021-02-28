@@ -242,7 +242,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         /**
-         * shared "loginInfo"에 데이터가 있을 경우 바로 목록 화면으로 전환
+         * shared "loginInfo"에 데이터가 있을 경우 바로 할 일 화면으로 전환
          */
         SharedPreferences pref = getSharedPreferences("loginInfo", Activity.MODE_PRIVATE);
         String userId = pref.getString("userID", "0");

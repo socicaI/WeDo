@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.slice.Slice;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -21,6 +22,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,12 +68,12 @@ import java.util.List;
 
 public class ResultActivity extends AppCompatActivity implements OrderAdapter.onItemListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private ExpandingList mExpandingList;   //목록 및 할 일에 관한 ExpandingList
-    public CheckBox checkBox;   //할 일 체크박스
+    private ExpandingList mExpandingList;   //할 일 및 세부사항에 관한 ExpandingList
+    public CheckBox checkBox;   //세부사항 체크박스
     private DrawerLayout drawerLayout;
     private View drawerView, drawerGroupView;
-    public String id, nick, profilePath, userEmail, userID, userPass, orderNick;   //그룹명, 사용자 이름, 프로필, 사용자 이메일, 사용자 Id, 사용자 Pass, 그룹 반장명
-    public String str_group, str_user, str_profile, order_user; //그룹명, 사용자 이름, 프로필
+    public String id, nick, profilePath, userEmail, userID, userPass, orderNick;   //주제, 사용자 이름, 프로필, 사용자 이메일, 사용자 Id, 사용자 Pass, 주제 반장명
+    public String str_group, str_user, str_profile, order_user; //주제, 사용자 이름, 프로필
     private ArrayList<TaskModel> tasks;
     public String mainTitle = "a";
     Double trueCheck = 0.0;
@@ -114,7 +116,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     }
 
     /**
-     * 목차 및 할 일을 서버에서 불러오게 해주는 메소드
+     * 할 일 및 세부사항을 서버에서 불러오게 해주는 메소드
      */
     private void load() {
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
@@ -153,7 +155,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                             tasks.add(tempTaskModel);
                         }
                     }
-                    /**tasksArray의 크기 만큼 돌면서 해당 목록 및 할 일을 생성하는 반복문*/
+                    /**tasksArray의 크기 만큼 돌면서 해당 할 일 및 세부사항을 생성하는 반복문*/
                     for (int i = 0; i < tasks.size(); i++) {
                         addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.blue, R.drawable.wedo_img, tasks.get(i).getBooleanValueArray(), "0%");
                     }
@@ -170,7 +172,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     }
 
     /**
-     * 목차 추가 메소드
+     * 할 일 추가 메소드
      */
     private void createTitle() {
         ImageButton addButton = (ImageButton) findViewById(R.id.button_main_insert);
@@ -193,18 +195,18 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                 Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
                                 final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
 
-                                ButtonSubmit.setText("목차 추가");
-                                editTextID.setHint("추가하실 목차를 입력해주세요.");
+                                ButtonSubmit.setText("할 일 추가");
+                                editTextID.setHint(" 할 일을 입력해주세요.");
 
                                 final AlertDialog dialog = builder.create();
 
-                                /**목차 추가 버튼*/
+                                /**할 일 추가 버튼*/
                                 ButtonSubmit.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         String title = editTextID.getText().toString();
                                         if (title.equals("")) {
-                                            Toast.makeText(ResultActivity.this, "목차를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(ResultActivity.this, "할 일을 입력해주세요.", Toast.LENGTH_SHORT).show();
                                         } else {
                                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                                 @Override
@@ -233,7 +235,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                                             queue.add(CheckLogInfoRequest);
                                                         } else {
-                                                            Toast.makeText(ResultActivity.this, "동일한 목차가 존재합니다.", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(ResultActivity.this, "동일한 할 일이 존재합니다.", Toast.LENGTH_SHORT).show();
                                                         }
                                                     } catch (JSONException e) {
                                                         e.printStackTrace();
@@ -265,8 +267,8 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     }
 
     /**
-     * 목차 추가, 수정, 삭제와 할 일 추가
-     * 추가한 목차 및 할 일을 사용자에게 보여줌
+     * 할 일 추가, 수정, 삭제와 세부사항 추가
+     * 추가한 할 일 및 세부사항을 사용자에게 보여줌
      */
     private void addItem(String title, final String[] subItems, final int colorRes, int iconRes, final String[] booleanValue, String percent) {
         //Let's create an item with R.layout.expanding_layout
@@ -279,13 +281,13 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             //It is possible to get any view inside the inflated layout. Let's set the text in the item
             ((TextView) item.findViewById(R.id.title)).setText(title);
             ((TextView) item.findViewById(R.id.percent)).setText(percent);
-            //목차 생성할 때 색
+            //할 일 생성할 때 색
             ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(blue));
 
             ImageView upImg = (ImageView) item.findViewById(R.id.up2);
             ImageView downImg = (ImageView) item.findViewById(R.id.down2);
 
-            /**해당 목차를 클릭할 때마다 바뀌는 upImg, downImg 이미지*/
+            /**해당 할 일를 클릭할 때마다 바뀌는 upImg, downImg 이미지*/
             ((TextView) item.findViewById(R.id.title)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -325,7 +327,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
 
             item.createSubItems(subItems.length);
 
-            /**해당 목차의 할 일을 보여주는 반복문*/
+            /**해당 할 일의 세부사항을 보여주는 반복문*/
             for (int i = 0; i < item.getSubItemsCount(); i++) {
                 //Let's get the created sub item by its index
                 final View view = item.getSubItemView(i);
@@ -334,7 +336,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 configureSubItem(item, view, subItems[i], title, booleanValue[i]);
             }
 
-            /**목차 수정*/
+            /**할 일 수정*/
             item.findViewById(R.id.update_item).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -361,7 +363,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                         public void onClick(View view) {
                                             String List = editTextID.getText().toString();
                                             if (title.equals("")) {
-                                                Toast.makeText(ResultActivity.this, "목차를 입력하세요.", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(ResultActivity.this, "할 일을 입력하세요.", Toast.LENGTH_SHORT).show();
                                             } else {
                                                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                                                     @Override
@@ -400,7 +402,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                                 RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                                                 queue.add(CheckLogInfoRequest);
                                                             } else {
-                                                                Toast.makeText(ResultActivity.this, "동일한 목차가 존재합니다.", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(ResultActivity.this, "동일한 할 일이 존재합니다.", Toast.LENGTH_SHORT).show();
                                                             }
                                                         } catch (JSONException e) {
                                                             e.printStackTrace();
@@ -430,7 +432,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 }
             });
 
-            /**할 일 추가*/
+            /**세부사항 추가*/
             item.findViewById(R.id.add_more_sub_items).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -484,7 +486,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                                             queue.add(CheckLogInfoRequest);
                                                         } else {
-                                                            Toast.makeText(ResultActivity.this, "동일한 할 일이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(ResultActivity.this, "동일한 세부사항이 존재합니다.", Toast.LENGTH_SHORT).show();
                                                         }
                                                     } catch (JSONException e) {
                                                         e.printStackTrace();
@@ -513,7 +515,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 }
             });
 
-            /** 목차 삭제 */
+            /** 할 일 삭제 */
             item.findViewById(R.id.remove_item).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -584,7 +586,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     }
 
     /**
-     * 할 일 수정, 삭제, 체크박스 관리
+     * 세부사항 수정, 삭제, 체크박스 관리
      */
     private void configureSubItem(final ExpandingItem item, final View view, final String subTitle, final String title, String check) {
 
@@ -769,7 +771,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                 final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
 
                                 editTextID.setHint(subTitle);
-                                ButtonSubmit.setText("할 일 수정");
+                                ButtonSubmit.setText("세부사항 수정");
 
                                 final AlertDialog dialog = builder.create();
                                 // 3. 다이얼로그에 있는 삽입 버튼을 클릭하면
@@ -778,7 +780,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                     public void onClick(View view) {
                                         String subtitle = editTextID.getText().toString();
                                         if (title.equals("")) {
-                                            Toast.makeText(ResultActivity.this, "할 일을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(ResultActivity.this, "세부사항을 입력해주세요.", Toast.LENGTH_SHORT).show();
                                         } else {
                                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                                 @Override
@@ -821,7 +823,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                                                             queue.add(CheckLogInfoRequest);
                                                         } else {
-                                                            Toast.makeText(ResultActivity.this, "동일한 할 일이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(ResultActivity.this, "동일한 세부사항이 존재합니다.", Toast.LENGTH_SHORT).show();
                                                         }
                                                     } catch (JSONException e) {
                                                         e.printStackTrace();
@@ -852,7 +854,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         });
 
         /**
-         * 할 일 삭제
+         * 세부사항 삭제
          */
         view.findViewById(R.id.remove_sub_item).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -936,7 +938,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     }
 
     /**
-     * 그룹 추가에 대한 AlertDialog
+     * 주제 추가에 대한 AlertDialog
      */
     private void showInsertDialog(final OnItemCreated positive) {
         AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
@@ -948,8 +950,8 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         Button ButtonSubmit = (Button) title_view.findViewById(R.id.button_dialog_submit);
         final EditText editTextID = (EditText) title_view.findViewById(R.id.mesgase);
 
-        editTextID.setHint("할 일을 추가해주세요.");
-        ButtonSubmit.setText("할 일 추가");
+        editTextID.setHint("세부사항을 추가해주세요.");
+        ButtonSubmit.setText("세부사항 추가");
 
         final AlertDialog dialog = builder.create();
 
@@ -959,7 +961,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             public void onClick(View view) {
                 String title = editTextID.getText().toString();
                 if (title.equals("")) {
-                    Toast.makeText(ResultActivity.this, "할 일을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ResultActivity.this, "세부사항을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
                     positive.itemCreated(editTextID.getText().toString());
                     dialog.dismiss();
@@ -999,7 +1001,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     }
 
     /**
-     * 사용자가 입력한 목록 및 할 일 명을 출력해주기 위해 필요한 메소드
+     * 사용자가 입력한 할 일 및 세부사항 명을 출력해주기 위해 필요한 메소드
      */
     interface OnItemCreated {
         String itemCreated(String title);
@@ -1023,9 +1025,9 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
 
     public void iniView() {
         Bundle extras = getIntent().getExtras();
-        id = extras.getString("id");    //그룹명
+        id = extras.getString("id");    //주제
         nick = extras.getString("nick");    //사용자 이름
-        orderNick = extras.getString("orderNick");  //그룹 반장 이름
+        orderNick = extras.getString("orderNick");  //주제 반장 이름
         profilePath = extras.getString("profilePath");  //프로필
         userEmail = extras.getString("userEmail");  //사용자 이메일
         userID = extras.getString("userID");    //사용자 Id
@@ -1036,66 +1038,35 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         mExpandingList = findViewById(R.id.expanding_list_main);
         createTitle();
 
-        str_group = id; //그룹명
+        str_group = id; //주제
         str_user = nick;    //사용자 이름
-        order_user = orderNick; //그룹 팀장 명
+        order_user = orderNick; //주제 팀장 명
         str_profile = profilePath;   //프로필
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerView = (View) findViewById(R.id.drawer);
         drawerGroupView = (View) findViewById(R.id.drawer_group);
-        ImageView userProfileImg = (ImageView) findViewById(R.id.userProfileImg);   //사용자 프로필 or 그룹 초대된 사용자 프로필
-        TextView userNickName = (TextView) findViewById(R.id.userNickName); //사용자 이름 or 그룹 초대된 사용자 이름
-        Button userGroupInvite = (Button) findViewById(R.id.userGroupInvite);   //그룹 초대 버튼 (관리자만)
-        ImageView btn_open = (ImageView) findViewById(R.id.btnOpen);    //채팅, 그룹수정, 그룹삭제를 보여주는 햄버거 버튼
+        ImageView userProfileImg = (ImageView) findViewById(R.id.userProfileImg);   //사용자 프로필 or 주제 초대된 사용자 프로필
+        TextView userNickName = (TextView) findViewById(R.id.userNickName); //사용자 이름 or 주제 초대된 사용자 이름
+        Button userGroupInvite = (Button) findViewById(R.id.userGroupInvite);   //주제 초대 버튼 (관리자만)
+        ImageView btn_open = (ImageView) findViewById(R.id.btnOpen);    //채팅, 주제수정, 주제삭제를 보여주는 햄버거 버튼
         TextView textView = (TextView) findViewById(R.id.id);
-        textView.setText(str_group);    //그룹명
+        textView.setText(str_group);    //주제
         ImageView groupInvite = (ImageView) findViewById(R.id.group_invite);
 
-        ImageButton reloadBtn = (ImageButton) findViewById(R.id.reloadBtn);
-        reloadBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            boolean success = jsonResponse.getBoolean("success");
-                            if (success || nick.equals(orderNick)) {
-                                trueCheck = 0.0;
-                                iniView();
-                                load();
-                                invitees();
-                            } else {
-                                Toast.makeText(ResultActivity.this, "강퇴되어 권한이 없습니다.", Toast.LENGTH_SHORT).show();
-                                kickBack();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                };
-                Bundle extras = getIntent().getExtras();
-                InviteesCheck InviteesCheck = new InviteesCheck(extras.getString("nick"), extras.getString("orderNick"), extras.getString("id"), responseListener);
-                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
-                queue.add(InviteesCheck);
-            }
-        });
-
-        /** 초대된 그룹을 확인 할 수 있는 인물 버튼 */
+        /** 초대된 주제을 확인 할 수 있는 인물 버튼 */
         groupInvite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 invitees();
                 drawerLayout.openDrawer(drawerGroupView);
 
-                /**사용자 프로필 or 그룹 초대된 사용자 프로필*/
+                /**사용자 프로필 or 주제 초대된 사용자 프로필*/
                 Uri uri = Uri.parse(str_profile);
                 Glide.with(getApplicationContext())
                         .load(uri)
                         .into(userProfileImg);
 
-                /**사용자 이름 or 그룹 초대된 사용자 이름*/
+                /**사용자 이름 or 주제 초대된 사용자 이름*/
                 userNickName.setText(str_user);
 
                 /**초대할 사용자를 검색하기 위해 검색 화면으로 전환*/
@@ -1120,7 +1091,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             }
         });
 
-        /** 채팅, 그룹수정, 그룹 삭제가 있는 햄버거 버튼 */
+        /** 채팅, 주제수정, 주제 삭제가 있는 햄버거 버튼 */
         btn_open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1170,11 +1141,11 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         });
 
         /**
-         * 그룹 팀장일 경우 그룹 수정 및 삭제 버튼
-         * 그룹 팀장이 아닐 경우 그룹 나가기 버튼
+         * 주제 팀장일 경우 주제 수정 및 삭제 버튼
+         * 주제 팀장이 아닐 경우 주제 나가기 버튼
          * */
         if (nick.equals(orderNick)) {
-            /** 그룹 수정 */
+            /** 주제 수정 */
             Button updateGroup = (Button) findViewById(R.id.updateGroup);
             updateGroup.setVisibility(View.VISIBLE);
             updateGroup.setOnClickListener(new View.OnClickListener() {
@@ -1192,12 +1163,12 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
 
                     final AlertDialog dialog = builder.create();
 
-                    //그룹 수정 버튼
+                    //주제 수정 버튼
                     ButtonSubmit.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
                             String strID = editTextID.getText().toString();
                             if (strID.equals("")) {
-                                Toast.makeText(ResultActivity.this, "그룹명을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ResultActivity.this, "주제를 입력해주세요.", Toast.LENGTH_SHORT).show();
                             } else {
                                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                                     @Override
@@ -1229,7 +1200,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                 textView.setText(strID);
                                                 dialog.dismiss();
                                             } else {
-                                                Toast.makeText(ResultActivity.this, "그룹명이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(ResultActivity.this, "동일한 주제가 존재합니다.", Toast.LENGTH_SHORT).show();
                                             }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -1246,7 +1217,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 }
             });
 
-            /** 그룹 삭제 */
+            /** 주제 삭제 */
             Button removeGroup = (Button) findViewById(R.id.removeGroup);
             removeGroup.setVisibility(View.VISIBLE);
             removeGroup.setOnClickListener(new View.OnClickListener() {
@@ -1261,7 +1232,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
 
                     final AlertDialog dialog1 = builder1.create();
 
-                    //그룹 삭제 버튼
+                    //주제 삭제 버튼
                     ButtonSubmit1.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
                             Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -1284,7 +1255,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                         }
                     });
 
-                    //그룹 삭제 취소 버튼
+                    //주제 삭제 취소 버튼
                     ButtonSubmit2.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -1306,7 +1277,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                     builder1.setView(view1);
 
                     final TextView out = (TextView) view1.findViewById(R.id.delete_text);
-                    out.setText("그룹을 나가시겠습니까?");
+                    out.setText("나가시겠습니까?");
                     final Button ButtonSubmit1 = (Button) view1.findViewById(R.id.button_remove_submit);
                     final Button ButtonSubmit2 = (Button) view1.findViewById(R.id.button_cancel_submit);
 
@@ -1316,7 +1287,6 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                             Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
                                 @Override
                                 public void onResponse(String response) {
-                                    Toast.makeText(ResultActivity.this, "그룹을 나갔습니다.", Toast.LENGTH_SHORT).show();
                                     dialog1.dismiss();
                                     Intent intent = new Intent(getApplicationContext(), MainCategoryActivity.class);
                                     intent.putExtra("profileUri", str_profile);
@@ -1399,7 +1369,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             OrderItemList = new ArrayList<>();
 
             /**팀장 아이템 생성*/
-            OrderItemList.add(new OrderInvitees(extras.getString("profilePath"), extras.getString("orderNick") + "(팀장)"));
+            OrderItemList.add(new OrderInvitees(extras.getString("profilePath"), extras.getString("orderNick") + "(방장)"));
             inviteesAdapter = new InviteesAdapter(OrderItemList);    //생성된 item들을 adapter에서 생성
             recyclerView.setLayoutManager(layoutManager);   //recyclerView에 item을 Linear형식으로 만듦
             recyclerView.setAdapter(inviteesAdapter);
@@ -1430,7 +1400,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     }
 
     /**
-     * 그룹 반장이 그룹에서 특정 사용자를 내보낼 수 있는 메소드
+     * 주제 반장이 주제에서 특정 사용자를 내보낼 수 있는 메소드
      */
     @Override
     public void onItemClicked(int position) {

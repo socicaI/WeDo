@@ -38,7 +38,7 @@
         android:layout_marginRight="10dp"
         android:backgroundTint="#AFAAAA"
         android:visibility="gone"
-        android:text="그룹수정"
+        android:text="주제수정"
         android:textStyle="bold" />
 
     <Button
@@ -49,7 +49,7 @@
         android:layout_marginRight="10dp"
         android:backgroundTint="#B51E1E"
         android:visibility="gone"
-        android:text="그룹삭제"
+        android:text="주제삭제"
         android:textStyle="bold" />
 
     <Button
@@ -60,7 +60,7 @@
         android:layout_marginRight="10dp"
         android:backgroundTint="#B51E1E"
         android:visibility="gone"
-        android:text="그룹나가기"
+        android:text="주제나가기"
         android:textStyle="bold" />
 
 
