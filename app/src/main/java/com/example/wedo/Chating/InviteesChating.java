@@ -73,6 +73,7 @@ public class InviteesChating extends AppCompatActivity {
         userID = extras.getString("userID");
         userPass = extras.getString("userPass");
 
+        chatServerLoad();
         init();
     }
 
@@ -123,7 +124,7 @@ public class InviteesChating extends AppCompatActivity {
         mSocket.connect();
 
         mSocket.on(Socket.EVENT_CONNECT, args -> {
-            mSocket.emit("enter", gson.toJson(new RoomData(username, roomNumber+"of"+orderNick, orderNick)));
+            mSocket.emit("enter", gson.toJson(new RoomData(username, roomNumber + "of" + orderNick, orderNick)));
         });
         mSocket.on("update", args -> {
             MessageData data = gson.fromJson(args[0].toString(), MessageData.class);
@@ -134,24 +135,30 @@ public class InviteesChating extends AppCompatActivity {
     /**
      * 서버에서 채팅 데이터 불러옴
      */
-    private void chatServerLoad(){
+    private void chatServerLoad() {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    JSONArray list = jsonObject.getJSONArray("userSearch");
+                    JSONArray list = jsonObject.getJSONArray("chatData");
                     for (int i = 0; i < list.length(); i++) {
-                        adapter.addItem(new ChatItem(username, content_edit.getText().toString(), toDate(System.currentTimeMillis()), ChatType.RIGHT_MESSAGE));
-                        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-                        content_edit.setText("");
+                        Long time = Long.valueOf(list.getJSONObject(i).getString("date"));
+                        if (list.getJSONObject(i).getString("user_name").equals(username) && list.getJSONObject(i).getString("user_profile").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
+                            adapter.addItem(new ChatItem(username, list.getJSONObject(i).getString("user_content"), toDate(time), ChatType.RIGHT_MESSAGE));
+                            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                        } else if (list.getJSONObject(i).getString("user_name") != username && list.getJSONObject(i).getString("user_profile").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
+                            adapter.addItem(new ChatItem(username, list.getJSONObject(i).getString("user_content"), toDate(time), ChatType.LEFT_MESSAGE));
+                            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         };
-        ChatDataRequest ChatDataRequest = new ChatDataRequest(roomNumber+"of"+orderNick, responseListener);
+        ChatDataRequest ChatDataRequest = new ChatDataRequest(roomNumber + "of" + orderNick, responseListener);
         RequestQueue queue = Volley.newRequestQueue(InviteesChating.this);
         queue.add(ChatDataRequest);
     }
@@ -164,7 +171,7 @@ public class InviteesChating extends AppCompatActivity {
 
         mSocket.emit("newMessage", gson.toJson(new MessageData("MESSAGE",
                 username,
-                roomNumber+"of"+orderNick,
+                roomNumber + "of" + orderNick,
                 content_edit.getText().toString(),
                 System.currentTimeMillis())));
 
@@ -209,7 +216,7 @@ public class InviteesChating extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mSocket.emit("left", gson.toJson(new RoomData(username, roomNumber+"of"+orderNick,orderNick)));
+        mSocket.emit("left", gson.toJson(new RoomData(username, roomNumber + "of" + orderNick, orderNick)));
         mSocket.disconnect();
     }
 }
