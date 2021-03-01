@@ -1,41 +1,70 @@
 package com.example.wedo.Chating;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.example.wedo.Chating.model.MessageData;
 import com.example.wedo.Chating.model.RoomData;
+import com.example.wedo.Chating.retrofit.RetrofitClient;
+import com.example.wedo.Login.LoginActivity;
 import com.example.wedo.R;
+import com.example.wedo.Register.CameraActivity;
+import com.example.wedo.Register.RegisterActivity;
+import com.example.wedo.RegisterHttp.RegisterRequest;
 import com.example.wedo.Schedule.ResultActivity;
 import com.example.wedo.SearchFilter.ItemAdapter;
 import com.example.wedo.SearchFilter.ItemModel;
 import com.example.wedo.SearchFilter.SearchRequest;
 import com.example.wedo.SearchFilter.UserSearchActivity;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 public class InviteesChating extends AppCompatActivity {
 
@@ -53,6 +82,8 @@ public class InviteesChating extends AppCompatActivity {
     private Gson gson = new Gson();
 
     private int SELECT_IMAGE = 100;
+
+    String picture;
 
     /**
      * Schedule 관련 필요한 데이터
@@ -120,6 +151,16 @@ public class InviteesChating extends AppCompatActivity {
         });
 
         //이미지 전송 버튼
+        ImageButton image_btn = (ImageButton) findViewById(R.id.image_btn);
+        image_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Intent imageIntent = new Intent(Intent.ACTION_PICK);
+//                imageIntent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+//                startActivityForResult(imageIntent, SELECT_IMAGE);
+                myStartActivity(ChatCameraActivity.class);
+            }
+        });
 
         mSocket.connect();
 
@@ -150,7 +191,12 @@ public class InviteesChating extends AppCompatActivity {
                         } else if (list.getJSONObject(i).getString("user_name") != username && list.getJSONObject(i).getString("user_profile").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
                             adapter.addItem(new ChatItem(username, list.getJSONObject(i).getString("user_content"), toDate(time), ChatType.LEFT_MESSAGE));
                             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-
+                        } else if (list.getJSONObject(i).getString("user_name").equals(username) && list.getJSONObject(i).getString("user_content").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
+                            adapter.addItem(new ChatItem(username, list.getJSONObject(i).getString("user_profile"), toDate(time), ChatType.RIGHT_IMAGE));
+                            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                        }else if (list.getJSONObject(i).getString("user_name")!=(username) && list.getJSONObject(i).getString("user_content").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
+                            adapter.addItem(new ChatItem(username, list.getJSONObject(i).getString("user_profile"), toDate(time), ChatType.LEFT_IMAGE));
+                            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                         }
                     }
                 } catch (JSONException e) {
@@ -161,6 +207,27 @@ public class InviteesChating extends AppCompatActivity {
         ChatDataRequest ChatDataRequest = new ChatDataRequest(roomNumber + "of" + orderNick, responseListener);
         RequestQueue queue = Volley.newRequestQueue(InviteesChating.this);
         queue.add(ChatDataRequest);
+    }
+
+    private void addChat(MessageData data) {
+        runOnUiThread(() -> {
+            System.out.println("값값값: "+data.getType());
+
+//            if (data.getType().equals("ENTER") || data.getType().equals("LEFT")) {
+//                System.out.println("값값값값값값: "+data.getType());
+//                adapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.CENTER_MESSAGE));
+//                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+//            }
+            if (data.getType().equals("IMAGE")) {
+                System.out.println("값값: "+data.getType());
+                adapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_IMAGE));
+                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            } else {
+                System.out.println("값: "+data.getType());
+                adapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_MESSAGE));
+                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            }
+        });
     }
 
     private void sendMessage() {
@@ -180,37 +247,19 @@ public class InviteesChating extends AppCompatActivity {
         content_edit.setText("");
     }
 
-    private void addChat(MessageData data) {
-        runOnUiThread(() -> {
-            if (data.getType().equals("ENTER") || data.getType().equals("LEFT")) {
-                adapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.CENTER_MESSAGE));
-                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-            } else if (data.getType().equals("IMAGE")) {
-                adapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_IMAGE));
-                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-            } else {
-                adapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_MESSAGE));
-                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-            }
-        });
-    }
+//    private void sendImage(String imageUri) {
+//        mSocket.emit("newImage", gson.toJson(new MessageData("IMAGE",
+//                username,
+//                roomNumber,
+//                imageUri,
+//                System.currentTimeMillis())));
+//
+//        adapter.addItem(new ChatItem(username, String.valueOf(imageUri), toDate(System.currentTimeMillis()), ChatType.RIGHT_IMAGE));
+//        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+//    }
 
     private String toDate(long currentMillis) {
         return new SimpleDateFormat("hh:mm a").format(new Date(currentMillis));
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Uri selectedImageUri;
-
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            selectedImageUri = data.getData();
-//            uploadImage(selectedImageUri, getApplicationContext());
-            adapter.addItem(new ChatItem(username, String.valueOf(selectedImageUri), toDate(System.currentTimeMillis()), ChatType.RIGHT_IMAGE));
-            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-        }
     }
 
     @Override
@@ -218,5 +267,60 @@ public class InviteesChating extends AppCompatActivity {
         super.onDestroy();
         mSocket.emit("left", gson.toJson(new RoomData(username, roomNumber + "of" + orderNick, orderNick)));
         mSocket.disconnect();
+    }
+    private void myStartActivity(Class c) {
+        Intent intent = new Intent(this, c);
+        startActivityForResult(intent, 0);
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 0: {
+                if (resultCode == Activity.RESULT_OK) {
+                    picture = data.getStringExtra("picturePath");
+
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+
+                    StorageReference storageRef = storage.getReference();
+                    final StorageReference mountainImagesRef = storageRef.child("images/" + "chat/" + System.currentTimeMillis()); //파일 경로 images/사용자 ID/
+                    try {
+                        InputStream stream = new FileInputStream(new File(picture));
+                        UploadTask uploadTask = mountainImagesRef.putStream(stream);
+                        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()) {
+                                    throw task.getException();
+                                }
+                                return mountainImagesRef.getDownloadUrl();
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    Uri downloadUri = task.getResult(); //이미지 경로를 사용자 DB에 저장을 하여 특정 사용자의 프로필을 저장하고 불러온다.
+                                    mSocket.emit("newImage", gson.toJson(new MessageData("IMAGE",
+                                            username,
+                                            roomNumber + "of" + orderNick,
+                                            String.valueOf(downloadUri),
+                                            System.currentTimeMillis())));
+                                    adapter.addItem(new ChatItem(username, String.valueOf(downloadUri), toDate(System.currentTimeMillis()), ChatType.RIGHT_IMAGE));
+                                    recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                                } else {
+                                    Log.e("로그", "실패");
+                                }
+                            }
+                        });
+                    } catch (FileNotFoundException e) {
+                        Log.e("로그", "에러:" + e.toString());
+                    }
+                }
+            }
+            break;
+        }
     }
 }
