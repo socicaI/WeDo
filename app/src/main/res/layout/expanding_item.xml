@@ -97,7 +97,7 @@
         android:layout_toStartOf="@id/add_more_sub_items"
         android:layout_toLeftOf="@id/add_more_sub_items"
         android:padding="12dp"
-        android:src="@drawable/ic_down2"
+        android:src="@drawable/ic_down"
         android:visibility="visible" />
     <!--    <ImageView-->
     <!--        android:id="@+id/updown_item"-->

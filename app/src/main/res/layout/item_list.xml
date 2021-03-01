@@ -11,7 +11,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="40dp"
         android:layout_height="40dp"
-        app:cardCornerRadius="15dp">
+        app:cardCornerRadius="20dp">
 
         <ImageView
             android:id="@+id/profileImageView1"

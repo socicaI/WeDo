@@ -18,11 +18,17 @@
         android:roundIcon="@mipmap/ic_launcher_wedo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WeDo">
-        <activity android:name=".Chating.InviteesChating"></activity>
-        <activity android:name=".ActivityInfo.ActivityInfo" />
-        <activity android:name=".SearchFilter.UserSearchActivity" />
-        <activity android:name=".Schedule.ResultActivity" />
-        <activity android:name=".Group.NickChangeActivity" />
+        <activity
+            android:name=".Chating.InviteesChating"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ActivityInfo.ActivityInfo"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SearchFilter.UserSearchActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Schedule.ResultActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Group.NickChangeActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Group.MainCategoryActivity"
             android:screenOrientation="portrait" />
@@ -48,6 +54,9 @@
 
         <activity
             android:name=".Register.RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Chating.ChatCameraActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Register.CameraActivity"

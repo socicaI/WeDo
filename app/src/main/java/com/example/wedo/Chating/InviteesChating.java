@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -104,6 +105,7 @@ public class InviteesChating extends AppCompatActivity {
         userID = extras.getString("userID");
         userPass = extras.getString("userPass");
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         chatServerLoad();
         init();
     }
@@ -189,13 +191,13 @@ public class InviteesChating extends AppCompatActivity {
                             adapter.addItem(new ChatItem(username, list.getJSONObject(i).getString("user_content"), toDate(time), ChatType.RIGHT_MESSAGE));
                             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                         } else if (list.getJSONObject(i).getString("user_name") != username && list.getJSONObject(i).getString("user_profile").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
-                            adapter.addItem(new ChatItem(username, list.getJSONObject(i).getString("user_content"), toDate(time), ChatType.LEFT_MESSAGE));
+                            adapter.addItem(new ChatItem(list.getJSONObject(i).getString("user_name"), list.getJSONObject(i).getString("user_content"), toDate(time), ChatType.LEFT_MESSAGE));
                             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                         } else if (list.getJSONObject(i).getString("user_name").equals(username) && list.getJSONObject(i).getString("user_content").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
                             adapter.addItem(new ChatItem(username, list.getJSONObject(i).getString("user_profile"), toDate(time), ChatType.RIGHT_IMAGE));
                             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                         }else if (list.getJSONObject(i).getString("user_name")!=(username) && list.getJSONObject(i).getString("user_content").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
-                            adapter.addItem(new ChatItem(username, list.getJSONObject(i).getString("user_profile"), toDate(time), ChatType.LEFT_IMAGE));
+                            adapter.addItem(new ChatItem(list.getJSONObject(i).getString("user_name"), list.getJSONObject(i).getString("user_profile"), toDate(time), ChatType.LEFT_IMAGE));
                             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                         }
                     }
@@ -211,19 +213,15 @@ public class InviteesChating extends AppCompatActivity {
 
     private void addChat(MessageData data) {
         runOnUiThread(() -> {
-            System.out.println("값값값: "+data.getType());
-
 //            if (data.getType().equals("ENTER") || data.getType().equals("LEFT")) {
 //                System.out.println("값값값값값값: "+data.getType());
 //                adapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.CENTER_MESSAGE));
 //                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
 //            }
             if (data.getType().equals("IMAGE")) {
-                System.out.println("값값: "+data.getType());
                 adapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_IMAGE));
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             } else {
-                System.out.println("값: "+data.getType());
                 adapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_MESSAGE));
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             }
@@ -247,17 +245,6 @@ public class InviteesChating extends AppCompatActivity {
         content_edit.setText("");
     }
 
-//    private void sendImage(String imageUri) {
-//        mSocket.emit("newImage", gson.toJson(new MessageData("IMAGE",
-//                username,
-//                roomNumber,
-//                imageUri,
-//                System.currentTimeMillis())));
-//
-//        adapter.addItem(new ChatItem(username, String.valueOf(imageUri), toDate(System.currentTimeMillis()), ChatType.RIGHT_IMAGE));
-//        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-//    }
-
     private String toDate(long currentMillis) {
         return new SimpleDateFormat("hh:mm a").format(new Date(currentMillis));
     }
@@ -272,8 +259,6 @@ public class InviteesChating extends AppCompatActivity {
         Intent intent = new Intent(this, c);
         startActivityForResult(intent, 0);
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
