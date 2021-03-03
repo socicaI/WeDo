@@ -29,7 +29,7 @@ public class ActivityInfo extends AppCompatActivity implements SwipeRefreshLayou
     private ActivityItemAdapter adapter;
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    public String id, nick, profilePath, userEmail, userID, userPass, orderNick;
+    public String id, nick, profilePath, userEmail, userID, userPass, orderNick, TitleProfile, people;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +44,8 @@ public class ActivityInfo extends AppCompatActivity implements SwipeRefreshLayou
         userEmail = extras.getString("userEmail");
         userID = extras.getString("userID");
         userPass = extras.getString("userPass");
+        TitleProfile = extras.getString("TitleProfile");
+        people = extras.getString("people");
 
         setUpRecyclerView();
     }
@@ -122,6 +124,9 @@ public class ActivityInfo extends AppCompatActivity implements SwipeRefreshLayou
         intent.putExtra("userID", userID);
         intent.putExtra("userPass", userPass);
         intent.putExtra("userEmail", userEmail);
+        intent.putExtra("TitleProfile", TitleProfile);
+        intent.putExtra("people", people);
+
         startActivity(intent);
         finish();
     }

@@ -3,17 +3,16 @@ package com.example.wedo.Schedule;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.app.slice.Slice;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.SlidingDrawer;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +34,7 @@ import com.diegodobelo.expandingview.ExpandingItem;
 import com.diegodobelo.expandingview.ExpandingList;
 import com.example.wedo.ActivityInfo.ActivityInfo;
 import com.example.wedo.Chating.InviteesChating;
+import com.example.wedo.GroupHttp.MainCategoryGroupRequest;
 import com.example.wedo.GroupHttp.UserGroupRemove;
 import com.example.wedo.GroupHttp.UserGroupUpdate;
 import com.example.wedo.GroupHttp.ValidateGroup;
@@ -50,17 +51,11 @@ import com.example.wedo.ScheduleHttp.UserScheduleAdd;
 import com.example.wedo.ScheduleHttp.UserScheduleRemove;
 import com.example.wedo.ScheduleHttp.UserScheduleUpdate;
 import com.example.wedo.ScheduleHttp.ValidateSchedule;
-import com.example.wedo.SearchFilter.InviteRequest;
-import com.example.wedo.SearchFilter.ItemAdapter;
-import com.example.wedo.SearchFilter.ItemModel;
-import com.example.wedo.SearchFilter.SearchRequest;
 import com.example.wedo.SearchFilter.UserSearchActivity;
-import com.example.wedo.SearchFilter.ValidateInvite;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -72,7 +67,15 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     public CheckBox checkBox;   //세부사항 체크박스
     private DrawerLayout drawerLayout;
     private View drawerView, drawerGroupView;
-    public String id, nick, profilePath, userEmail, userID, userPass, orderNick;   //주제, 사용자 이름, 프로필, 사용자 이메일, 사용자 Id, 사용자 Pass, 주제 반장명
+    public String id;
+    public String nick;
+    public String profilePath;
+    public String userEmail;
+    public String userID;
+    public String userPass;
+    public String orderNick;
+    public String TitleProfile;
+    public String people;   //팀원 수
     public String str_group, str_user, str_profile, order_user; //주제, 사용자 이름, 프로필
     private ArrayList<TaskModel> tasks;
     public String mainTitle = "a";
@@ -96,7 +99,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
      * 활동내역 버튼을 눌렀을 경우
      */
     private void activityInfo() {
-        Button activityInfo = (Button) findViewById(R.id.activityInfo);
+        LinearLayout activityInfo = (LinearLayout) findViewById(R.id.activityInfo);
         activityInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,8 +109,11 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 intent.putExtra("orderNick", orderNick);
                 intent.putExtra("profilePath", profilePath);
                 intent.putExtra("userEmail", userEmail);
+                intent.putExtra("TitleProfile", TitleProfile);
                 intent.putExtra("userID", userID);
                 intent.putExtra("userPass", userPass);
+                intent.putExtra("people", people);
+
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
                 finish();
@@ -157,7 +163,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                     }
                     /**tasksArray의 크기 만큼 돌면서 해당 할 일 및 세부사항을 생성하는 반복문*/
                     for (int i = 0; i < tasks.size(); i++) {
-                        addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.blue, R.drawable.wedo_img, tasks.get(i).getBooleanValueArray(), "0%");
+                        addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.grey, R.drawable.wedo_img, tasks.get(i).getBooleanValueArray(), "0%");
                     }
                     tasks.clear();
                     //여기기다가
@@ -218,7 +224,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                                                 @Override
                                                                 public void onResponse(String response) {
-                                                                    addItem(title, new String[]{}, R.color.blue, R.drawable.wedo_img, null, "0%");
+                                                                    addItem(title, new String[]{}, R.color.grey, R.drawable.wedo_img, null, "0%");
                                                                     dialog.dismiss();
                                                                     Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
                                                                         @Override
@@ -273,7 +279,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     private void addItem(String title, final String[] subItems, final int colorRes, int iconRes, final String[] booleanValue, String percent) {
         //Let's create an item with R.layout.expanding_layout
         ExpandingItem item = mExpandingList.createNewItem(R.layout.expanding_layout);
-        String blue = "#7ED2FF";
+        String grey = "#D8D8D8";
         //If item creation is successful, let's configure it
         if (item != null) {
             item.setIndicatorColorRes(colorRes);
@@ -282,10 +288,10 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             ((TextView) item.findViewById(R.id.title)).setText(title);
             ((TextView) item.findViewById(R.id.percent)).setText(percent);
             //할 일 생성할 때 색
-            ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(blue));
+            ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(grey));
 
             ImageView upImg = (ImageView) item.findViewById(R.id.up2);
-            ImageView downImg = (ImageView) item.findViewById(R.id.down2);
+            ImageView downImg = (ImageView) item.findViewById(R.id.down);
 
             /**해당 할 일를 클릭할 때마다 바뀌는 upImg, downImg 이미지*/
             ((TextView) item.findViewById(R.id.title)).setOnClickListener(new View.OnClickListener() {
@@ -386,6 +392,8 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                                                 intent.putExtra("profilePath", profilePath);
                                                                                 intent.putExtra("userEmail", userEmail);
                                                                                 intent.putExtra("userID", userID);
+                                                                                intent.putExtra("TitleProfile", TitleProfile);
+                                                                                intent.putExtra("people", people);
                                                                                 intent.putExtra("userPass", userPass);
                                                                                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                                                                                 startActivity(intent);
@@ -470,7 +478,9 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                                             intent.putExtra("orderNick", orderNick);
                                                                             intent.putExtra("profilePath", profilePath);
                                                                             intent.putExtra("userEmail", userEmail);
+                                                                            intent.putExtra("TitleProfile", TitleProfile);
                                                                             intent.putExtra("userID", userID);
+                                                                            intent.putExtra("people", people);
                                                                             intent.putExtra("userPass", userPass);
                                                                             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                                                                             startActivity(intent);
@@ -591,18 +601,18 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     private void configureSubItem(final ExpandingItem item, final View view, final String subTitle, final String title, String check) {
 
         String grey = "#D8D8D8";
-        String black = "#000000";
-        String blue = "#7ED2FF";
-        String orange = "#FFCD12";
-        String green = "#1DDB16";
+        String black = "#9E9090";
+        String blue = "#03A9F4";
+        String yellow = "#F8D411";
+//        String green = "#FFFFFFFF";
 
         ((TextView) view.findViewById(R.id.sub_title)).setText(subTitle);
         ((TextView) item.findViewById(R.id.title)).setText(title);
         checkBox = view.findViewById(R.id.checkBox);
 
         if (trueCheck == 0.0) {
-            ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(blue));
-            item.setIndicatorColorRes(R.color.blue);
+            ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(grey));
+            item.setIndicatorColorRes(R.color.grey);
         }
 
         for (int i = 0; i < item.getSubItemsCount(); i++) {
@@ -622,14 +632,14 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 if (trueCheck < item.getSubItemsCount()) {
 
                     ((TextView) item.findViewById(R.id.percent)).setText(form.format(trueCheck * 100 / item.getSubItemsCount()) + "%");
-                    ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(orange));
-                    item.setIndicatorColor(Color.parseColor(orange));
+                    ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(yellow));
+                    item.setIndicatorColor(Color.parseColor(yellow));
                 }
                 if (trueCheck == item.getSubItemsCount()) {
 
                     ((TextView) item.findViewById(R.id.percent)).setText(form.format(trueCheck * 100 / item.getSubItemsCount()) + "%");
-                    ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(green));
-                    item.setIndicatorColor(Color.parseColor(green));
+                    ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(blue));
+                    item.setIndicatorColor(Color.parseColor(blue));
                 }
                 break;
             }
@@ -667,13 +677,13 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
 
                                                         if (checkSchedule < item.getSubItemsCount()) {
                                                             ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
-                                                            ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(orange));
-                                                            item.setIndicatorColor(Color.parseColor(orange));
+                                                            ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(yellow));
+                                                            item.setIndicatorColor(Color.parseColor(yellow));
                                                         }
                                                         if (checkSchedule == item.getSubItemsCount()) {
                                                             ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
-                                                            ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(green));
-                                                            item.setIndicatorColor(Color.parseColor(green));
+                                                            ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(blue));
+                                                            item.setIndicatorColor(Color.parseColor(blue));
                                                         } else {
                                                             ((TextView) view.findViewById(R.id.sub_title)).setTextColor(Color.parseColor(grey));
                                                         }
@@ -704,18 +714,18 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
 
                                                     if (checkSchedule < item.getSubItemsCount()) {
                                                         ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
-                                                        ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(orange));
-                                                        item.setIndicatorColor(Color.parseColor(orange));
+                                                        ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(yellow));
+                                                        item.setIndicatorColor(Color.parseColor(yellow));
                                                     }
                                                     if (checkSchedule == item.getSubItemsCount()) {
                                                         ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
-                                                        ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(green));
-                                                        item.setIndicatorColor(Color.parseColor(green));
+                                                        ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(blue));
+                                                        item.setIndicatorColor(Color.parseColor(blue));
                                                     }
                                                     if (checkSchedule * 100 / item.getSubItemsCount() == 0.0) {
                                                         ((TextView) item.findViewById(R.id.percent)).setText(form.format(checkSchedule * 100 / item.getSubItemsCount()) + "%");
-                                                        ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(blue));
-                                                        item.setIndicatorColorRes(R.color.blue);
+                                                        ((TextView) item.findViewById(R.id.percent)).setTextColor(Color.parseColor(grey));
+                                                        item.setIndicatorColorRes(R.color.grey);
                                                     }
                                                 }
                                             };
@@ -808,7 +818,9 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                                             intent.putExtra("profilePath", profilePath);
                                                                             intent.putExtra("userEmail", userEmail);
                                                                             intent.putExtra("userID", userID);
+                                                                            intent.putExtra("people", people);
                                                                             intent.putExtra("userPass", userPass);
+                                                                            intent.putExtra("TitleProfile", TitleProfile);
                                                                             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                                                                             startActivity(intent);
                                                                             finish();
@@ -890,6 +902,8 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                         intent.putExtra("orderNick", orderNick);
                                                         intent.putExtra("profilePath", profilePath);
                                                         intent.putExtra("userEmail", userEmail);
+                                                        intent.putExtra("TitleProfile", TitleProfile);
+                                                        intent.putExtra("people", people);
                                                         intent.putExtra("userID", userID);
                                                         intent.putExtra("userPass", userPass);
                                                         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -1032,7 +1046,10 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         userEmail = extras.getString("userEmail");  //사용자 이메일
         userID = extras.getString("userID");    //사용자 Id
         userPass = extras.getString("userPass");    //사용자 Pass
+        TitleProfile = extras.getString("TitleProfile"); //주제 만든이의 프로필
+        people = extras.getString("people");
         tasks = new ArrayList<>();  // Task Model 클래스 ArrayList
+
 
         /** ExpandingList */
         mExpandingList = findViewById(R.id.expanding_list_main);
@@ -1051,10 +1068,19 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         ImageView btn_open = (ImageView) findViewById(R.id.btnOpen);    //채팅, 주제수정, 주제삭제를 보여주는 햄버거 버튼
         TextView textView = (TextView) findViewById(R.id.id);
         textView.setText(str_group);    //주제
-        ImageView groupInvite = (ImageView) findViewById(R.id.group_invite);
+        ImageView inviteProfile = (ImageView) findViewById(R.id.inviteProfile);
+        LinearLayout OrderProfile = (LinearLayout) findViewById(R.id.OrderProfile);
+
+        /**
+         * 프로필 불러오는 부분
+         */
+        Uri uri = Uri.parse(TitleProfile);
+        Glide.with(getApplicationContext())
+                .load(uri)
+                .into(inviteProfile);
 
         /** 초대된 주제을 확인 할 수 있는 인물 버튼 */
-        groupInvite.setOnClickListener(new View.OnClickListener() {
+        inviteProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 invitees();
@@ -1071,6 +1097,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
 
                 /**초대할 사용자를 검색하기 위해 검색 화면으로 전환*/
                 if (nick.equals(orderNick)) {
+                    OrderProfile.setVisibility(View.VISIBLE);
                     userGroupInvite.setVisibility(View.VISIBLE);
                     userGroupInvite.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -1083,6 +1110,8 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                             intent.putExtra("userEmail", userEmail);
                             intent.putExtra("userID", userID);
                             intent.putExtra("userPass", userPass);
+                            intent.putExtra("TitleProfile", TitleProfile);
+                            intent.putExtra("people", people);
                             startActivity(intent);
                             finish();
                         }
@@ -1102,7 +1131,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         /**
          * 채팅과 관련된 버튼
          */
-        Button chatBtn = (Button) findViewById(R.id.chatBtn);
+        LinearLayout chatBtn = (LinearLayout) findViewById(R.id.chatBtn);
         chatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1121,6 +1150,9 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                 intent.putExtra("userEmail", userEmail);
                                 intent.putExtra("userID", userID);
                                 intent.putExtra("userPass", userPass);
+                                intent.putExtra("TitleProfile", TitleProfile);
+                                intent.putExtra("people", people);
+
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                                 startActivity(intent);
                                 finish();
@@ -1146,7 +1178,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
          * */
         if (nick.equals(orderNick)) {
             /** 주제 수정 */
-            Button updateGroup = (Button) findViewById(R.id.updateGroup);
+            LinearLayout updateGroup = (LinearLayout) findViewById(R.id.updateGroup);
             updateGroup.setVisibility(View.VISIBLE);
             updateGroup.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1186,8 +1218,10 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                         intent.putExtra("orderNick", orderNick);
                                                         intent.putExtra("profilePath", profilePath);
                                                         intent.putExtra("userEmail", userEmail);
+                                                        intent.putExtra("TitleProfile", TitleProfile);
                                                         intent.putExtra("userID", userID);
                                                         intent.putExtra("userPass", userPass);
+                                                        intent.putExtra("people", people);
                                                         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                                                         startActivity(intent);
                                                         finish();
@@ -1218,7 +1252,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             });
 
             /** 주제 삭제 */
-            Button removeGroup = (Button) findViewById(R.id.removeGroup);
+            LinearLayout removeGroup = (LinearLayout) findViewById(R.id.removeGroup);
             removeGroup.setVisibility(View.VISIBLE);
             removeGroup.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1266,7 +1300,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                 }
             });
         } else {
-            Button leaveGroup = (Button) findViewById(R.id.leaveGroup);
+            LinearLayout leaveGroup = (LinearLayout) findViewById(R.id.leaveGroup);
             leaveGroup.setVisibility(View.VISIBLE);
             leaveGroup.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1298,7 +1332,9 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                     finish();
                                 }
                             };
-                            LeaveGroupRequest LeaveGroupRequest = new LeaveGroupRequest(str_user, orderNick, id, responseListener);
+                            int people_count = Integer.parseInt(people) - 1;
+                            people = String.valueOf(people_count);
+                            LeaveGroupRequest LeaveGroupRequest = new LeaveGroupRequest(str_user, orderNick, id, people, responseListener);
                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                             queue.add(LeaveGroupRequest);
                         }
@@ -1324,6 +1360,9 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             RecyclerView recyclerView = findViewById(R.id.inviteesInfo);
             recyclerView.setHasFixedSize(true);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+            DividerItemDecoration dividerItemDecoration =
+                    new DividerItemDecoration(getApplicationContext(), new LinearLayoutManager(ResultActivity.this).getOrientation());
+            recyclerView.addItemDecoration(dividerItemDecoration);
 
             //adapter
             OrderItemList = new ArrayList<>();
@@ -1373,6 +1412,9 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
             inviteesAdapter = new InviteesAdapter(OrderItemList);    //생성된 item들을 adapter에서 생성
             recyclerView.setLayoutManager(layoutManager);   //recyclerView에 item을 Linear형식으로 만듦
             recyclerView.setAdapter(inviteesAdapter);
+            DividerItemDecoration dividerItemDecoration =
+                    new DividerItemDecoration(getApplicationContext(), new LinearLayoutManager(ResultActivity.this).getOrientation());
+            recyclerView.addItemDecoration(dividerItemDecoration);
 
             Response.Listener<String> responseListener = new Response.Listener<String>() {
                 @Override
@@ -1429,7 +1471,9 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                     }
                 };
                 //서버로 volley를 이용해서 요청을 함
-                ThrowOutRequest ThrowOutRequest = new ThrowOutRequest(model.getText(), orderNick, id, responseListener);
+                int people_count = Integer.parseInt(people) - 1;
+                people = String.valueOf(people_count);
+                ThrowOutRequest ThrowOutRequest = new ThrowOutRequest(model.getText(), orderNick, id, people, responseListener);
                 RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                 queue.add(ThrowOutRequest);
             }
@@ -1443,7 +1487,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
         dialog1.show();
     }
 
-    public void kickBack(){
+    public void kickBack() {
         Intent intent = new Intent(getApplicationContext(), MainCategoryActivity.class);
         intent.putExtra("profileUri", str_profile);
         intent.putExtra("ID", str_user);

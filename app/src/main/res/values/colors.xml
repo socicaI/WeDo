@@ -18,10 +18,11 @@
     <color name="pink">#FF308E</color>
     <color name="orange">#FA9301</color>
     <color name="yellow">#F8D411</color>
-    <color name="blue">#7ED2FF</color>
+    <color name="blue">#DCD6BC</color>
     <color name="purple">#6F26FA</color>
     <color name="green">#49CC56</color>
-    <color name="grey">#808080</color>
+    <color name="grey">#D8D8D8</color>
+    <color name="mainColor">#FFFFFFFF</color>
 
 
 </resources>

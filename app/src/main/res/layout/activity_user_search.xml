@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#03A9F4"
+    android:background="#FFFFFFFF"
     android:orientation="vertical"
     tools:context=".SearchFilter.UserSearchActivity">
 
@@ -16,7 +16,7 @@
         android:layout_marginTop="40dp"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"
-        android:textColorHint="@color/white"
+        android:textColorHint="@color/black"
         android:hint="사용자 검색"
         android:inputType="textPersonName"
         android:textSize="30dp"/>
@@ -26,8 +26,7 @@
         android:layout_width="300dp"
         android:layout_height="440dp"
         android:layout_gravity="center"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/user_search_border" />
+        android:layout_marginTop="40dp" />
 
 
 </LinearLayout>

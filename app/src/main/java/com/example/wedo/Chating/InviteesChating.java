@@ -89,7 +89,7 @@ public class InviteesChating extends AppCompatActivity {
     /**
      * Schedule 관련 필요한 데이터
      */
-    public String roomNumber, username, profilePath, userEmail, userID, userPass, orderNick;    //roomNumber=주제, nick=사용자 이름, orderNick=주제주인
+    public String roomNumber, username, profilePath, userEmail, userID, userPass, orderNick, TitleProfile, people;    //roomNumber=주제, nick=사용자 이름, orderNick=주제주인
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +104,8 @@ public class InviteesChating extends AppCompatActivity {
         userEmail = extras.getString("userEmail");
         userID = extras.getString("userID");
         userPass = extras.getString("userPass");
+        TitleProfile = extras.getString("TitleProfile");
+        people = extras.getString("people");
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         chatServerLoad();
@@ -122,6 +124,9 @@ public class InviteesChating extends AppCompatActivity {
         intent.putExtra("userID", userID);
         intent.putExtra("userPass", userPass);
         intent.putExtra("userEmail", userEmail);
+        intent.putExtra("TitleProfile", TitleProfile);
+        intent.putExtra("people", people);
+
         startActivity(intent);
         finish();
     }
@@ -196,7 +201,7 @@ public class InviteesChating extends AppCompatActivity {
                         } else if (list.getJSONObject(i).getString("user_name").equals(username) && list.getJSONObject(i).getString("user_content").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
                             adapter.addItem(new ChatItem(username, list.getJSONObject(i).getString("user_profile"), toDate(time), ChatType.RIGHT_IMAGE));
                             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-                        }else if (list.getJSONObject(i).getString("user_name")!=(username) && list.getJSONObject(i).getString("user_content").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
+                        } else if (list.getJSONObject(i).getString("user_name") != (username) && list.getJSONObject(i).getString("user_content").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
                             adapter.addItem(new ChatItem(list.getJSONObject(i).getString("user_name"), list.getJSONObject(i).getString("user_profile"), toDate(time), ChatType.LEFT_IMAGE));
                             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                         }
@@ -213,11 +218,7 @@ public class InviteesChating extends AppCompatActivity {
 
     private void addChat(MessageData data) {
         runOnUiThread(() -> {
-//            if (data.getType().equals("ENTER") || data.getType().equals("LEFT")) {
-//                System.out.println("값값값값값값: "+data.getType());
-//                adapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.CENTER_MESSAGE));
-//                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-//            }
+
             if (data.getType().equals("IMAGE")) {
                 adapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_IMAGE));
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
@@ -255,6 +256,7 @@ public class InviteesChating extends AppCompatActivity {
         mSocket.emit("left", gson.toJson(new RoomData(username, roomNumber + "of" + orderNick, orderNick)));
         mSocket.disconnect();
     }
+
     private void myStartActivity(Class c) {
         Intent intent = new Intent(this, c);
         startActivityForResult(intent, 0);

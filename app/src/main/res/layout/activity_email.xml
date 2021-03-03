@@ -11,17 +11,17 @@
         android:id="@+id/imageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="130dp"
         android:layout_marginLeft="250dp"
+        android:layout_marginTop="130dp"
         app:srcCompat="@drawable/wedo" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="회원 가입"
-        android:textColor="#3498DB"
         android:layout_marginTop="-20dp"
+        android:text="회원 가입"
+        android:textColor="#FFFFFFFF"
         android:textSize="50dp"
         android:textStyle="bold" />
 
@@ -40,18 +40,19 @@
             android:background="@drawable/border"
             android:ems="13"
             android:hint="이메일 인증"
-            android:padding="15dp" />
+            android:padding="15dp"
+            android:textColor="@color/black" />
 
         <!--        <Button-->
-<!--            android:id="@+id/email_validate_button"-->
-<!--            android:layout_width="60dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginLeft="205dp"-->
-<!--            android:layout_marginTop="3dp"-->
-<!--            android:backgroundTint="#3498DB"-->
-<!--            android:text="인증"-->
-<!--            android:textSize="10dp"-->
-<!--            android:textStyle="bold" />-->
+        <!--            android:id="@+id/email_validate_button"-->
+        <!--            android:layout_width="60dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginLeft="205dp"-->
+        <!--            android:layout_marginTop="3dp"-->
+        <!--            android:backgroundTint="#FFFFFFFF"-->
+        <!--            android:text="인증"-->
+        <!--            android:textSize="10dp"-->
+        <!--            android:textStyle="bold" />-->
     </FrameLayout>
 
     <Button
@@ -60,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:backgroundTint="#3498DB"
+        android:backgroundTint="#FFFFFFFF"
         android:padding="15dp"
         android:text="가입 및 인증"
         android:textStyle="bold" />

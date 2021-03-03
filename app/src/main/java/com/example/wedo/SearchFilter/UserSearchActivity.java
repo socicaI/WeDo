@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class UserSearchActivity extends AppCompatActivity implements ItemAdapter.onItemListener {
 
-    public String id, nick, profilePath, userEmail, userID, userPass, orderNick;
+    public String id, nick, profilePath, userEmail, userID, userPass, orderNick, TitleProfile, people;
     private ItemAdapter adapter;
     public List<ItemModel> itemList;
     private EditText userSearch;
@@ -64,6 +64,9 @@ public class UserSearchActivity extends AppCompatActivity implements ItemAdapter
     private void setUpRecyclerView() {
         //recyclerview
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        DividerItemDecoration dividerItemDecoration =
+                new DividerItemDecoration(getApplicationContext(), new LinearLayoutManager(UserSearchActivity.this).getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
@@ -133,6 +136,10 @@ public class UserSearchActivity extends AppCompatActivity implements ItemAdapter
         userEmail = extras.getString("userEmail");
         userID = extras.getString("userID");
         userPass = extras.getString("userPass");
+        TitleProfile = extras.getString("TitleProfile");
+        people = extras.getString("people");
+
+
     }
 
     /****************************************************
@@ -149,6 +156,8 @@ public class UserSearchActivity extends AppCompatActivity implements ItemAdapter
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
                     if(success){
+                        int people_count = Integer.parseInt(people)+1;
+                        people = String.valueOf(people_count);
                         Response.Listener<String> responseListener = new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -156,7 +165,7 @@ public class UserSearchActivity extends AppCompatActivity implements ItemAdapter
                             }
                         };
                         Bundle extras = getIntent().getExtras();
-                        InviteRequest InviteRequest = new InviteRequest(model.getText(), extras.getString("nick"), extras.getString("id"), model.getImageResource(), responseListener);
+                        InviteRequest InviteRequest = new InviteRequest(model.getText(), extras.getString("nick"), extras.getString("id"), model.getImageResource(), people, responseListener);
                         RequestQueue queue = Volley.newRequestQueue(UserSearchActivity.this);
                         queue.add(InviteRequest);
                     }else{
@@ -185,6 +194,8 @@ public class UserSearchActivity extends AppCompatActivity implements ItemAdapter
         intent.putExtra("userID", userID);
         intent.putExtra("userPass", userPass);
         intent.putExtra("userEmail", userEmail);
+        intent.putExtra("TitleProfile",TitleProfile);
+        intent.putExtra("people", people);
         startActivity(intent);
         finish();
     }

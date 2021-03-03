@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="160dp"
     android:layout_marginLeft="15dp"
-    android:layout_marginRight="15dp" android:orientation="vertical">
+    android:layout_marginRight="15dp"
+    android:orientation="vertical">
 
     <EditText
         android:id="@+id/mesgase"
@@ -14,7 +15,8 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/border"
         android:hint=" 주제를 입력하세요."
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:textColor="@color/black" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -26,8 +28,8 @@
             android:id="@+id/button_dialog_submit"
             android:layout_width="150dp"
             android:layout_height="60dp"
+            android:backgroundTint="#03A9F4"
             android:text="주제 추가"
-            android:backgroundTint="#3498DB"
             android:textColor="@color/white"
             android:textSize="16dp" />
     </LinearLayout>

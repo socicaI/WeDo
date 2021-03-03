@@ -9,7 +9,7 @@ import com.example.wedo.R;
 
 public class Loading extends Activity {
 
-    public String id, nick, profilePath, userEmail, userID, userPass, orderNick;
+    public String id, nick, profilePath, userEmail, userID, userPass, orderNick, TitleProfile, people;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +23,8 @@ public class Loading extends Activity {
         userEmail = extras.getString("userEmail");
         userID = extras.getString("userID");
         userPass = extras.getString("userPass");
+        TitleProfile = extras.getString("TitleProfile");
+        people = extras.getString("people");
 
 
         setContentView(R.layout.activity_loading);
@@ -43,6 +45,8 @@ public class Loading extends Activity {
             intent.putExtra("userID", userID);
             intent.putExtra("userPass", userPass);
             intent.putExtra("userEmail", userEmail);
+            intent.putExtra("TitleProfile", TitleProfile);
+            intent.putExtra("people", people);
             startActivity(intent);
             finish();
             //로딩이 끝난 후, ChoiceFunction 이동

@@ -12,6 +12,7 @@
             android:layout_gravity="center"
             android:textStyle="bold"
             android:textSize="20dp"
+            android:textColor="@color/black"
             android:text="잠시만 기다려주세요." />
 <!--    <com.airbnb.lottie.LottieAnimationView-->
 <!--        android:id="@+id/lottieView"-->

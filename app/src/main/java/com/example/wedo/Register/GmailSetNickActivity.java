@@ -175,7 +175,7 @@ public class GmailSetNickActivity extends AppCompatActivity {
                             if (success) {
                                 nickValidate = true;
                                 nickRedundancyCheckText.setText("사용 가능한 이름입니다.");
-                                nickRedundancyCheckText.setTextColor(Color.parseColor("#3498DB"));
+                                nickRedundancyCheckText.setTextColor(Color.parseColor("#03A9F4"));
                             } else {
                                 nickValidate = false;
                                 nickRedundancyCheckText.setText("중복된 이름입니다.");

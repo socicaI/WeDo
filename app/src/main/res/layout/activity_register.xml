@@ -15,7 +15,7 @@
         android:layout_marginTop="5dp"
         android:gravity="center"
         android:text="회원 가입"
-        android:textColor="#3498DB"
+        android:textColor="#03A9F4"
         android:textSize="40dp"
         android:textStyle="bold" />
 
@@ -49,7 +49,8 @@
             android:ems="13"
             android:hint="아이디"
             android:inputType="textPersonName"
-            android:padding="10dp" />
+            android:padding="10dp"
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/id_validate_button"
@@ -57,8 +58,9 @@
             android:layout_height="45dp"
             android:layout_marginLeft="205dp"
             android:layout_marginTop="-1dp"
-            android:backgroundTint="#3498DB"
+            android:backgroundTint="#03A9F4"
             android:text="중복확인"
+            android:textColor="@color/white"
             android:textSize="8dp"
             android:textStyle="bold" />
     </FrameLayout>
@@ -78,7 +80,8 @@
             android:ems="13"
             android:hint="사용할 이름"
             android:inputType="textPersonName"
-            android:padding="10dp" />
+            android:padding="10dp"
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/nickValidateButton"
@@ -86,8 +89,9 @@
             android:layout_height="45dp"
             android:layout_marginLeft="205dp"
             android:layout_marginTop="-1dp"
-            android:backgroundTint="#3498DB"
+            android:backgroundTint="#03A9F4"
             android:text="중복확인"
+            android:textColor="@color/white"
             android:textSize="8dp"
             android:textStyle="bold" />
 
@@ -109,7 +113,8 @@
             android:ems="13"
             android:hint="비밀번호"
             android:inputType="textPassword"
-            android:padding="10dp" />
+            android:padding="10dp"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/password_check_text"
@@ -127,7 +132,8 @@
         android:ems="13"
         android:hint="비밀번호 확인"
         android:inputType="textPassword"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:textColor="@color/black" />
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -144,7 +150,8 @@
             android:ems="13"
             android:hint="이메일"
             android:inputType="textPersonName"
-            android:padding="10dp" />
+            android:padding="10dp"
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/emailValidateButton"
@@ -152,8 +159,9 @@
             android:layout_height="45dp"
             android:layout_marginLeft="205dp"
             android:layout_marginTop="-1dp"
-            android:backgroundTint="#3498DB"
+            android:backgroundTint="#03A9F4"
             android:text="인증"
+            android:textColor="@color/white"
             android:textSize="8dp"
             android:textStyle="bold" />
     </FrameLayout>
@@ -165,10 +173,11 @@
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
         android:background="@drawable/border"
-        android:inputType="number"
         android:ems="13"
         android:hint="이메일 인증번호"
-        android:padding="10dp" />
+        android:inputType="number"
+        android:padding="10dp"
+        android:textColor="@color/black" />
 
     <Button
         android:id="@+id/registrationButton"
@@ -176,8 +185,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:backgroundTint="#3498DB"
+        android:backgroundTint="#03A9F4"
         android:padding="10dp"
         android:text="가입하기"
+        android:textColor="@color/white"
         android:textStyle="bold" />
 </LinearLayout>

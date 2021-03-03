@@ -21,7 +21,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="-20dp"
         android:text="사용자 이름"
-        android:textColor="#3498DB"
+        android:textColor="#03A9F4"
         android:textSize="50dp"
         android:textStyle="bold" />
 
@@ -45,8 +45,8 @@
         android:id="@+id/profileImageText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_marginTop="5dp"
+        android:gravity="center"
         android:text="※WeDo에서 사용하실 프로필 사진을 찍어주세요." />
 
     <FrameLayout
@@ -64,7 +64,8 @@
             android:ems="13"
             android:hint="사용하실 이름"
             android:inputType="textPersonName"
-            android:padding="15dp" />
+            android:padding="15dp"
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/nickValidateButton"
@@ -72,7 +73,8 @@
             android:layout_height="50dp"
             android:layout_marginLeft="205dp"
             android:layout_marginTop="2dp"
-            android:backgroundTint="#3498DB"
+            android:backgroundTint="#03A9F4"
+            android:textColor="@color/white"
             android:text="중복확인"
             android:textSize="10dp"
             android:textStyle="bold" />
@@ -94,7 +96,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:backgroundTint="#3498DB"
+        android:backgroundTint="#03A9F4"
+        android:textColor="@color/white"
         android:padding="15dp"
         android:text="가입하기"
         android:textStyle="bold" />

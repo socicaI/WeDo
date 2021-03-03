@@ -12,7 +12,7 @@ public class InviteRequest extends StringRequest {
     final static private String URL = "http://54.180.0.255/searchInvitees.php";
     private Map<String, String> map;
 
-    public InviteRequest(String invitees, String nick, String group, String profilePath, Response.Listener<String> listener) {
+    public InviteRequest(String invitees, String nick, String group, String profilePath, String people, Response.Listener<String> listener) {
         super(Method.POST, URL, listener, null);
 
         map = new HashMap<>();
@@ -20,6 +20,7 @@ public class InviteRequest extends StringRequest {
         map.put("nick", nick);
         map.put("group", group);
         map.put("profilePath", profilePath);
+        map.put("people", people);
     }
 
     @Override

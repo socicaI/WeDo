@@ -164,6 +164,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public void setItem(ChatItem item, Context context) {
             MultiTransformation option = new MultiTransformation(new CenterCrop(), new RoundedCorners(8));
 
+
             Glide.with(context)
                     .load(item.getContent())
                     .apply(RequestOptions.bitmapTransform(option))
@@ -186,6 +187,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public void setItem(ChatItem item, Context context) {
             MultiTransformation option = new MultiTransformation(new CenterCrop(), new RoundedCorners(8));
+            
 
             Glide.with(context)
                     .load(item.getContent())

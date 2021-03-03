@@ -28,7 +28,8 @@
         android:ems="14"
         android:hint="아이디"
         android:inputType="textPersonName"
-        android:padding="15dp" />
+        android:padding="15dp"
+        android:textColor="@color/black" />
 
 
     <EditText
@@ -41,7 +42,8 @@
         android:ems="14"
         android:hint="비밀번호"
         android:inputType="textPassword"
-        android:padding="15dp" />
+        android:padding="15dp"
+        android:textColor="@color/black" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -78,8 +80,9 @@
         android:layout_width="300dp"
         android:layout_height="55dp"
         android:layout_gravity="center"
-        android:backgroundTint="#3498DB"
+        android:backgroundTint="#03A9F4"
         android:text="로그인"
+        android:textColor="@color/white"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -94,8 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="  아이디  /"
-            android:textColor="#3498DB"
-            android:textStyle="bold" />
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/looking_for_password"
@@ -103,8 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="50dp"
             android:text="  비밀번호 잊어버렸습니까"
-            android:textColor="#3498DB"
-            android:textStyle="bold" />
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/membership_registration"
@@ -112,8 +113,7 @@
             android:layout_height="match_parent"
             android:layout_marginRight="8dp"
             android:text="회원가입"
-            android:textColor="#3498DB"
-            android:textStyle="bold" />
+            android:textColor="@color/black" />
     </LinearLayout>
 
 </LinearLayout>

@@ -31,7 +31,7 @@
         android:paddingRight="16dp"
         android:paddingBottom="4dp"
         android:text="상대방이 보낸 메세지"
-        android:textColor="#333d4b"
+        android:textColor="@color/black"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name_text" />

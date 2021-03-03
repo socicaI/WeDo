@@ -13,7 +13,7 @@ public class UserGroupRemove extends StringRequest {
     final static private String URL = "http://54.180.0.255/userGroupRemove.php";
     private Map<String, String> map;
 
-    public UserGroupRemove(String nick, String usergroup, Response.Listener<String> listener) {
+    public UserGroupRemove(String nick, String usergroup,Response.Listener<String> listener) {
         super(Request.Method.POST, URL, listener, null);
 
         map = new HashMap<>();

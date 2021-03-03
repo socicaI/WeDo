@@ -13,13 +13,14 @@ public class LeaveGroupRequest extends StringRequest {
     final static private String URL = "http://54.180.0.255/InviteesLeaveGroup.php";
     private Map<String, String> map;
 
-    public LeaveGroupRequest(String nick, String orderNick, String orderGroup, Response.Listener<String> listener) {
+    public LeaveGroupRequest(String nick, String orderNick, String orderGroup, String people, Response.Listener<String> listener) {
         super(Request.Method.POST, URL, listener, null);
 
         map = new HashMap<>();
         map.put("nick", nick);
         map.put("orderUser", orderNick);
         map.put("orderGroup", orderGroup);
+        map.put("people", people);
     }
 
     @Override

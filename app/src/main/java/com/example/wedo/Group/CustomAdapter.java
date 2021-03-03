@@ -69,6 +69,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
         viewholder.user.setText(mList.get(position).getUser());
 
+        viewholder.people.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+
+        viewholder.people.setGravity(Gravity.CENTER);
+
+        viewholder.people.setText(mList.get(position).getPeople());
+
         profilePath = mList.get(position).getImageResource();
         Uri uri = Uri.parse(profilePath);
         Glide.with(viewholder.itemView.getContext())
@@ -87,6 +93,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         protected TextView id;
         protected TextView user;
         protected ImageView profileImageView;
+        protected TextView people;
 
 
         public CustomViewHolder(View view) {
@@ -94,6 +101,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             this.id = (TextView) view.findViewById(R.id.id_listitem);
             this.user = (TextView) view.findViewById(R.id.order);
             this.profileImageView = (ImageView) view.findViewById(R.id.profileImageView1);
+            this.people = (TextView) view.findViewById(R.id.people);
 
             view.setOnCreateContextMenuListener(this); //2. 리스너 등록
         }

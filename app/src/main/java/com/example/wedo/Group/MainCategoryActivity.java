@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +68,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
     SwipeRefreshLayout mSwipeRefreshLayout;
     TextView emptyRecycler;
     RecyclerView mRecyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +81,10 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
         mSwipeRefreshLayout.setOnRefreshListener(MainCategoryActivity.this);
 
+        DividerItemDecoration dividerItemDecoration =
+                new DividerItemDecoration(getApplicationContext(), new LinearLayoutManager(MainCategoryActivity.this).getOrientation());
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
+
         mArrayList = new ArrayList<>();
 
         mAdapter = new CustomAdapter(this, mArrayList);
@@ -85,7 +92,6 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
         mRecyclerView.setAdapter(mAdapter);
         categoryList();
     }
-
 
 
     public void categoryList() {
@@ -118,14 +124,16 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                         JSONObject item = group.getJSONObject(i);
                         String group1 = item.getString("usergroup");
                         String profilePath123 = item.getString("profilePath");
+                        String people = item.getString("people");
                         Dictionary dict = new Dictionary(group1);
                         dict.setUser(strID);
+                        dict.setPeople(people);
                         dict.setImageResource(profilePath123);
                         mArrayList.add(dict); //마지막 줄에 삽입됨 1
                         mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
                     }
-                        mRecyclerView.setVisibility(View.VISIBLE);
-                        emptyRecycler.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    emptyRecycler.setVisibility(View.GONE);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -150,8 +158,11 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                         String group2 = list.getJSONObject(i).getString("orderGroup");
                         String nick = list.getJSONObject(i).getString("orderUser");
                         String profilePath223 = list.getJSONObject(i).getString("profilePath");
+                        String people = list.getJSONObject(i).getString("people");
+
                         Dictionary dict = new Dictionary(group2);
                         dict.setUser(nick);
+                        dict.setPeople(people);
                         dict.setImageResource(profilePath223);
                         mArrayList.add(dict); //마지막 줄에 삽입됨 1
                         mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
@@ -168,7 +179,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                 }
             }
         };
-        InviteGroupRequest InviteGroupRequest = new InviteGroupRequest(strID,responseListener1);
+        InviteGroupRequest InviteGroupRequest = new InviteGroupRequest(strID, responseListener1);
         RequestQueue queue1 = Volley.newRequestQueue(MainCategoryActivity.this);
         queue1.add(InviteGroupRequest);
 
@@ -183,7 +194,9 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
 
                 Intent intent = new Intent(getBaseContext(), ResultActivity.class);
 
+                intent.putExtra("TitleProfile", dict.getImageResource());
                 intent.putExtra("id", dict.getId());
+                intent.putExtra("people", dict.getPeople());
                 intent.putExtra("nick", strID);
                 intent.putExtra("orderNick", dict.getUser());
                 intent.putExtra("profilePath", profilePath);
@@ -246,6 +259,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                                             emptyRecycler.setVisibility(View.GONE);
                                             mRecyclerView.setVisibility(View.VISIBLE);
                                             Dictionary dict = new Dictionary(strID2);
+                                            dict.setPeople("1");
 //                                          mArrayList.add(0, dict); //첫번째 줄에 삽입됨 1
                                             dict.setUser(strID);
                                             dict.setImageResource(profilePath);
@@ -314,7 +328,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
             }
         });
 
-        Button nickChange = (Button) findViewById(R.id.nickBtn);
+        LinearLayout nickChange = (LinearLayout) findViewById(R.id.nickBtn);
         nickChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -331,7 +345,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
             }
         });
 
-        Button logout = (Button) findViewById(R.id.btnLogout);
+        LinearLayout logout = (LinearLayout) findViewById(R.id.btnLogout);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

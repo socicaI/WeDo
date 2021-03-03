@@ -11,17 +11,17 @@
         android:id="@+id/imageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="130dp"
         android:layout_marginLeft="250dp"
+        android:layout_marginTop="130dp"
         app:srcCompat="@drawable/wedo" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="비밀번호 찾기"
-        android:textColor="#3498DB"
         android:layout_marginTop="-20dp"
+        android:text="비밀번호 찾기"
+        android:textColor="#03A9F4"
         android:textSize="50dp"
         android:textStyle="bold" />
 
@@ -38,10 +38,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/border"
-            android:inputType="textPersonName"
             android:ems="13"
             android:hint="이메일을 입력해주세요."
-            android:padding="15dp" />
+            android:inputType="textPersonName"
+            android:padding="15dp"
+            android:textColor="@color/black" />
     </FrameLayout>
 
     <EditText
@@ -51,10 +52,11 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:background="@drawable/border"
-        android:inputType="textPersonName"
         android:ems="13"
         android:hint="아이디를 입력해주세요."
-        android:padding="15dp" />
+        android:inputType="textPersonName"
+        android:padding="15dp"
+        android:textColor="@color/black" />
 
     <Button
         android:id="@+id/looking_for_pass_button"
@@ -62,8 +64,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:backgroundTint="#3498DB"
+        android:backgroundTint="#03A9F4"
         android:padding="15dp"
         android:text="비밀번호 찾기"
+        android:textColor="@color/white"
         android:textStyle="bold" />
 </LinearLayout>

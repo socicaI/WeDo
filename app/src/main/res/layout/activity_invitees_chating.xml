@@ -40,9 +40,9 @@
             android:layout_toRightOf="@+id/image_btn"
             android:layout_weight="150"
             android:textSize="11.5dp"
+            android:textColor="@color/black"
             android:hint=" 내용을 입력하세요."
             android:lineSpacingExtra="100dp"
-            android:textColor="@color/grey"
             android:textColorHint="#b9bcce">
 
 

@@ -9,17 +9,17 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="130dp"
         android:layout_marginLeft="250dp"
+        android:layout_marginTop="130dp"
         app:srcCompat="@drawable/wedo" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="사용자 닉네임"
-        android:textColor="#3498DB"
         android:layout_marginTop="-20dp"
+        android:text="사용자 닉네임"
+        android:textColor="#03A9F4"
         android:textSize="50dp"
         android:textStyle="bold" />
 
@@ -35,10 +35,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/border"
-            android:inputType="textPersonName"
             android:ems="13"
             android:hint="닉네임"
-            android:padding="15dp" />
+            android:inputType="textPersonName"
+            android:padding="15dp"
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/nick_validate_button"
@@ -46,19 +47,22 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="205dp"
             android:layout_marginTop="3dp"
-            android:backgroundTint="#3498DB"
+            android:backgroundTint="#03A9F4"
             android:text="중복확인"
+            android:textColor="@color/white"
             android:textSize="10dp"
             android:textStyle="bold" />
     </FrameLayout>
+
     <Button
         android:id="@+id/main_button"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:backgroundTint="#3498DB"
+        android:backgroundTint="#03A9F4"
         android:padding="15dp"
         android:text="메인으로"
+        android:textColor="@color/white"
         android:textStyle="bold" />
 </LinearLayout>

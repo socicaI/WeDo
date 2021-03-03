@@ -386,7 +386,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 };
-                System.out.println("구글아이디: "+GoogleUserName+"  구글 email: "+GoogleUserEmail);
+                System.out.println("구글아이디: " + GoogleUserName + "  구글 email: " + GoogleUserEmail);
                 //서버로 volley를 이용해서 요청을 함
                 Google_Register Google_Register = new Google_Register(GoogleUserName, GoogleUserEmail, responseListener);
                 RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
