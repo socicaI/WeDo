@@ -47,6 +47,9 @@ public class ActivityItemAdapter extends RecyclerView.Adapter<ActivityItemAdapte
         if (status.equals("삭제 ")) {
             holder.status.setTextColor(Color.parseColor("#FF0000"));
         }
+        if (status.equals("체크 ")||status.equals("체크 해제 ")) {
+            holder.status.setTextColor(Color.parseColor("#FA9301"));
+        }
         holder.status.setText(currentItem.getStatus());
     }
 
