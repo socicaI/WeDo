@@ -19,6 +19,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.wedo.R;
+import com.example.wedo.SearchFilter.ItemAdapter;
 
 import java.util.ArrayList;
 
@@ -69,9 +70,33 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (viewHolder instanceof LeftImageViewHolder) {
             ChatItem item = items.get(position);
             ((LeftImageViewHolder) viewHolder).setItem(item, context);
+            // TODO : 리스너를 정의하시오.
+            if (mListener != null){
+                int pos = position;
+                //final ItemModel item = mItems.get(viewHolder.getAdapterPosition());
+                ((LeftImageViewHolder) viewHolder).image.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        mListener.onItemClicked(pos);
+                    }
+                });
+                //버튼등에도 동일하게 지정할 수 있음 holder.버튼이름.setOnClickListener..형식으로
+            }
         } else {
             ChatItem item = items.get(position);
             ((RightImageViewHolder) viewHolder).setItem(item, context);
+            // TODO : 리스너를 정의하시오.
+            if (mListener != null){
+                int pos = position;
+                //final ItemModel item = mItems.get(viewHolder.getAdapterPosition());
+                ((RightImageViewHolder) viewHolder).image.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        mListener.onItemClicked(pos);
+                    }
+                });
+                //버튼등에도 동일하게 지정할 수 있음 holder.버튼이름.setOnClickListener..형식으로
+            }
         }
     }
 
@@ -195,5 +220,20 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     .into(image);
             sendTimeText.setText(item.getSendTime());
         }
+    }
+    //interface - 클릭인터페이스
+    private ChatAdapter.onItemListener mListener;
+    public void setOnClickListener(ChatAdapter.onItemListener listener){
+        mListener = listener;
+    }
+    //onclick listener interface
+    //1. interface onItemListener 선언
+    //2. 내부에서 mListener 선언하고
+    // 외부에서 접근가능하도록 setOnClickListener작성
+    //3.onBindViewHolder에서 처리
+    public interface onItemListener {
+        void onItemClicked(int position);
+        //void onItemClicked(ItemModel model); 모델값을 넘길수 있음
+        //다른버튼도 정의할 수 있음 onShareButtonClicked(int position);
     }
 }

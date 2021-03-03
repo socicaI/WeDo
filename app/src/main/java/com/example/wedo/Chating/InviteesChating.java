@@ -59,7 +59,10 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Dictionary;
+import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -67,13 +70,14 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-public class InviteesChating extends AppCompatActivity {
+public class InviteesChating extends AppCompatActivity implements ChatAdapter.onItemListener {
 
     /**
      * 채팅
      */
     private Socket mSocket;
-//    private RetrofitClient retrofitClient;
+    //    private RetrofitClient retrofitClient;
+    public List<ChatItem> itemList;
 
     private ChatAdapter adapter;
 
@@ -106,6 +110,9 @@ public class InviteesChating extends AppCompatActivity {
         userPass = extras.getString("userPass");
         TitleProfile = extras.getString("TitleProfile");
         people = extras.getString("people");
+
+        //adapter
+        itemList = new ArrayList<>();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         chatServerLoad();
@@ -162,9 +169,6 @@ public class InviteesChating extends AppCompatActivity {
         image_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent imageIntent = new Intent(Intent.ACTION_PICK);
-//                imageIntent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-//                startActivityForResult(imageIntent, SELECT_IMAGE);
                 myStartActivity(ChatCameraActivity.class);
             }
         });
@@ -193,18 +197,23 @@ public class InviteesChating extends AppCompatActivity {
                     for (int i = 0; i < list.length(); i++) {
                         Long time = Long.valueOf(list.getJSONObject(i).getString("date"));
                         if (list.getJSONObject(i).getString("user_name").equals(username) && list.getJSONObject(i).getString("user_profile").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
+                            itemList.add(new ChatItem(username, list.getJSONObject(i).getString("user_content"), toDate(time), ChatType.RIGHT_MESSAGE));
                             adapter.addItem(new ChatItem(username, list.getJSONObject(i).getString("user_content"), toDate(time), ChatType.RIGHT_MESSAGE));
                             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                         } else if (list.getJSONObject(i).getString("user_name") != username && list.getJSONObject(i).getString("user_profile").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
+                            itemList.add(new ChatItem(list.getJSONObject(i).getString("user_name"), list.getJSONObject(i).getString("user_content"), toDate(time), ChatType.LEFT_MESSAGE));
                             adapter.addItem(new ChatItem(list.getJSONObject(i).getString("user_name"), list.getJSONObject(i).getString("user_content"), toDate(time), ChatType.LEFT_MESSAGE));
                             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                         } else if (list.getJSONObject(i).getString("user_name").equals(username) && list.getJSONObject(i).getString("user_content").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
+                            itemList.add(new ChatItem(username, list.getJSONObject(i).getString("user_profile"), toDate(time), ChatType.RIGHT_IMAGE));
                             adapter.addItem(new ChatItem(username, list.getJSONObject(i).getString("user_profile"), toDate(time), ChatType.RIGHT_IMAGE));
                             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                         } else if (list.getJSONObject(i).getString("user_name") != (username) && list.getJSONObject(i).getString("user_content").equals("null") && list.getJSONObject(i).getString("user_group").equals(roomNumber + "of" + orderNick)) {
+                            itemList.add(new ChatItem(list.getJSONObject(i).getString("user_name"), list.getJSONObject(i).getString("user_profile"), toDate(time), ChatType.LEFT_IMAGE));
                             adapter.addItem(new ChatItem(list.getJSONObject(i).getString("user_name"), list.getJSONObject(i).getString("user_profile"), toDate(time), ChatType.LEFT_IMAGE));
                             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                         }
+                        adapter.setOnClickListener(InviteesChating.this);    //어댑터의 리스너 호출
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -295,8 +304,10 @@ public class InviteesChating extends AppCompatActivity {
                                             roomNumber + "of" + orderNick,
                                             String.valueOf(downloadUri),
                                             System.currentTimeMillis())));
+                                    itemList.add(new ChatItem(username, String.valueOf(downloadUri), toDate(System.currentTimeMillis()), ChatType.RIGHT_IMAGE));
                                     adapter.addItem(new ChatItem(username, String.valueOf(downloadUri), toDate(System.currentTimeMillis()), ChatType.RIGHT_IMAGE));
                                     recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                                    adapter.setOnClickListener(InviteesChating.this);
                                 } else {
                                     Log.e("로그", "실패");
                                 }
@@ -309,5 +320,24 @@ public class InviteesChating extends AppCompatActivity {
             }
             break;
         }
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+        ChatItem model = itemList.get(position);
+        Toast.makeText(this, model.getContent(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), Picture.class);
+        intent.putExtra("id", roomNumber);
+        intent.putExtra("nick", username);
+        intent.putExtra("orderNick", orderNick);
+        intent.putExtra("profilePath", profilePath);
+        intent.putExtra("userID", userID);
+        intent.putExtra("userPass", userPass);
+        intent.putExtra("userEmail", userEmail);
+        intent.putExtra("TitleProfile", TitleProfile);
+        intent.putExtra("people", people);
+        intent.putExtra("picture", model.getContent());
+        startActivity(intent);
+        finish();
     }
 }
