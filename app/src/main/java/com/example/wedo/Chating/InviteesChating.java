@@ -325,7 +325,6 @@ public class InviteesChating extends AppCompatActivity implements ChatAdapter.on
     @Override
     public void onItemClicked(int position) {
         ChatItem model = itemList.get(position);
-        Toast.makeText(this, model.getContent(), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getApplicationContext(), Picture.class);
         intent.putExtra("id", roomNumber);
         intent.putExtra("nick", username);

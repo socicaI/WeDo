@@ -33,6 +33,7 @@ public class Picture extends AppCompatActivity {
         TitleProfile = extras.getString("TitleProfile");
         people = extras.getString("people");
         picture = extras.getString("picture");
+        System.out.println("사진사진왜안떠!!: "+picture);
 
         imgPicture();
     }
