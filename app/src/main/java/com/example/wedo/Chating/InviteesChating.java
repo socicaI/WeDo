@@ -324,19 +324,23 @@ public class InviteesChating extends AppCompatActivity implements ChatAdapter.on
 
     @Override
     public void onItemClicked(int position) {
-        ChatItem model = itemList.get(position);
-        Intent intent = new Intent(getApplicationContext(), Picture.class);
-        intent.putExtra("id", roomNumber);
-        intent.putExtra("nick", username);
-        intent.putExtra("orderNick", orderNick);
-        intent.putExtra("profilePath", profilePath);
-        intent.putExtra("userID", userID);
-        intent.putExtra("userPass", userPass);
-        intent.putExtra("userEmail", userEmail);
-        intent.putExtra("TitleProfile", TitleProfile);
-        intent.putExtra("people", people);
-        intent.putExtra("picture", model.getContent());
-        startActivity(intent);
-        finish();
+        try {
+            ChatItem model = itemList.get(position);
+            Intent intent = new Intent(getApplicationContext(), Picture.class);
+            intent.putExtra("id", roomNumber);
+            intent.putExtra("nick", username);
+            intent.putExtra("orderNick", orderNick);
+            intent.putExtra("profilePath", profilePath);
+            intent.putExtra("userID", userID);
+            intent.putExtra("userPass", userPass);
+            intent.putExtra("userEmail", userEmail);
+            intent.putExtra("TitleProfile", TitleProfile);
+            intent.putExtra("people", people);
+            intent.putExtra("picture", model.getContent());
+            startActivity(intent);
+            finish();
+        }catch (IndexOutOfBoundsException e){
+            System.out.println(e);
+        }
     }
 }
