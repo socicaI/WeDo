@@ -112,7 +112,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (registration_password_check_input.getText().toString().length() > 0) {
                     if (registration_password_input.getText().toString().equals(registration_password_check_input.getText().toString())) { //비밀번호 입력 재확인란이 공백이 아니면서 비밀번호 입력란과 일치할 경우
                         password_check_text.setText("비밀번호가 일치합니다.");
-                        password_check_text.setTextColor(Color.parseColor("#FFFFFFFF"));
+                        password_check_text.setTextColor(Color.parseColor("#03A9F4"));
                         pass_validate = true;
                     } else {
                         password_check_text.setText("비밀번호가 일치하지 않습니다.");

@@ -84,6 +84,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
     private OrderAdapter adapter;   //초대된 리스트와 관련된 어댑터
     private InviteesAdapter inviteesAdapter;    //초대받은사람 어댑터
     SwipeRefreshLayout mSwipeRefreshLayout;
+    TextView emptyRecycler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -126,6 +127,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
      */
     private void load() {
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+        emptyRecycler = (TextView) findViewById(R.id.emptyRecycler);
         mSwipeRefreshLayout.setOnRefreshListener(ResultActivity.this);
         mExpandingList.removeAllViews();
         Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -165,8 +167,14 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                     for (int i = 0; i < tasks.size(); i++) {
                         addItem(tasks.get(i).getTitle(), tasks.get(i).getSubTitleArray(), R.color.grey, R.drawable.wedo_img, tasks.get(i).getBooleanValueArray(), "0%");
                     }
+                    if (tasks.size() == 0) {
+                        emptyRecycler.setVisibility(View.VISIBLE);
+                        mExpandingList.setVisibility(View.GONE);
+                    } else {
+                        emptyRecycler.setVisibility(View.GONE);
+                        mExpandingList.setVisibility(View.VISIBLE);
+                    }
                     tasks.clear();
-                    //여기기다가
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -224,6 +232,8 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                             Response.Listener<String> responseListener = new Response.Listener<String>() {
                                                                 @Override
                                                                 public void onResponse(String response) {
+                                                                    emptyRecycler.setVisibility(View.GONE);
+                                                                    mExpandingList.setVisibility(View.VISIBLE);
                                                                     addItem(title, new String[]{}, R.color.grey, R.drawable.wedo_img, null, "0%");
                                                                     dialog.dismiss();
                                                                     Response.Listener<String> responseListener = new Response.Listener<String>() {//volley
@@ -555,6 +565,13 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                                         public void onResponse(String response) {
                                                             mExpandingList.removeItem(item);
                                                             dialog1.dismiss();
+                                                            if (mExpandingList.getItemsCount() == 0) {
+                                                                emptyRecycler.setVisibility(View.VISIBLE);
+                                                                mExpandingList.setVisibility(View.GONE);
+                                                            } else {
+                                                                emptyRecycler.setVisibility(View.GONE);
+                                                                mExpandingList.setVisibility(View.VISIBLE);
+                                                            }
                                                         }
                                                     };
                                                     //서버로 volley를 이용해서 요청을 함
@@ -1283,7 +1300,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                 }
                             };
                             //서버로 volley를 이용해서 요청을 함
-                            UserGroupRemove UserGroupRemove = new UserGroupRemove(str_user, str_group, responseListener);
+                            UserGroupRemove UserGroupRemove = new UserGroupRemove(str_user, str_group, str_group + "of" + str_user, responseListener);
                             RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                             queue.add(UserGroupRemove);
                         }

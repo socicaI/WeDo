@@ -32,6 +32,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.example.wedo.Drop.DropOut;
 import com.example.wedo.GroupHttp.MainCategoryGroupRequest;
 import com.example.wedo.GroupHttp.UserGroupAdd;
 import com.example.wedo.GroupHttp.ValidateGroup;
@@ -74,7 +75,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_category);
         emptyRecycler = (TextView) findViewById(R.id.emptyRecycler);
-//        emptyRecycler.setVisibility(View.GONE);
+        emptyRecycler.setVisibility(View.GONE);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
@@ -132,8 +133,13 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                         mArrayList.add(dict); //마지막 줄에 삽입됨 1
                         mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
                     }
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                    emptyRecycler.setVisibility(View.GONE);
+                    if (mArrayList.size() == 0) {
+                        emptyRecycler.setVisibility(View.VISIBLE);
+                        mRecyclerView.setVisibility(View.GONE);
+                    } else {
+                        emptyRecycler.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -336,6 +342,20 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                  * 사용자 이름을 변경해주는 화면으로 전환되게 구현
                  */
                 Intent intent = new Intent(MainCategoryActivity.this, NickChangeActivity.class);
+                intent.putExtra("nick", strID);
+                intent.putExtra("profileUri", profilePath);
+                intent.putExtra("userEmail", userEmail);
+                intent.putExtra("userID", userID);
+                intent.putExtra("userPass", userPass);
+                startActivity(intent);
+                finish();
+            }
+        });
+        LinearLayout drop_btn = (LinearLayout) findViewById(R.id.drop_btn);
+        drop_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainCategoryActivity.this, DropOut.class);
                 intent.putExtra("nick", strID);
                 intent.putExtra("profileUri", profilePath);
                 intent.putExtra("userEmail", userEmail);

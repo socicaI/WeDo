@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer"
-    android:layout_width="110dp"
+    android:layout_width="120dp"
     android:layout_height="wrap_content"
     android:layout_gravity="end"
     android:layout_marginTop="66dp"
@@ -26,6 +26,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 app:srcCompat="@drawable/ic_chat" />
 
             <TextView
@@ -49,6 +50,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 app:srcCompat="@drawable/ic_activity_info" />
 
             <TextView
@@ -65,14 +67,15 @@
             android:id="@+id/updateGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal"
             android:visibility="gone">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 app:srcCompat="@drawable/ic_update_24" />
 
             <TextView
@@ -97,6 +100,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 app:srcCompat="@drawable/ic_remove" />
 
             <TextView
@@ -121,6 +125,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 app:srcCompat="@drawable/kick_back" />
 
             <TextView

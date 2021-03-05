@@ -229,9 +229,11 @@ public class InviteesChating extends AppCompatActivity implements ChatAdapter.on
         runOnUiThread(() -> {
 
             if (data.getType().equals("IMAGE")) {
+                itemList.add(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_IMAGE));
                 adapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_IMAGE));
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             } else {
+                itemList.add(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_MESSAGE));
                 adapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_MESSAGE));
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             }
@@ -249,7 +251,7 @@ public class InviteesChating extends AppCompatActivity implements ChatAdapter.on
                 roomNumber + "of" + orderNick,
                 content_edit.getText().toString(),
                 System.currentTimeMillis())));
-
+        itemList.add(new ChatItem(username, content_edit.getText().toString(), toDate(System.currentTimeMillis()), ChatType.RIGHT_MESSAGE));
         adapter.addItem(new ChatItem(username, content_edit.getText().toString(), toDate(System.currentTimeMillis()), ChatType.RIGHT_MESSAGE));
         recyclerView.scrollToPosition(adapter.getItemCount() - 1);
         content_edit.setText("");

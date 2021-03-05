@@ -188,12 +188,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
                                 };
                                 //서버로 volley를 이용해서 요청을 함
 
-                                UserGroupRemove UserGroupRemove = new UserGroupRemove(mList.get(getAdapterPosition()).getUser(), mList.get(getAdapterPosition()).getId(), responseListener);
+//                                UserGroupRemove UserGroupRemove = new UserGroupRemove(mList.get(getAdapterPosition()).getUser(), mList.get(getAdapterPosition()).getId(), responseListener);
                                 Log.e("아이디 ", mList.get(getAdapterPosition()).getUser() + "내용 : " + mList.get(getAdapterPosition()).getId());
                                 Log.e("아이디 ", mList.get(getAdapterPosition()) + "내용 : " + mList.get(getAdapterPosition()));
 
-                                RequestQueue queue = Volley.newRequestQueue(mContext);
-                                queue.add(UserGroupRemove);
+//                                RequestQueue queue = Volley.newRequestQueue(mContext);
+//                                queue.add(UserGroupRemove);
 
                                 mList.remove(getAdapterPosition());
                                 notifyItemRemoved(getAdapterPosition());
