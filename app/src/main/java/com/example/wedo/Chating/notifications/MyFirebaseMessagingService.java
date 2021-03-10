@@ -30,7 +30,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         //build our notification, and than show it
         // Create an explicit intent for an Activity in your app
-        Intent intent = new Intent(getApplicationContext(), InviteesChating.class);
+        Intent intent = new Intent(getApplicationContext(), InviteesChating.class);     //채팅방
 
         SharedPreferences pref = getSharedPreferences("loginInfo", Activity.MODE_PRIVATE);
         String userId = pref.getString("userID", "0");
