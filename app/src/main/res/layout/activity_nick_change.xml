@@ -40,7 +40,9 @@
             android:ems="13"
             android:hint="사용하실 이름"
             android:inputType="textPersonName"
-            android:padding="15dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             android:textColor="@color/black" />
 
         <Button

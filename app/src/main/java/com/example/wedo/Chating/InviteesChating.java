@@ -37,6 +37,7 @@ import com.example.wedo.Register.CameraActivity;
 import com.example.wedo.Register.RegisterActivity;
 import com.example.wedo.RegisterHttp.RegisterRequest;
 import com.example.wedo.Schedule.ResultActivity;
+import com.example.wedo.ScheduleHttp.DeviceInfoUpdate;
 import com.example.wedo.SearchFilter.ItemAdapter;
 import com.example.wedo.SearchFilter.ItemModel;
 import com.example.wedo.SearchFilter.SearchRequest;
@@ -122,6 +123,16 @@ public class InviteesChating extends AppCompatActivity implements ChatAdapter.on
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        };
+        DeviceInfoUpdateOut DeviceInfoUpdateOut = new DeviceInfoUpdateOut(username, orderNick, roomNumber, responseListener);
+        RequestQueue queue = Volley.newRequestQueue(InviteesChating.this);
+        queue.add(DeviceInfoUpdateOut);
 
         Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
         intent.putExtra("id", roomNumber);
@@ -241,6 +252,7 @@ public class InviteesChating extends AppCompatActivity implements ChatAdapter.on
     }
 
     private void sendMessage() {
+        String chatText;
         content_edit = (EditText) findViewById(R.id.content_edit);
         Bundle extras = getIntent().getExtras();
         roomNumber = extras.getString("id");    //주제
@@ -251,10 +263,21 @@ public class InviteesChating extends AppCompatActivity implements ChatAdapter.on
                 roomNumber + "of" + orderNick,
                 content_edit.getText().toString(),
                 System.currentTimeMillis())));
+        chatText = content_edit.getText().toString();
         itemList.add(new ChatItem(username, content_edit.getText().toString(), toDate(System.currentTimeMillis()), ChatType.RIGHT_MESSAGE));
         adapter.addItem(new ChatItem(username, content_edit.getText().toString(), toDate(System.currentTimeMillis()), ChatType.RIGHT_MESSAGE));
         recyclerView.scrollToPosition(adapter.getItemCount() - 1);
         content_edit.setText("");
+
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        };
+        ChatNotif ChatNotif = new ChatNotif(username, chatText, roomNumber, orderNick, profilePath, userID, userPass, TitleProfile, people, responseListener);
+        RequestQueue queue = Volley.newRequestQueue(InviteesChating.this);
+        queue.add(ChatNotif);
     }
 
     private String toDate(long currentMillis) {
@@ -341,7 +364,7 @@ public class InviteesChating extends AppCompatActivity implements ChatAdapter.on
             intent.putExtra("picture", model.getContent());
             startActivity(intent);
             finish();
-        }catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             System.out.println(e);
         }
     }

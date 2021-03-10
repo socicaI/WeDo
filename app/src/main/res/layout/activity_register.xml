@@ -131,7 +131,7 @@
         android:background="@drawable/border"
         android:ems="13"
         android:hint="비밀번호 확인"
-        android:inputType="textPassword"
+        android:inputType="textPersonName"
         android:padding="10dp"
         android:textColor="@color/black" />
 

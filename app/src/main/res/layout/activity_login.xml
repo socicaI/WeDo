@@ -28,7 +28,9 @@
         android:ems="14"
         android:hint="아이디"
         android:inputType="textPersonName"
-        android:padding="15dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:textColor="@color/black" />
 
 
@@ -42,7 +44,9 @@
         android:ems="14"
         android:hint="비밀번호"
         android:inputType="textPassword"
-        android:padding="15dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:textColor="@color/black" />
 
     <LinearLayout

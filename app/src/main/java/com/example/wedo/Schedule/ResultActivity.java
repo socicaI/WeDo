@@ -45,6 +45,7 @@ import com.example.wedo.ListHttp.UserListUpdate;
 import com.example.wedo.ListHttp.ValidateList;
 import com.example.wedo.Group.MainCategoryActivity;
 import com.example.wedo.R;
+import com.example.wedo.ScheduleHttp.DeviceInfoUpdate;
 import com.example.wedo.ScheduleHttp.ScheduleComplete;
 import com.example.wedo.ScheduleHttp.ScheduleinComplete;
 import com.example.wedo.ScheduleHttp.UserScheduleAdd;
@@ -1159,6 +1160,16 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
                             if (success || nick.equals(orderNick)) {
+                                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+
+                                    }
+                                };
+                                DeviceInfoUpdate DeviceInfoUpdate = new DeviceInfoUpdate(nick, orderNick, id, responseListener);
+                                RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+                                queue.add(DeviceInfoUpdate);
+
                                 Intent intent = new Intent(getApplicationContext(), InviteesChating.class);
                                 intent.putExtra("id", id);
                                 intent.putExtra("nick", nick);
@@ -1169,7 +1180,6 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                 intent.putExtra("userPass", userPass);
                                 intent.putExtra("TitleProfile", TitleProfile);
                                 intent.putExtra("people", people);
-
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                                 startActivity(intent);
                                 finish();

@@ -116,7 +116,6 @@ public class GmailSetNickActivity extends AppCompatActivity {
                                             }
                                         };
                                         //서버로 volley를 이용해서 요청을 함
-                                        System.out.println("값 들어왔나~!!: "+userId +"222  "+ nick +"333+ "+ profileUri);
                                         GmailNickProfile GmailNickProfile = new GmailNickProfile(userId, nick, profileUri, responseListener);
                                         RequestQueue queue = Volley.newRequestQueue(GmailSetNickActivity.this);
                                         queue.add(GmailNickProfile);

@@ -18,8 +18,21 @@
         android:roundIcon="@mipmap/ic_launcher_wedo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WeDo">
-        <activity android:name=".Drop.DropOut"></activity>
-        <activity android:name=".Chating.Picture" />
+
+        <service android:name=".Chating.notifications.MyFirebaseMessagingService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".Drop.DropOut"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Chating.Picture"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Chating.InviteesChating"
             android:screenOrientation="portrait" />

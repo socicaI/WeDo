@@ -45,6 +45,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kakao.auth.ApiErrorCode;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
@@ -180,7 +182,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String userID = login_id_input.getText().toString(); //아이디 입력란의 Text를 String으로 변환하여 userID에 넣은 후 DB에 회원이 맞는지 검사할 때 필요한 변수
-                final String userPass = login_password_input.getText().toString(); //비밀번호 입력란의 Text를 String으로 변환하여 userPass에 넣은 후 DB에 회원으 ㅣ비밀번호가 맞는지 검사할 때 필요한 변수
+                final String userPass = login_password_input.getText().toString(); //비밀번호 입력란의 Text를 String으로 변환하여 userPass에 넣은 후 DB에 회원의 비밀번호가 맞는지 검사할 때 필요한 변수
 
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
@@ -204,11 +206,6 @@ public class LoginActivity extends AppCompatActivity {
                                                 intent.putExtra("userPass", userPass);
                                                 intent.putExtra("ID", nick);
                                                 intent.putExtra("profileUri", profileUri);
-                                                SharedPreferences pref = getSharedPreferences("loginInfo", Activity.MODE_PRIVATE);
-                                                SharedPreferences.Editor editor = pref.edit();
-                                                editor.putString("userID", userID);
-                                                editor.putString("userPass", userPass);
-                                                editor.commit();
                                                 startActivity(intent);
                                                 finish();
                                             } else {
@@ -247,8 +244,6 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("loginInfo", Activity.MODE_PRIVATE);
         String userId = pref.getString("userID", "0");
         String userPass = pref.getString("userPass", "0");
-
-        System.out.println("userID: " + userId + "////////userPass: " + userPass);
 
         if (userId != "0") {
             Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -353,8 +348,6 @@ public class LoginActivity extends AppCompatActivity {
                                                         JSONObject jasonObject = new JSONObject(response);
                                                         String profilePath = jasonObject.getString("profilePath");
                                                         String nick = jasonObject.getString("Nick");
-                                                        Log.e("로그123", profilePath);
-                                                        Log.e("로그123", GoogleUserEmail);
                                                         Intent intent = new Intent(getApplicationContext(), MainCategoryActivity.class);
                                                         intent.putExtra("ID", nick);
                                                         intent.putExtra("profileUri", profilePath);
@@ -527,8 +520,6 @@ public class LoginActivity extends AppCompatActivity {
                                                             JSONObject jasonObject = new JSONObject(response);
                                                             String profilePath = jasonObject.getString("profilePath");
                                                             String nick = jasonObject.getString("nick");
-                                                            Log.e("로그123", profilePath);
-                                                            Log.e("로그123", kakaoId);
 
                                                             Intent intent = new Intent(getApplicationContext(), MainCategoryActivity.class);
                                                             intent.putExtra("ID", nick);

@@ -35,10 +35,14 @@ import com.bumptech.glide.Glide;
 import com.example.wedo.Drop.DropOut;
 import com.example.wedo.GroupHttp.MainCategoryGroupRequest;
 import com.example.wedo.GroupHttp.UserGroupAdd;
+import com.example.wedo.GroupHttp.UserGroupRemove;
 import com.example.wedo.GroupHttp.ValidateGroup;
 import com.example.wedo.Login.LoginActivity;
 import com.example.wedo.R;
 import com.example.wedo.Schedule.ResultActivity;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
@@ -49,6 +53,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class MainCategoryActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+
+    String token;
 
     /**
      * RecyclerView 부분
@@ -74,6 +80,7 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_category);
+
         emptyRecycler = (TextView) findViewById(R.id.emptyRecycler);
         emptyRecycler.setVisibility(View.GONE);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
@@ -86,14 +93,16 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                 new DividerItemDecoration(getApplicationContext(), new LinearLayoutManager(MainCategoryActivity.this).getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
+        getToken();
+
         mArrayList = new ArrayList<>();
 
         mAdapter = new CustomAdapter(this, mArrayList);
 
         mRecyclerView.setAdapter(mAdapter);
+
         categoryList();
     }
-
 
     public void categoryList() {
         /**
@@ -108,10 +117,31 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
         userEmail = intent.getStringExtra("userEmail");
 
         /**
+         * 로컬에 사용자 로그인 정보 저장
+         */
+        SharedPreferences pref = getSharedPreferences("loginInfo", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("userID", userID);
+        editor.putString("userPass", userPass);
+        editor.putString("userNick", strID);
+        editor.putString("userEmail",userEmail);
+        editor.putString("profilePath", profilePath);
+        editor.commit();
+
+        Response.Listener<String> responseListener2 = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+            }
+        };
+        //서버로 volley를 이용해서 요청을 함
+        DeviceRemove DeviceRemove = new DeviceRemove(strID, responseListener2);
+        RequestQueue queue = Volley.newRequestQueue(MainCategoryActivity.this);
+        queue.add(DeviceRemove);
+
+        /**
          * 서버에 Group Data가 있는지 확인하고 가져오는 메소드
          */
         Response.Listener<String> responseListener = new Response.Listener<String>() {
-
             @Override
             public void onResponse(String response) {
                 try {
@@ -132,6 +162,17 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                         dict.setImageResource(profilePath123);
                         mArrayList.add(dict); //마지막 줄에 삽입됨 1
                         mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
+
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+
+                            }
+                        };
+                        UserDeviceValue UserDeviceValue = new UserDeviceValue(strID, token, strID, group1, responseListener);
+                        RequestQueue queue = Volley.newRequestQueue(MainCategoryActivity.this);
+                        queue.add(UserDeviceValue);
+
                     }
                     if (mArrayList.size() == 0) {
                         emptyRecycler.setVisibility(View.VISIBLE);
@@ -147,8 +188,8 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
             }
         };
         MainCategoryGroupRequest MainCategoryGroupRequest = new MainCategoryGroupRequest(strID, responseListener);
-        RequestQueue queue = Volley.newRequestQueue(MainCategoryActivity.this);
-        queue.add(MainCategoryGroupRequest);
+        RequestQueue queue1 = Volley.newRequestQueue(MainCategoryActivity.this);
+        queue1.add(MainCategoryGroupRequest);
 
         Response.Listener<String> responseListener1 = new Response.Listener<String>() {
             @Override
@@ -172,6 +213,15 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                         dict.setImageResource(profilePath223);
                         mArrayList.add(dict); //마지막 줄에 삽입됨 1
                         mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
+
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                            }
+                        };
+                        UserDeviceValue UserDeviceValue = new UserDeviceValue(strID, token, nick, group2, responseListener);
+                        RequestQueue queue = Volley.newRequestQueue(MainCategoryActivity.this);
+                        queue.add(UserDeviceValue);
                     }
                     if (mArrayList.size() == 0) {
                         emptyRecycler.setVisibility(View.VISIBLE);
@@ -186,8 +236,8 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
             }
         };
         InviteGroupRequest InviteGroupRequest = new InviteGroupRequest(strID, responseListener1);
-        RequestQueue queue1 = Volley.newRequestQueue(MainCategoryActivity.this);
-        queue1.add(InviteGroupRequest);
+        RequestQueue queue3 = Volley.newRequestQueue(MainCategoryActivity.this);
+        queue3.add(InviteGroupRequest);
 
 
         /**
@@ -278,6 +328,15 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
                                             Response.Listener<String> responseListener6 = new Response.Listener<String>() {//volley
                                                 @Override
                                                 public void onResponse(String response) {
+                                                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                                        @Override
+                                                        public void onResponse(String response) {
+
+                                                        }
+                                                    };
+                                                    UserDeviceValue UserDeviceValue = new UserDeviceValue(strID, token, strID, strID2, responseListener);
+                                                    RequestQueue queue = Volley.newRequestQueue(MainCategoryActivity.this);
+                                                    queue.add(UserDeviceValue);
                                                 }
                                             };
                                             //서버로 volley를 이용해서 요청을 함
@@ -365,10 +424,23 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
             }
         });
 
+        /**
+         * 로그아웃
+         */
         LinearLayout logout = (LinearLayout) findViewById(R.id.btnLogout);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                };
+                //서버로 volley를 이용해서 요청을 함
+                DeviceRemove DeviceRemove = new DeviceRemove(strID, responseListener);
+                RequestQueue queue = Volley.newRequestQueue(MainCategoryActivity.this);
+                queue.add(DeviceRemove);
+
                 UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
                     @Override
                     public void onCompleteLogout() {
@@ -490,5 +562,17 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
+    }
+
+    //get the applications token
+    private void getToken() {
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        Log.e("Token", instanceIdResult.getToken());
+                        token = instanceIdResult.getToken();
+                    }
+                });
     }
 }
