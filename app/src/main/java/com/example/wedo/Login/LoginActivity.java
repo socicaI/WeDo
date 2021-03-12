@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.example.wedo.Chating.notifications.MyFirebaseMessagingService;
 import com.example.wedo.Register.GmailSetNickActivity;
 import com.example.wedo.Register.KakaoSetNickActivity;
 import com.example.wedo.LookingFor.LookingForPass;
@@ -91,7 +92,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login); //로그인 레이아웃과 관련된 클래스
-
         /*
         아이디 찾기를 눌렀을 경우 아이디 찾기 화면으로 이동
          */

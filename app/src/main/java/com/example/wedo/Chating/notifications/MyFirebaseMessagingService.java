@@ -51,6 +51,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+//        PendingIntent pendingIntent = PendingIntent.getActivities(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -67,7 +68,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentTitle(remoteMessage.getNotification().getTitle())
                 .setContentText(remoteMessage.getNotification().getBody())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                // Set the intent that will fire when the user taps the notification
+                .setFullScreenIntent(pendingIntent, true)   //헤드업 알림
+        // Set the intent that will fire when the user taps the notification
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
