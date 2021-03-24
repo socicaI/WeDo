@@ -30,18 +30,8 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.example.wedo.Chating.model.MessageData;
 import com.example.wedo.Chating.model.RoomData;
-import com.example.wedo.Chating.retrofit.RetrofitClient;
-import com.example.wedo.Login.LoginActivity;
 import com.example.wedo.R;
-import com.example.wedo.Register.CameraActivity;
-import com.example.wedo.Register.RegisterActivity;
-import com.example.wedo.RegisterHttp.RegisterRequest;
 import com.example.wedo.Schedule.ResultActivity;
-import com.example.wedo.ScheduleHttp.DeviceInfoUpdate;
-import com.example.wedo.SearchFilter.ItemAdapter;
-import com.example.wedo.SearchFilter.ItemModel;
-import com.example.wedo.SearchFilter.SearchRequest;
-import com.example.wedo.SearchFilter.UserSearchActivity;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -62,14 +52,10 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Dictionary;
 import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 
 public class InviteesChating extends AppCompatActivity implements ChatAdapter.onItemListener {
 
@@ -158,7 +144,6 @@ public class InviteesChating extends AppCompatActivity implements ChatAdapter.on
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-//        retrofitClient = RetrofitClient.getInstance();
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         adapter = new ChatAdapter(getApplicationContext());

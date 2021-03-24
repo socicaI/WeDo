@@ -5,12 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.wedo.R;
-import com.example.wedo.Schedule.ResultActivity;
 
 public class Picture extends AppCompatActivity {
 

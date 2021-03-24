@@ -320,8 +320,9 @@ public class MainCategoryActivity extends AppCompatActivity implements SwipeRefr
 //                                          mArrayList.add(0, dict); //첫번째 줄에 삽입됨 1
                                             dict.setUser(strID);
                                             dict.setImageResource(profilePath);
-
                                             mArrayList.add(dict); //마지막 줄에 삽입됨 1
+
+
 //                                          mAdapter.notifyItemInserted(0); //첫번째 줄에 삽입됨 2
                                             mAdapter.notifyDataSetChanged();  //마지막 줄에 삽입됨 2
                                             dialog.dismiss();

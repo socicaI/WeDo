@@ -10,6 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -154,6 +155,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                     tempTaskModel.addBooleanValue(list.getJSONObject(i).getString("complete"));
                                 }
                                 tasks.add(tempTaskModel);
+                                System.out.println("크기: "+tasks.size());
                             }
                         } else {
                             tempTaskModel.setTitle(tempTaskName);
@@ -162,6 +164,7 @@ public class ResultActivity extends AppCompatActivity implements OrderAdapter.on
                                 tempTaskModel.addBooleanValue(list.getJSONObject(i).getString("complete"));
                             }
                             tasks.add(tempTaskModel);
+                            System.out.println("크기: "+tasks.size());
                         }
                     }
                     /**tasksArray의 크기 만큼 돌면서 해당 할 일 및 세부사항을 생성하는 반복문*/
